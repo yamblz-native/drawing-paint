@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,7 +18,6 @@ import android.view.View;
 public class MyView extends View {
     private Path drawPath;
     private Paint drawPaint, canvasPaint;
-    private int paintColor = Color.BLACK;
     private Canvas drawCanvas;
     private Bitmap canvasBitmap;
 
@@ -39,6 +39,7 @@ public class MyView extends View {
     private void setup() {
         drawPath = new Path();
         drawPaint = new Paint();
+        int paintColor = Color.BLACK;
         drawPaint.setColor(paintColor);
         drawPaint.setAntiAlias(true);
         drawPaint.setStrokeWidth(20);
@@ -86,5 +87,10 @@ public class MyView extends View {
     public void setColor(int newColor){
         invalidate();
         drawPaint.setColor(newColor);
+    }
+
+    public void startNew(){
+        drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        invalidate();
     }
 }

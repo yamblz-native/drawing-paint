@@ -3,10 +3,12 @@ package ru.yandex.yamblz.ui.fragments;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +41,19 @@ public class ContentFragment extends BaseFragment {
         ButterKnife.bind(this, view);
 
         FloatingActionButton fab1 = new FloatingActionButton(getActivity());
-        fab1.setIcon(R.drawable.ic_brush);
+        fab1.setIcon(R.drawable.ic_clear);
+        fab1.setOnClickListener(v -> {
+            AlertDialog.Builder newDialog = new AlertDialog.Builder(getActivity());
+            newDialog.setTitle("Clear the drawing");
+            newDialog.setMessage("Are you sure you want to clear? You will lose the current drawing.");
+            newDialog.setPositiveButton("Yes", (dialog, which) -> {
+                myView.startNew();
+                dialog.dismiss();
+            });
+            newDialog.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+            newDialog.show();
+            fam.collapse();
+        });
         fam.addButton(fab1);
 
         FloatingActionButton fab2 = new FloatingActionButton(getActivity());
@@ -62,6 +76,7 @@ public class ContentFragment extends BaseFragment {
                 myView.setColor(curColor);
             });
             dialog.show(((Activity) v.getContext()).getFragmentManager(), "color_dialog_test");
+            fam.collapse();
         });
         fam.addButton(fab2);
 
@@ -72,6 +87,8 @@ public class ContentFragment extends BaseFragment {
         FloatingActionButton fab4 = new FloatingActionButton(getActivity());
         fab4.setIcon(R.drawable.ic_load);
         fam.addButton(fab4);
+
         return view;
     }
+
 }
