@@ -93,4 +93,9 @@ public class MyView extends View {
         drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         invalidate();
     }
+
+    public void setImage(Bitmap bitmap) {
+        drawCanvas.drawBitmap(bitmap, 0, 0, canvasPaint);
+        invalidate();
+    }
 }
