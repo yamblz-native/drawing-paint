@@ -93,6 +93,7 @@ public class ContentFragment extends BaseFragment {
                 myView.setColor(curColor);
             });
             dialog.show(((Activity) v.getContext()).getFragmentManager(), "color_dialog_test");
+            myView.setFilter(0);
             fam.collapse();
         });
         fam.addButton(fab2);
@@ -132,6 +133,14 @@ public class ContentFragment extends BaseFragment {
             openImageChooser();
         });
         fam.addButton(fab4);
+
+        FloatingActionButton fab5 = new FloatingActionButton(getActivity());
+        fab5.setIcon(R.drawable.ic_filter);
+        fab5.setOnClickListener(v -> {
+            myView.setFilter(1);
+            fam.collapse();
+        });
+        fam.addButton(fab5);
 
         return view;
     }

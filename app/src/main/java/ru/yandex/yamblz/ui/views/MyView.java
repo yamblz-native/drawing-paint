@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +22,11 @@ public class MyView extends View {
     private Paint drawPaint, canvasPaint;
     private Canvas drawCanvas;
     private Bitmap canvasBitmap;
+    private boolean filter;
+    private int stampId;
+    private Shader shader;
+
+    private static int [] RAINBOW = {Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE, Color.MAGENTA};
 
     public MyView(Context context) {
         super(context);
@@ -37,18 +44,21 @@ public class MyView extends View {
     }
 
     private void setup() {
+        filter = false;
+        stampId = 0;
         drawPath = new Path();
         drawPaint = new Paint();
         int paintColor = Color.BLACK;
         drawPaint.setColor(paintColor);
         drawPaint.setAntiAlias(true);
-        drawPaint.setStrokeWidth(20);
+        drawPaint.setStrokeWidth(30);
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
         canvasPaint = new Paint(Paint.DITHER_FLAG);
     }
 
+    private int cnt = 0;
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
@@ -66,6 +76,7 @@ public class MyView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         float touchX = event.getX();
         float touchY = event.getY();
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 drawPath.moveTo(touchX, touchY);
@@ -81,15 +92,15 @@ public class MyView extends View {
                 return false;
         }
         invalidate();
-        return  true;
+        return true;
     }
 
-    public void setColor(int newColor){
+    public void setColor(int newColor) {
         invalidate();
         drawPaint.setColor(newColor);
     }
 
-    public void startNew(){
+    public void startNew() {
         drawCanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         invalidate();
     }
@@ -97,5 +108,20 @@ public class MyView extends View {
     public void setImage(Bitmap bitmap) {
         drawCanvas.drawBitmap(bitmap, 0, 0, canvasPaint);
         invalidate();
+    }
+
+    public void setFilter(int id) {
+        if (id > 0) {
+            filter = true;
+            shader = new LinearGradient(0, 0, canvasBitmap.getWidth(), canvasBitmap.getHeight(),
+                    RAINBOW, null, Shader.TileMode.MIRROR);
+            canvasPaint.setShader(shader);
+        } else {
+            filter = false;
+            shader = new Shader();
+        }
+        drawPaint.setShader(shader);
+//        requestLayout();
+        //        stampId = id;
     }
 }
