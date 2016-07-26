@@ -93,6 +93,11 @@ dependencies {
     compile libraries.supportRecyclerView
     compile libraries.supportCardView
 
+    compile 'org.xdty.preference:color-picker:0.0.4'
+
+    compile 'com.getbase:floatingactionbutton:1.10.1'
+
+
     compile libraries.butterKnife
     apt libraries.butterKnifeCompiler
 
