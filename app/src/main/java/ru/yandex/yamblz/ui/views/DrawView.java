@@ -115,7 +115,6 @@ public class DrawView extends View {
 
     public void setColorFilter(ColorFilter colorFilter){
         this.curentColorFilter=colorFilter;
-        drawPaint.setColorFilter(colorFilter);
         invalidate();
     }
 }
