@@ -4,6 +4,7 @@ package ru.yandex.yamblz.ui.views;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
@@ -40,6 +41,8 @@ public class DrawView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        canvasBitmap.setHasAlpha(false);
+        canvasBitmap.eraseColor(Color.WHITE);
         drawCanvas = new Canvas(canvasBitmap);
     }
 
@@ -73,5 +76,13 @@ public class DrawView extends View {
 
     public float getSize(){
         return drawPaint.getStrokeWidth();
+    }
+
+    public Bitmap getBitmap() {
+        return canvasBitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        drawCanvas.drawBitmap(bitmap,0,0,null);
     }
 }
