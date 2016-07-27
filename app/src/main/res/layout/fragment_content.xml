@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorAccent">
+
+        <TextView
+            android:id="@+id/select_color"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:text="выбор цвета"/>
+        <TextView
+            android:id="@+id/select_paint_size"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:text="выбор размерв"/>
+
+    </LinearLayout>
+
+    <ru.yandex.yamblz.ui.views.DrawView
+        android:id="@+id/draw_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/content"
-        android:textSize="42sp"
-        android:gravity="center"
         />
 
-</FrameLayout>
+</LinearLayout>
