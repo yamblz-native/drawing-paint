@@ -76,6 +76,7 @@ public class ContentFragment extends BaseFragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, filters);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(filters.indexOf("No filter"));
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -92,6 +93,7 @@ public class ContentFragment extends BaseFragment {
 
     private void initColorFiltersMap() {
         colorFilterMap = new HashMap<>();
+        colorFilterMap.put("No filter", null);
         ColorMatrix colorMatrix = new ColorMatrix();
         colorMatrix.setSaturation(0);
         colorFilterMap.put("GrayScale", new ColorMatrixColorFilter(colorMatrix));
@@ -108,7 +110,6 @@ public class ContentFragment extends BaseFragment {
                 0, 0, -1, 0, 255,
                 0, 0, 0, 1, 0,
         })));
-        colorFilterMap.put("No filter", null);
     }
 
     public void setBitmap(Bitmap bitmap) {

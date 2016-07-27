@@ -14,21 +14,25 @@
             android:id="@+id/select_color"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="выбор цвета"/>
+            android:layout_marginRight="20dp"
+            android:text="Цвет"/>
         <TextView
             android:id="@+id/select_paint_size"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="выбор размерв"/>
+            android:layout_marginRight="20dp"
+            android:text="Размер"/>
         <TextView
             android:id="@+id/save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
             android:text="сохранение"/>
         <TextView
             android:id="@+id/load"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
             android:text="загрузка"/>
         <CheckBox
             android:id="@+id/rainbow_checkbox"
