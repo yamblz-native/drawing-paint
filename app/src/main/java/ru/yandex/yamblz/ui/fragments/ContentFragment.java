@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.Date;
@@ -28,6 +29,7 @@ public class ContentFragment extends BaseFragment {
     @BindView(R.id.draw_view) DrawView drawView;
     @BindView(R.id.save) TextView saveView;
     @BindView(R.id.load) TextView loadView;
+    @BindView(R.id.rainbow_checkbox) CheckBox checkBox;
     @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -51,6 +53,9 @@ public class ContentFragment extends BaseFragment {
         });
         loadView.setOnClickListener(v->{
             ((MainActivity)getActivity()).loadImage();
+        });
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            drawView.setEnableRainbow(isChecked);
         });
     }
 

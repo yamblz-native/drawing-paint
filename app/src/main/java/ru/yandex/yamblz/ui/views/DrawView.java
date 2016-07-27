@@ -5,8 +5,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +18,8 @@ public class DrawView extends View {
     private final Paint drawPaint;
     private Bitmap canvasBitmap;
     private Canvas drawCanvas;
+    private Shader rainbowShader;
+    private boolean enableRainbow;
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -27,6 +31,9 @@ public class DrawView extends View {
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
     }
+    private static final int[] RAINBOW ={
+            Color.RED,Color.YELLOW,Color.GREEN,Color.BLUE,Color.MAGENTA
+    };
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -44,6 +51,9 @@ public class DrawView extends View {
         canvasBitmap.setHasAlpha(false);
         canvasBitmap.eraseColor(Color.WHITE);
         drawCanvas = new Canvas(canvasBitmap);
+        rainbowShader = new LinearGradient(0, 0, w, h, RAINBOW,
+                null, Shader.TileMode.MIRROR);
+        setEnableRainbow(enableRainbow);
     }
 
     @Override
@@ -84,5 +94,14 @@ public class DrawView extends View {
 
     public void setBitmap(Bitmap bitmap) {
         drawCanvas.drawBitmap(bitmap,0,0,null);
+    }
+
+    public void setEnableRainbow(boolean enableRainbow) {
+        this.enableRainbow = enableRainbow;
+        if(enableRainbow){
+            drawPaint.setShader(rainbowShader);
+        }else{
+            drawPaint.setShader(null);
+        }
     }
 }

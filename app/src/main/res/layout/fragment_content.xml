@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/colorAccent">
+        android:background="@color/d2m_bg_warning_1">
 
         <TextView
             android:id="@+id/select_color"
@@ -30,6 +30,10 @@
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:text="загрузка"/>
+        <CheckBox
+            android:id="@+id/rainbow_checkbox"
+            android:layout_width="80dp"
+            android:layout_height="80dp"/>
 
     </LinearLayout>
 
