@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -20,6 +21,7 @@ public class DrawView extends View {
     private Canvas drawCanvas;
     private Shader rainbowShader;
     private boolean enableRainbow;
+    private ColorFilter curentColorFilter;
 
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -38,17 +40,20 @@ public class DrawView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        drawPaint.setColorFilter(curentColorFilter);
         //все линии кроме текущих
         canvas.drawBitmap(canvasBitmap, 0, 0, drawPaint);
         //текущие линии
+      //  drawPaint.setColorFilter(null);
         canvas.drawPath(drawPath, drawPaint);
+
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        canvasBitmap.setHasAlpha(false);
+       // canvasBitmap.setHasAlpha(false);
         canvasBitmap.eraseColor(Color.WHITE);
         drawCanvas = new Canvas(canvasBitmap);
         rainbowShader = new LinearGradient(0, 0, w, h, RAINBOW,
@@ -68,7 +73,10 @@ public class DrawView extends View {
                 drawPath.lineTo(touchX, touchY);
                 break;
             case MotionEvent.ACTION_UP:
+                //значения фильтра уже подсчитаны в drawPath
+                drawPaint.setColorFilter(null);
                 drawCanvas.drawPath(drawPath, drawPaint);
+                drawPaint.setColorFilter(curentColorFilter);
                 drawPath.reset();
                 break;
         }
@@ -103,5 +111,11 @@ public class DrawView extends View {
         }else{
             drawPaint.setShader(null);
         }
+    }
+
+    public void setColorFilter(ColorFilter colorFilter){
+        this.curentColorFilter=colorFilter;
+        drawPaint.setColorFilter(colorFilter);
+        invalidate();
     }
 }

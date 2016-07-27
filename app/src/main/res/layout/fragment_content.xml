@@ -6,36 +6,41 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal"
         android:background="@color/d2m_bg_warning_1">
 
         <TextView
             android:id="@+id/select_color"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:text="выбор цвета"/>
         <TextView
             android:id="@+id/select_paint_size"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:text="выбор размерв"/>
         <TextView
             android:id="@+id/save"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:text="сохранение"/>
         <TextView
             android:id="@+id/load"
             android:layout_width="wrap_content"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:text="загрузка"/>
         <CheckBox
             android:id="@+id/rainbow_checkbox"
             android:layout_width="80dp"
-            android:layout_height="80dp"/>
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"/>
 
     <ru.yandex.yamblz.ui.views.DrawView
         android:id="@+id/draw_view"
