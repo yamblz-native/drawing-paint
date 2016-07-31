@@ -1,12 +1,16 @@
 package ru.yandex.yamblz.ui.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+
+import java.io.FileOutputStream;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import butterknife.OnClick;
 import ru.yandex.yamblz.App;
 import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.developer_settings.DeveloperSettingsModule;
