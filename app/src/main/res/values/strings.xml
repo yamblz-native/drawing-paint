@@ -1,4 +1,14 @@
 <resources>
-    <string name="app_name">Yamblz</string>
-    <string name="content">Hello</string>
+    <string name="app_name">Paint</string>
+
+    <string name="no_image">Создайте новое изображение, или загрузите существующее.</string>
+
+    <string name="new_image">Новое изображение</string>
+    <string name="save_image">Сохранить изображение</string>
+    <string name="open_image">Открыть изображение</string>
+
+    <string name="button_save">Сохранить</string>
+    <string name="button_cancel">Отмена</string>
+
+    <string name="enter_file_name">Название файла</string>
 </resources>
