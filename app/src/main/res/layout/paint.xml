@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ru.yandex.yamblz.ui.drawing.DrawerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/bottom_sheet_collapsed_height"
+        android:id="@+id/drawer"
+        android:background="@android:color/white"/>
+    <include layout="@layout/paint_toolbar"/>
+</android.support.design.widget.CoordinatorLayout>

@@ -20,6 +20,8 @@ android {
 
         // Make generated apks contain version name and code.
         archivesBaseName = "app-${versions.name}-${versions.code}"
+
+        vectorDrawables.useSupportLibrary = true
     }
 
     compileOptions {
