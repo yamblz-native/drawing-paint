@@ -27,7 +27,6 @@ import java.io.OutputStream;
 import butterknife.BindView;
 import butterknife.OnTouch;
 import ru.yandex.yamblz.R;
-import ru.yandex.yamblz.ui.activities.MainActivity;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,7 +59,6 @@ public class ContentFragment extends BaseFragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        ((MainActivity) getActivity()).setOnFileEnteredListener(this);
     }
 
     @NonNull
@@ -90,9 +88,8 @@ public class ContentFragment extends BaseFragment implements
                 break;
 
             case R.id.menu_save: {
-                ((MainActivity) getActivity()).setOnFileEnteredListener(this);
                 DialogFragment dialogFragment = new SaveFragment();
-                dialogFragment.show(getFragmentManager(), "save");
+                dialogFragment.show(getChildFragmentManager(), "save");
                 break;
             }
 
@@ -105,14 +102,13 @@ public class ContentFragment extends BaseFragment implements
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .forEach(files -> {
-                            ((MainActivity) getActivity()).setOnFilePickedListener(this);
                             DialogFragment dialogFragment = new OpenFragment();
 
                             Bundle arguments = new Bundle();
                             arguments.putStringArray(OpenFragment.ARGUMENT_FILES, files);
                             dialogFragment.setArguments(arguments);
 
-                            dialogFragment.show(getFragmentManager(), "open");
+                            dialogFragment.show(getChildFragmentManager(), "open");
                         });
                 break;
             }
@@ -141,8 +137,6 @@ public class ContentFragment extends BaseFragment implements
             loadSubscription.unsubscribe();
             loadSubscription = null;
         }
-        ((MainActivity) getActivity()).setOnFileEnteredListener(null);
-        ((MainActivity) getActivity()).setOnFilePickedListener(null);
         super.onStop();
     }
 
@@ -169,7 +163,7 @@ public class ContentFragment extends BaseFragment implements
         Observable.just(file)
                 .subscribeOn(Schedulers.io())
                 .forEach(fileName -> {
-                    fileName = fileName + ".bitmap";
+                    fileName = fileName + EXTENSION;
                     try (OutputStream out =
                                  getActivity().openFileOutput(fileName, Context.MODE_PRIVATE)) {
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);

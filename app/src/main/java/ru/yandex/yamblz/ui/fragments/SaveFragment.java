@@ -1,5 +1,6 @@
 package ru.yandex.yamblz.ui.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,8 +13,8 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.yandex.yamblz.R;
-import ru.yandex.yamblz.ui.activities.MainActivity;
 
+@SuppressWarnings("WeakerAccess")
 public class SaveFragment extends DialogFragment {
 
     @BindView(R.id.save_text_view)
@@ -22,10 +23,10 @@ public class SaveFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        OnFileEnteredListener onFileEnteredListener =
-                ((MainActivity) getActivity()).getOnFileEnteredListener();
+        OnFileEnteredListener onFileEnteredListener = (OnFileEnteredListener) getParentFragment();
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        @SuppressLint("InflateParams")
         View view = layoutInflater.inflate(R.layout.dialog_save, null);
 
         ButterKnife.bind(this, view);
@@ -42,6 +43,7 @@ public class SaveFragment extends DialogFragment {
         return builder.create();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public interface OnFileEnteredListener {
         void onFileEntered(String file);
     }

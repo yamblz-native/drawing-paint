@@ -6,8 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-import ru.yandex.yamblz.ui.activities.MainActivity;
-
+@SuppressWarnings("WeakerAccess")
 public class OpenFragment extends DialogFragment {
 
     @SuppressWarnings("WeakerAccess")
@@ -19,8 +18,7 @@ public class OpenFragment extends DialogFragment {
         String files[] = getArguments().getStringArray(ARGUMENT_FILES);
         assert files != null;
 
-        OnFilePickedListener onFilePickedListener =
-                ((MainActivity) getActivity()).getOnFilePickedListener();
+        OnFilePickedListener onFilePickedListener = (OnFilePickedListener) getParentFragment();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setItems(files, (dialog, which) -> {
@@ -32,6 +30,7 @@ public class OpenFragment extends DialogFragment {
         return builder.create();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public interface OnFilePickedListener {
         void onFilePicked(String file);
     }

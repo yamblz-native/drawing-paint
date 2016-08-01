@@ -11,8 +11,6 @@ import ru.yandex.yamblz.App;
 import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.developer_settings.DeveloperSettingsModule;
 import ru.yandex.yamblz.ui.fragments.ContentFragment;
-import ru.yandex.yamblz.ui.fragments.OpenFragment;
-import ru.yandex.yamblz.ui.fragments.SaveFragment;
 import ru.yandex.yamblz.ui.other.ViewModifier;
 
 public class MainActivity extends BaseActivity {
@@ -20,8 +18,6 @@ public class MainActivity extends BaseActivity {
     @Inject
     @Named(DeveloperSettingsModule.MAIN_ACTIVITY_VIEW_MODIFIER)
     ViewModifier viewModifier;
-    private SaveFragment.OnFileEnteredListener onFileEnteredListener;
-    private OpenFragment.OnFilePickedListener onFilePickedListener;
 
     @SuppressLint("InflateParams") // It's okay in our case.
     @Override
@@ -37,21 +33,5 @@ public class MainActivity extends BaseActivity {
                     .replace(R.id.main_frame_layout, new ContentFragment())
                     .commit();
         }
-    }
-
-    public SaveFragment.OnFileEnteredListener getOnFileEnteredListener() {
-        return onFileEnteredListener;
-    }
-
-    public void setOnFileEnteredListener(SaveFragment.OnFileEnteredListener onFileEnteredListener) {
-        this.onFileEnteredListener = onFileEnteredListener;
-    }
-
-    public OpenFragment.OnFilePickedListener getOnFilePickedListener() {
-        return onFilePickedListener;
-    }
-
-    public void setOnFilePickedListener(OpenFragment.OnFilePickedListener onFilePickedListener) {
-        this.onFilePickedListener = onFilePickedListener;
     }
 }
