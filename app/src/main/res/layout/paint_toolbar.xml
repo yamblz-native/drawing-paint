@@ -4,8 +4,8 @@
     android:id="@+id/paint_toolbar"
     android:layout_width="match_parent"
     android:layout_height="250dp"
-    android:clickable="true"
     android:background="@color/paintToolbarColor"
+    android:clickable="true"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -23,29 +23,29 @@
             android:layout_width="@dimen/paint_tool_btn_size"
             android:layout_height="@dimen/paint_tool_btn_size"
             android:scaleType="center"
-            android:src="@drawable/ic_pencil_white_24dp" />
+            android:src="@drawable/ic_pencil_grey600_24dp" />
 
         <ImageView
             android:id="@+id/brush"
             android:layout_width="@dimen/paint_tool_btn_size"
             android:layout_height="@dimen/paint_tool_btn_size"
             android:scaleType="center"
-            android:src="@drawable/ic_brush_white_24dp" />
+            android:src="@drawable/ic_brush_grey600_24dp" />
 
         <ImageView
             android:id="@+id/eraser"
             android:layout_width="@dimen/paint_tool_btn_size"
             android:layout_height="@dimen/paint_tool_btn_size"
             android:scaleType="center"
-            android:src="@drawable/ic_eraser_white_24dp" />
+            android:src="@drawable/ic_eraser_grey600_24dp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        android:clickable="true">
+        android:clickable="true"
+        android:orientation="horizontal">
 
         <!--TODO why need clickable??  Without it buttons change color wherever I click-->
         <!--TODO why need clickable?? -->
@@ -56,25 +56,25 @@
             android:id="@+id/open"
             android:layout_width="@dimen/paint_tool_btn_size"
             android:layout_height="@dimen/paint_tool_btn_size"
-            android:scaleType="center"
             android:clickable="true"
+            android:scaleType="center"
             android:src="@drawable/open" />
 
         <ImageView
             android:id="@+id/save"
             android:layout_width="@dimen/paint_tool_btn_size"
             android:layout_height="@dimen/paint_tool_btn_size"
-            android:scaleType="center"
             android:clickable="true"
+            android:scaleType="center"
             android:src="@drawable/save" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:clickable="true"
         android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:orientation="horizontal"
         android:paddingLeft="6dp"
         android:paddingStart="6dp">
 
@@ -92,5 +92,11 @@
             android:layout_gravity="center_vertical"
             android:max="50" />
     </LinearLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        app:flexWrap="wrap"
+        android:id="@+id/palette"/>
 
 </LinearLayout>

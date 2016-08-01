@@ -4,11 +4,24 @@ import android.graphics.Bitmap;
 
 public interface Drawer {
 
+    enum Tool {
+        Pencil,
+        Brush,
+        Eraser,
+        NO,
+    }
+
     /**
      * Sets stroke size
      * @param size size in px
      */
     void setSize(float size);
+
+    /**
+     * Returns current size
+     * @return size in px
+     */
+    float getSize();
 
     /**
      * Selects brush_not_active
@@ -37,6 +50,12 @@ public interface Drawer {
     void setColor(int color);
 
     /**
+     * Returns current color
+     * @return current color
+     */
+    int getColor();
+
+    /**
      * Sets source bitmap
      * @param bitmap the bitmap
      */
@@ -46,5 +65,9 @@ public interface Drawer {
      * Clears canvas
      */
     void clear();
+
+    Tool getTool();
+
+    void selectTool(Tool tool);
 
 }

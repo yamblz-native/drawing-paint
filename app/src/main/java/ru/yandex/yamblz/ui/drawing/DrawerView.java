@@ -20,16 +20,9 @@ public class DrawerView extends View implements Drawer {
     private Path mPath;
     private float mSize = 10;
     private int mColor;
-    private Tools mTool = Tools.Pencil;
+    private Tool mTool = Tool.Pencil;
 
     private float mPrevTouchX, mPrevTouchY;
-
-    enum Tools {
-        Pencil,
-        Brush,
-        Eraser,
-        NO,
-    }
 
     public DrawerView(Context context) {
         super(context);
@@ -68,10 +61,6 @@ public class DrawerView extends View implements Drawer {
 
         if(curH < h) {
             curH = h;
-        }
-
-        if(curW == 0 || curH == 0) {
-            return;
         }
 
         Bitmap newBitmap = Bitmap.createBitmap(curW, curH, Bitmap.Config.ARGB_8888);
@@ -128,14 +117,11 @@ public class DrawerView extends View implements Drawer {
     }
 
     private void drawPencil(MotionEvent event) {
-        final int historySize = event.getHistorySize();
-        for(int i = 0; i < historySize; i++) {
-            drawCircle(event.getHistoricalX(i), event.getHistoricalY(i), mSize / 2);
-        }
+        drawLine(mPrevTouchX, mPrevTouchY, event.getX(), event.getY());
     }
 
     private void drawEraser(MotionEvent event) {
-        drawCircle(event.getX(), event.getY(), mSize);
+        drawLine(mPrevTouchX, mPrevTouchY, event.getX(), event.getY());
     }
 
     private void drawCircle(float x, float y, float radius) {
@@ -152,7 +138,6 @@ public class DrawerView extends View implements Drawer {
         mPath.reset();
         mPath.moveTo(x1, y1);
         mPath.lineTo(x2, y2);
-        mPath.close();
         mCanvas.drawPath(mPath, mPaint);
         invalidate();
     }
@@ -162,39 +147,70 @@ public class DrawerView extends View implements Drawer {
     @Override
     public void setSize(float size) {
         mSize = size;
+
+        mPaint.setStrokeWidth(size / 2);
+    }
+
+    @Override
+    public float getSize() {
+        return mSize;
     }
 
     @Override
     public void brush() {
-        mTool = Tools.Brush;
+        mTool = Tool.Brush;
+
+        mPaint.reset();
+
         mPaint.setColor(mColor);
     }
 
     @Override
     public void pencil() {
-        mTool = Tools.Pencil;
+        mTool = Tool.Pencil;
+
+        mPaint.reset();
+
+        mPaint.setAntiAlias(true);
         mPaint.setColor(mColor);
+        mPaint.setStrokeWidth(mSize / 2);
+        mPaint.setStrokeJoin(Paint.Join.ROUND);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setStyle(Paint.Style.STROKE);
     }
 
     @Override
     public void eraser() {
-        mTool = Tools.Eraser;
-        mPaint.setStyle(Paint.Style.FILL);
+        mTool = Tool.Eraser;
+
+        mPaint.reset();
+
+        mPaint.setAntiAlias(true);
         mPaint.setColor(BACKGROUND_COLOR);
+        mPaint.setStrokeWidth(mSize / 2);
+        mPaint.setStrokeJoin(Paint.Join.ROUND);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setStyle(Paint.Style.STROKE);
     }
 
     @Override
     public void disable() {
-        mTool = Tools.NO;
+        mPaint.reset();
+        mTool = Tool.NO;
     }
 
     @Override
     public void setColor(int color) {
         mColor = color;
 
-        if(mTool != Tools.Eraser) {
+        if(mTool != Tool.Eraser) {
             mPaint.setColor(mColor);
         }
+    }
+
+    @Override
+    public int getColor() {
+        return mColor;
     }
 
     @Override
@@ -205,5 +221,28 @@ public class DrawerView extends View implements Drawer {
     @Override
     public void clear() {
 
+    }
+
+    @Override
+    public Tool getTool() {
+        return mTool;
+    }
+
+    @Override
+    public void selectTool(Tool tool) {
+        switch (tool) {
+            case Pencil:
+                pencil();
+                break;
+            case Brush:
+                brush();
+                break;
+            case Eraser:
+                eraser();
+                break;
+            case NO:
+                disable();
+                break;
+        }
     }
 }
