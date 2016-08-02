@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_paint"
+        android:icon="@drawable/ic_brush_24dp"
+        android:title="@string/instrument"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_new"
         android:title="@string/new_image"
         app:showAsAction="never" />

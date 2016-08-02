@@ -3,12 +3,14 @@
 
     <string name="no_image">Создайте новое изображение, или загрузите существующее.</string>
 
+    <string name="instrument">Инструмент</string>
     <string name="new_image">Новое изображение</string>
     <string name="save_image">Сохранить изображение</string>
     <string name="open_image">Открыть изображение</string>
 
     <string name="button_save">Сохранить</string>
     <string name="button_cancel">Отмена</string>
+    <string name="button_ok">Закрыть</string>
 
     <string name="enter_file_name">Название файла</string>
 </resources>

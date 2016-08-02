@@ -36,7 +36,8 @@ import solid.stream.Stream;
 
 public class ContentFragment extends BaseFragment implements
         SaveFragment.OnFileEnteredListener,
-        OpenFragment.OnFilePickedListener {
+        OpenFragment.OnFilePickedListener,
+        PaintFragment.OnSizeChangedListener {
 
     private static final String EXTENSION = ".bitmap";
     @BindView(R.id.no_image_text)
@@ -48,17 +49,16 @@ public class ContentFragment extends BaseFragment implements
     private Subscription loadSubscription;
     private MenuItem saveItem;
     private float lastX, lastY;
-    private Paint paint = new Paint(); // TODO lol
-
-    {
-        paint.setStrokeWidth(60);
-        paint.setStrokeCap(Paint.Cap.ROUND);
-    }
+    private Paint paint = new Paint();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        paint.setStrokeWidth(60);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setAntiAlias(true);
     }
 
     @NonNull
@@ -77,6 +77,18 @@ public class ContentFragment extends BaseFragment implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_paint: {
+                Bundle arguments = new Bundle();
+                arguments.putInt(PaintFragment.MIN_VALUE, image.getWidth() / 100);
+                arguments.putInt(PaintFragment.MAX_VALUE, image.getWidth() / 5);
+                arguments.putInt(PaintFragment.DEFAULT_VALUE, (int) paint.getStrokeWidth());
+
+                DialogFragment dialogFragment = new PaintFragment();
+                dialogFragment.setArguments(arguments);
+                dialogFragment.show(getChildFragmentManager(), "save");
+                break;
+            }
+
             case R.id.menu_new:
                 loadSubscription = Observable
                         .fromCallable(() -> Bitmap.createBitmap(
@@ -148,7 +160,7 @@ public class ContentFragment extends BaseFragment implements
                 break;
 
             case MotionEvent.ACTION_DOWN:
-                canvas.drawCircle(event.getX(), event.getY(), 30, new Paint());
+                canvas.drawCircle(event.getX(), event.getY(), paint.getStrokeWidth() / 2, paint);
                 break;
         }
         lastX = event.getX();
@@ -187,5 +199,16 @@ public class ContentFragment extends BaseFragment implements
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onBitmapLoaded);
+    }
+
+    @Override
+    public Paint getPaint() {
+        return paint;
+    }
+
+    @Override
+    public Paint onSizeChanged(int newSize) {
+        paint.setStrokeWidth(newSize);
+        return paint;
     }
 }
