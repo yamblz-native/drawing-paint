@@ -1,4 +1,4 @@
-# drawing-paint
+# drawing-displayPaint
 Домашнее задание по Drawing секции
 
 Написать простую рисовалку (как Paint). Интерфейс - на свое усмотрение!

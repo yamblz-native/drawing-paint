@@ -1,19 +1,23 @@
-package ru.yandex.yamblz.ui.fragments;
+package ru.yandex.yamblz.ui.fragments.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 
 import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import ru.yandex.yamblz.R;
+import ru.yandex.yamblz.ui.fragments.brush.Brush;
+import ru.yandex.yamblz.ui.fragments.brush.Line;
+import ru.yandex.yamblz.ui.fragments.brush.Pencil;
 
 public class PaintFragment extends DialogFragment {
 
@@ -26,6 +30,11 @@ public class PaintFragment extends DialogFragment {
     @BindView(R.id.paint_size_seek_bar)
     SeekBar seekBar;
 
+    @BindViews({R.id.paint_pencil, R.id.paint_line})
+    Button brushButtons[];
+
+    private Brush brushes[] = new Brush[]{new Pencil(), new Line()};
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -34,21 +43,22 @@ public class PaintFragment extends DialogFragment {
         View view = layoutInflater.inflate(R.layout.dialog_paint, null);
         ButterKnife.bind(this, view);
 
-        OnSizeChangeListener onSizeChangeListener = (OnSizeChangeListener) getParentFragment();
+        OnPaintChangeListener onPaintChangeListener = (OnPaintChangeListener) getParentFragment();
 
         Bundle arguments = getArguments();
         final int minValue = arguments.getInt(MIN_VALUE);
         final int maxValue = arguments.getInt(MAX_VALUE);
         final int defaultValue = arguments.getInt(DEFAULT_VALUE);
 
-        imageView.setPaint(onSizeChangeListener.getPaint());
+        imageView.setPaint(onPaintChangeListener.getPaint());
 
         seekBar.setMax(maxValue - minValue);
         seekBar.setProgress(defaultValue - minValue);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                imageView.setPaint(onSizeChangeListener.onSizeChanged(progress + minValue));
+                onPaintChangeListener.onSizeChanged(progress + minValue);
+                imageView.setPaint(onPaintChangeListener.getPaint());
                 imageView.invalidate();
             }
 
@@ -61,6 +71,22 @@ public class PaintFragment extends DialogFragment {
             }
         });
 
+        for (int i = 0; i < brushButtons.length; ++i) {
+            if (onPaintChangeListener.getCurrentBrush().getId() == brushes[i].getId()) {
+                brushButtons[i].setEnabled(false);
+            }
+
+            final int closureI = i;
+
+            brushButtons[closureI].setOnClickListener(v -> {
+                for (Button button : brushButtons) {
+                    button.setEnabled(true);
+                }
+                brushButtons[closureI].setEnabled(false);
+                onPaintChangeListener.onBrushChanged(brushes[closureI]);
+            });
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
         builder.setPositiveButton(getString(R.string.button_ok), null);
@@ -68,7 +94,11 @@ public class PaintFragment extends DialogFragment {
         return builder.create();
     }
 
-    public interface OnSizeChangeListener extends PaintProvider {
-        Paint onSizeChanged(int newSize);
+    public interface OnPaintChangeListener extends PaintProvider {
+        void onSizeChanged(int newSize);
+
+        Brush getCurrentBrush();
+
+        void onBrushChanged(Brush newBrush);
     }
 }

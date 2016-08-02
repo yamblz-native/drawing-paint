@@ -1,4 +1,4 @@
-package ru.yandex.yamblz.ui.fragments;
+package ru.yandex.yamblz.ui.fragments.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;

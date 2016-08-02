@@ -5,17 +5,45 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ru.yandex.yamblz.ui.fragments.PaintImageView
+    <ru.yandex.yamblz.ui.fragments.dialogs.PaintImageView
         android:id="@+id/paint_size_image_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_gravity="center"
+        android:layout_margin="16dp"
         tools:ignore="ContentDescription" />
 
     <SeekBar
         android:id="@+id/paint_size_seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp" />
+        android:orientation="horizontal" />
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp">
+
+        <Button
+            android:id="@+id/paint_pencil"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tool_pencil" />
+
+        <Button
+            android:id="@+id/paint_line"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/tool_line" />
+
+    </LinearLayout>
 
 </LinearLayout>

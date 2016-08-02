@@ -1,4 +1,4 @@
-package ru.yandex.yamblz.ui.fragments;
+package ru.yandex.yamblz.ui.fragments.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -44,17 +44,17 @@ public class ColorFragment extends DialogFragment {
         onColorChangeListener = (OnColorChangeListener) getParentFragment();
 
         imageView.setOnClickListener(v -> {
-            Paint paint = onColorChangeListener
-                    .onColorChanged(PaintImageView.invertColor(composeColor()));
-            setPaint(paint);
-            setSeekBars(paint.getColor());
+            onColorChangeListener.onColorChanged(PaintImageView.invertColor(composeColor()));
+            setPaint();
+            setSeekBars(onColorChangeListener.getPaint().getColor());
         });
         for (SeekBar seekBar : seekBars) {
             seekBar.setMax(0xFF);
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar ignored, int progress, boolean fromUser) {
-                    setPaint(onColorChangeListener.onColorChanged(composeColor()));
+                    onColorChangeListener.onColorChanged(composeColor());
+                    setPaint();
                     imageView.invalidate();
                 }
 
@@ -69,7 +69,7 @@ public class ColorFragment extends DialogFragment {
         }
 
         final Paint paint = onColorChangeListener.getPaint();
-        setPaint(paint);
+        setPaint();
         setSeekBars(paint.getColor());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -90,13 +90,14 @@ public class ColorFragment extends DialogFragment {
                            @SuppressWarnings("UnusedParameters") KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
             try {
-                int color = Integer.parseInt(editText.getText().toString(), 16) | 0xFF000000;
+                int color = Integer.parseInt(editText.getText().toString(), 16);
                 setSeekBars(color);
-                setPaint(onColorChangeListener.onColorChanged(composeColor()));
+                onColorChangeListener.onColorChanged(composeColor());
+                setPaint();
             } catch (NumberFormatException e) {
                 Toast.makeText(getContext(), R.string.incorrect_color, Toast.LENGTH_SHORT)
                         .show();
-                setPaint(onColorChangeListener.getPaint());
+                setPaint();
             }
         }
         return false;
@@ -107,15 +108,16 @@ public class ColorFragment extends DialogFragment {
         return (color & mask) >>> ((3 - i) * 8);
     }
 
-    private void setPaint(Paint paint) {
-        imageView.setPaint(onColorChangeListener.getPaint());
+    private void setPaint() {
+        Paint paint = onColorChangeListener.getPaint();
+        imageView.setPaint(paint);
 
         int color = paint.getColor();
-        setEditText(color & 0x00FFFFFF);
+        setEditText(color);
     }
 
     private void setEditText(int color) {
-        editText.setText(String.format("%06X", color));
+        editText.setText(String.format("%08X", color));
     }
 
     private void setSeekBars(int color) {
@@ -135,7 +137,7 @@ public class ColorFragment extends DialogFragment {
     }
 
     public interface OnColorChangeListener extends PaintProvider {
-        Paint onColorChanged(int newColor);
+        void onColorChanged(int newColor);
 
         void onEyeDropperRequested();
     }

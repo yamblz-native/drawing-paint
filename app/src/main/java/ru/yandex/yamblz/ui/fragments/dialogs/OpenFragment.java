@@ -1,4 +1,4 @@
-package ru.yandex.yamblz.ui.fragments;
+package ru.yandex.yamblz.ui.fragments.dialogs;
 
 import android.app.Dialog;
 import android.os.Bundle;

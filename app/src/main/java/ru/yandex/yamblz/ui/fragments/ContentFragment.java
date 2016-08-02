@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.FileInputStream;
@@ -28,6 +27,12 @@ import java.io.OutputStream;
 
 import butterknife.BindView;
 import ru.yandex.yamblz.R;
+import ru.yandex.yamblz.ui.fragments.brush.Brush;
+import ru.yandex.yamblz.ui.fragments.brush.Pencil;
+import ru.yandex.yamblz.ui.fragments.dialogs.ColorFragment;
+import ru.yandex.yamblz.ui.fragments.dialogs.OpenFragment;
+import ru.yandex.yamblz.ui.fragments.dialogs.PaintFragment;
+import ru.yandex.yamblz.ui.fragments.dialogs.SaveFragment;
 import ru.yandex.yamblz.ui.other.Cat;
 import rx.Observable;
 import rx.Subscription;
@@ -39,41 +44,49 @@ import solid.stream.Stream;
 public class ContentFragment extends BaseFragment implements
         SaveFragment.OnFileEnteredListener,
         OpenFragment.OnFilePickedListener,
-        PaintFragment.OnSizeChangeListener,
-        ColorFragment.OnColorChangeListener {
+        PaintFragment.OnPaintChangeListener,
+        ColorFragment.OnColorChangeListener,
+        DrawView.TmpDrawer {
 
     private static final String EXTENSION = ".bitmap";
+
     @BindView(R.id.no_image_text)
     TextView noImageTextView;
     @BindView(R.id.user_image)
-    ImageView image;
+    DrawView drawView;
+    private MenuItem saveItem;
+
+    private Subscription loadSubscription;
+
     private Bitmap bitmap;
     private Canvas canvas;
-    private Subscription loadSubscription;
-    private MenuItem saveItem;
-    private float lastX, lastY;
     private Paint paint = new Paint();
+    private Brush brush;
 
     private View.OnTouchListener drawListener = (view, event) -> {
         switch (event.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                canvas.drawLine(lastX, lastY, event.getX(), event.getY(), paint);
+            case MotionEvent.ACTION_DOWN:
+                brush.start(event);
                 break;
 
-            case MotionEvent.ACTION_DOWN:
-                canvas.drawCircle(event.getX(), event.getY(), paint.getStrokeWidth() / 2, paint);
+            case MotionEvent.ACTION_MOVE:
+                brush.move(event);
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                brush.draw(drawView.getCanvas());
+                brush.finish(event);
                 break;
         }
-        lastX = event.getX();
-        lastY = event.getY();
 
-        image.invalidate();
+        drawView.invalidate();
         return true;
     };
 
     private View.OnTouchListener eyeDropperListener = (view, event) -> {
         paint.setColor(bitmap.getPixel((int) event.getX(), (int) event.getY()));
-        image.setOnTouchListener(drawListener);
+        drawView.setOnTouchListener(drawListener);
         DialogFragment dialogFragment = new ColorFragment();
         dialogFragment.show(getChildFragmentManager(), "color");
         return false;
@@ -86,7 +99,12 @@ public class ContentFragment extends BaseFragment implements
 
         paint.setStrokeWidth(60);
         paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setAntiAlias(true);
+
+        brush = new Pencil();
+        brush.setPaint(paint);
     }
 
     @NonNull
@@ -99,7 +117,8 @@ public class ContentFragment extends BaseFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        image.setOnTouchListener(drawListener);
+        drawView.setOnTouchListener(drawListener);
+        drawView.setTmpDrawer(this);
     }
 
     @Override
@@ -113,8 +132,8 @@ public class ContentFragment extends BaseFragment implements
         switch (item.getItemId()) {
             case R.id.menu_paint: {
                 Bundle arguments = new Bundle();
-                arguments.putInt(PaintFragment.MIN_VALUE, image.getWidth() / 100);
-                arguments.putInt(PaintFragment.MAX_VALUE, image.getWidth() / 3);
+                arguments.putInt(PaintFragment.MIN_VALUE, drawView.getWidth() / 100);
+                arguments.putInt(PaintFragment.MAX_VALUE, drawView.getWidth() / 3);
                 arguments.putInt(PaintFragment.DEFAULT_VALUE, (int) paint.getStrokeWidth());
 
                 DialogFragment dialogFragment = new PaintFragment();
@@ -136,7 +155,7 @@ public class ContentFragment extends BaseFragment implements
                 loadSubscription = Observable
                         .fromCallable(() -> {
                             Bitmap bitmap = Bitmap.createBitmap(
-                                    image.getWidth(), image.getHeight(),
+                                    drawView.getWidth(), drawView.getHeight(),
                                     Bitmap.Config.ARGB_8888);
                             bitmap.eraseColor(Color.WHITE);
                             canvas = new Canvas(bitmap);
@@ -186,10 +205,10 @@ public class ContentFragment extends BaseFragment implements
     private void onBitmapLoaded(Bitmap bitmap) {
         loadSubscription = null;
         this.bitmap = bitmap;
-        image.setImageBitmap(bitmap);
+        drawView.setImageBitmap(bitmap);
 
         noImageTextView.setVisibility(View.INVISIBLE);
-        image.setVisibility(View.VISIBLE);
+        drawView.setVisibility(View.VISIBLE);
         saveItem.setEnabled(true);
     }
 
@@ -239,19 +258,33 @@ public class ContentFragment extends BaseFragment implements
     }
 
     @Override
-    public Paint onSizeChanged(int newSize) {
+    public void onSizeChanged(int newSize) {
         paint.setStrokeWidth(newSize);
-        return paint;
     }
 
     @Override
-    public Paint onColorChanged(int newColor) {
+    public Brush getCurrentBrush() {
+        return brush;
+    }
+
+    @Override
+    public void onBrushChanged(Brush newBrush) {
+        brush = newBrush;
+        brush.setPaint(paint);
+    }
+
+    @Override
+    public void onColorChanged(int newColor) {
         paint.setColor(newColor);
-        return getPaint();
     }
 
     @Override
     public void onEyeDropperRequested() {
-        image.setOnTouchListener(eyeDropperListener);
+        drawView.setOnTouchListener(eyeDropperListener);
+    }
+
+    @Override
+    public void drawTmp(Canvas canvas) {
+        brush.draw(canvas);
     }
 }

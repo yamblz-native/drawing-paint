@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ru.yandex.yamblz.ui.fragments.PaintImageView
+    <ru.yandex.yamblz.ui.fragments.dialogs.PaintImageView
         android:id="@+id/paint_color_image_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -37,7 +37,7 @@
             android:fontFamily="monospace"
             android:imeOptions="actionDone"
             android:inputType="textNoSuggestions"
-            android:maxLength="6"
+            android:maxLength="8"
             android:maxLines="1"
             tools:ignore="LabelFor,RtlHardcoded" />
     </FrameLayout>
@@ -53,14 +53,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/alpha"
-            android:visibility="gone"
             app:layout_gravity="center_vertical" />
 
         <SeekBar
             android:id="@+id/paint_alpha_seek_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:layout_columnWeight="1" />
 
         <TextView
