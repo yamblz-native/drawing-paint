@@ -5,9 +5,9 @@ import android.graphics.Bitmap;
 public interface Drawer {
 
     enum Tool {
-        Pencil,
-        Brush,
-        Eraser,
+        PENCIL,
+        BRUSH,
+        ERASER,
         NO,
     }
 
@@ -51,7 +51,7 @@ public interface Drawer {
 
     /**
      * Returns current color
-     * @return current color
+     * @return current color, or 0 if no color set
      */
     int getColor();
 
@@ -61,10 +61,12 @@ public interface Drawer {
      */
     void setBitmap(Bitmap bitmap);
 
+    Bitmap getBitmap();
+
     /**
-     * Clears canvas
+     * Cleans canvas
      */
-    void clear();
+    void clean();
 
     Tool getTool();
 

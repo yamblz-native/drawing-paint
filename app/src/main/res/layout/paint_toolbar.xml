@@ -38,6 +38,13 @@
             android:layout_height="@dimen/paint_tool_btn_size"
             android:scaleType="center"
             android:src="@drawable/ic_eraser_grey600_24dp" />
+
+        <ImageView
+            android:id="@+id/clean"
+            android:layout_width="@dimen/paint_tool_btn_size"
+            android:layout_height="@dimen/paint_tool_btn_size"
+            android:scaleType="center"
+            android:src="@drawable/clean" />
     </LinearLayout>
 
     <LinearLayout

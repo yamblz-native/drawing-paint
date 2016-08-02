@@ -20,7 +20,7 @@ public class DrawerView extends View implements Drawer {
     private Path mPath;
     private float mSize = 10;
     private int mColor;
-    private Tool mTool = Tool.Pencil;
+    private Tool mTool = Tool.PENCIL;
 
     private float mPrevTouchX, mPrevTouchY;
 
@@ -63,7 +63,13 @@ public class DrawerView extends View implements Drawer {
             curH = h;
         }
 
+        if(curW == 0 || curH == 0) {
+            return;
+        }
+
         Bitmap newBitmap = Bitmap.createBitmap(curW, curH, Bitmap.Config.ARGB_8888);
+        newBitmap.eraseColor(BACKGROUND_COLOR);
+
         Canvas newCanvas = new Canvas();
         newCanvas.setBitmap(newBitmap);
         if(mBitmap != null) {
@@ -104,15 +110,14 @@ public class DrawerView extends View implements Drawer {
 
     private void handleTouch(MotionEvent event) {
         switch (mTool) {
-            case Pencil:
+            case PENCIL:
                 drawPencil(event);
                 break;
-            case Brush:
+            case BRUSH:
                 break;
-            case Eraser:
+            case ERASER:
                 drawEraser(event);
                 break;
-
         }
     }
 
@@ -158,7 +163,7 @@ public class DrawerView extends View implements Drawer {
 
     @Override
     public void brush() {
-        mTool = Tool.Brush;
+        mTool = Tool.BRUSH;
 
         mPaint.reset();
 
@@ -167,7 +172,7 @@ public class DrawerView extends View implements Drawer {
 
     @Override
     public void pencil() {
-        mTool = Tool.Pencil;
+        mTool = Tool.PENCIL;
 
         mPaint.reset();
 
@@ -181,7 +186,7 @@ public class DrawerView extends View implements Drawer {
 
     @Override
     public void eraser() {
-        mTool = Tool.Eraser;
+        mTool = Tool.ERASER;
 
         mPaint.reset();
 
@@ -202,11 +207,14 @@ public class DrawerView extends View implements Drawer {
     @Override
     public void setColor(int color) {
         mColor = color;
-
-        if(mTool != Tool.Eraser) {
+        if(mColor == 0) {
+            return;
+        }
+        if(mTool != Tool.ERASER) {
             mPaint.setColor(mColor);
         }
     }
+
 
     @Override
     public int getColor() {
@@ -215,12 +223,19 @@ public class DrawerView extends View implements Drawer {
 
     @Override
     public void setBitmap(Bitmap bitmap) {
-
+        mCanvas.drawBitmap(bitmap, 0, 0, null);
     }
 
     @Override
-    public void clear() {
+    public Bitmap getBitmap() {
+        return mBitmap;
+    }
 
+    @Override
+    public void clean() {
+        mBitmap.eraseColor(BACKGROUND_COLOR);
+
+        invalidate();
     }
 
     @Override
@@ -231,13 +246,13 @@ public class DrawerView extends View implements Drawer {
     @Override
     public void selectTool(Tool tool) {
         switch (tool) {
-            case Pencil:
+            case PENCIL:
                 pencil();
                 break;
-            case Brush:
+            case BRUSH:
                 brush();
                 break;
-            case Eraser:
+            case ERASER:
                 eraser();
                 break;
             case NO:
