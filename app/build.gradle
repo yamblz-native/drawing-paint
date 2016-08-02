@@ -97,6 +97,8 @@ dependencies {
     apt libraries.butterKnifeCompiler
 
     compile libraries.timber
+    compile libraries.spectrum
+    compile libraries.mdColors
 
     // Developer tools (Developer Settings)
     compile libraries.stetho
