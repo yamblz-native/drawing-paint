@@ -45,6 +45,13 @@
             android:layout_height="@dimen/paint_tool_btn_size"
             android:scaleType="center"
             android:src="@drawable/clean" />
+
+        <ImageView
+            android:id="@+id/filter"
+            android:layout_width="@dimen/paint_tool_btn_size"
+            android:layout_height="@dimen/paint_tool_btn_size"
+            android:scaleType="center"
+            android:src="@drawable/filter" />
     </LinearLayout>
 
     <LinearLayout

@@ -4,11 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.google.android.flexbox.FlexboxLayout;
 
 public class DrawerView extends View implements Drawer {
 
@@ -16,6 +20,7 @@ public class DrawerView extends View implements Drawer {
 
     private Bitmap mBitmap;
     private Paint mPaint;
+    private Paint mFilterPaint;
     private Canvas mCanvas;
     private Path mPath;
     private float mSize = 10;
@@ -23,6 +28,8 @@ public class DrawerView extends View implements Drawer {
     private Tool mTool = Tool.PENCIL;
 
     private float mPrevTouchX, mPrevTouchY;
+
+    private ColorMatrixColorFilter mGrayscaleFilter, mSepiaFilter, mBinaryFilter, mInvertFilter;
 
     public DrawerView(Context context) {
         super(context);
@@ -41,9 +48,59 @@ public class DrawerView extends View implements Drawer {
 
     private void init() {
         mPaint = new Paint();
+        mFilterPaint = new Paint();
         mPath = new Path();
 
+        initFilters();
         pencil();
+    }
+
+    private void initFilters() {
+        mGrayscaleFilter = getGrayscaleFilter();
+        mSepiaFilter = getSepiaFilter();
+        mBinaryFilter = getBinaryFilter();
+        mInvertFilter = getInvertFilter();
+    }
+
+    private ColorMatrixColorFilter getGrayscaleFilter() {
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0);
+        return new ColorMatrixColorFilter(colorMatrix);
+    }
+
+    private ColorMatrixColorFilter getSepiaFilter() {
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0);
+
+        ColorMatrix colorScale = new ColorMatrix();
+        colorScale.setScale(1, 1, 0.8f, 1);
+        colorMatrix.postConcat(colorScale);
+        return new ColorMatrixColorFilter(colorMatrix);
+    }
+
+    private ColorMatrixColorFilter getBinaryFilter() {
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0);
+
+        final float m = 255f;
+        final float t = -255 * 128f;
+        ColorMatrix threshold = new ColorMatrix(new float[] {
+                m, 0, 0, 1, t,
+                0, m, 0, 1, t,
+                0, 0, m, 1, t,
+                0, 0, 0, 1, 0
+        });
+        colorMatrix.postConcat(threshold);
+        return new ColorMatrixColorFilter(colorMatrix);
+    }
+
+    private ColorMatrixColorFilter getInvertFilter() {
+        return new ColorMatrixColorFilter(new ColorMatrix(new float[] {
+                -1,  0,  0,  0, 255,
+                0, -1,  0,  0, 255,
+                0,  0, -1,  0, 255,
+                0,  0,  0,  1,   0
+        }));
     }
 
     @Override
@@ -259,5 +316,33 @@ public class DrawerView extends View implements Drawer {
                 disable();
                 break;
         }
+    }
+
+    @Override
+    public void filter(Filter filter) {
+        ColorMatrixColorFilter colorFilter = null;
+        switch (filter) {
+            case GRAYSCALE:
+                colorFilter = mGrayscaleFilter;
+                break;
+            case SEPIA:
+                colorFilter = mSepiaFilter;
+                break;
+            case BINARY:
+                colorFilter = mBinaryFilter;
+                break;
+            case INVERT:
+                colorFilter = mInvertFilter;
+                break;
+        }
+
+        mFilterPaint.reset();
+        mFilterPaint.setColorFilter(colorFilter);
+
+        Bitmap bitmap = Bitmap.createBitmap(mBitmap.getWidth(), mBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        mCanvas.setBitmap(bitmap);
+        mCanvas.drawBitmap(mBitmap, 0, 0, mFilterPaint);
+        mBitmap = bitmap;
+        invalidate();
     }
 }

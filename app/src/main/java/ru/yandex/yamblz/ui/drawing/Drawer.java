@@ -11,6 +11,32 @@ public interface Drawer {
         NO,
     }
 
+    enum Filter {
+        GRAYSCALE("grayscale"),
+        SEPIA("sepia"),
+        BINARY("binary"),
+        INVERT("invert");
+
+        String mName;
+
+        Filter(String name) {
+            mName = name;
+        }
+
+        public String getName() {
+            return mName;
+        }
+
+        public static String[] getFilterNames() {
+            String[] names = new String[values().length];
+            int iter = 0;
+            for(Filter filter : values()) {
+                names[iter++] = filter.getName();
+            }
+            return names;
+        }
+    }
+
     /**
      * Sets stroke size
      * @param size size in px
@@ -71,5 +97,7 @@ public interface Drawer {
     Tool getTool();
 
     void selectTool(Tool tool);
+
+    void filter(Filter filter);
 
 }

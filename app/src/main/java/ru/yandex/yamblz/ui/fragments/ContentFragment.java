@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -40,6 +41,8 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     private static final int SAVE_FILE_DIALOG_ID = 1;
 
     private static final int OPEN_FILE_DIALOG_ID = 2;
+
+    private static final int FILTER_DIALOG_ID = 3;
 
     @BindView(R.id.drawer)
     DrawerView drawerView;
@@ -172,11 +175,15 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         }
     };
 
-    @OnClick({R.id.eraser, R.id.brush, R.id.pencil, R.id.clean})
+    @OnClick({R.id.eraser, R.id.brush, R.id.pencil, R.id.clean, R.id.filter})
     void onToolClick(View view) {
         final int id = view.getId();
         if(id == R.id.clean) {
             drawerView.clean();
+            return;
+        }
+        if(id == R.id.filter) {
+            showFilterDialog();
             return;
         }
         if(mSelectedTool == id) {
@@ -189,6 +196,12 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
             selectTool(id);
             mSelectedTool = id;
         }
+    }
+
+    private void showFilterDialog() {
+        ListDialog listDialog = ListDialog.newInstance(getString(R.string.filter), null,
+                Drawer.Filter.getFilterNames(), null, null, getString(R.string.cancel), true, FILTER_DIALOG_ID);
+        listDialog.show(getChildFragmentManager(), "tag");
     }
 
     @OnClick(R.id.paint_toolbar)
@@ -278,6 +291,13 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
                         new FileInputStream(getContext().getFilesDir() + "/" + value)));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
+            }
+        } else if(id == FILTER_DIALOG_ID) {
+            for(Drawer.Filter filter : Drawer.Filter.values()) {
+                if(filter.getName().equals(value)) {
+                    drawerView.filter(filter);
+                    break;
+                }
             }
         }
     }
