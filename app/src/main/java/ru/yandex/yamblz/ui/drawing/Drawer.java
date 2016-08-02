@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 public interface Drawer {
 
     enum Tool {
-        PENCIL,
         BRUSH,
         ERASER,
         NO,
@@ -49,20 +48,9 @@ public interface Drawer {
      */
     float getSize();
 
-    /**
-     * Selects brush_not_active
-     */
-    void brush();
+    void selectTool(Tool tool);
 
-    /**
-     * Selects pencil;
-     */
-    void pencil();
-
-    /**
-     * Selects eraser
-     */
-    void eraser();
+    Tool getTool();
 
     /**
      * Disable drawing
@@ -93,10 +81,6 @@ public interface Drawer {
      * Cleans canvas
      */
     void clean();
-
-    Tool getTool();
-
-    void selectTool(Tool tool);
 
     void filter(Filter filter);
 

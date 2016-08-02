@@ -104,7 +104,6 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     }
 
     private void initMaps() {
-        mTool2id.put(Drawer.Tool.PENCIL, R.id.pencil);
         mTool2id.put(Drawer.Tool.BRUSH, R.id.brush);
         mTool2id.put(Drawer.Tool.ERASER, R.id.eraser);
 
@@ -175,7 +174,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         }
     };
 
-    @OnClick({R.id.eraser, R.id.brush, R.id.pencil, R.id.clean, R.id.filter})
+    @OnClick({R.id.eraser, R.id.brush, R.id.clean, R.id.filter})
     void onToolClick(View view) {
         final int id = view.getId();
         if(id == R.id.clean) {
@@ -219,9 +218,6 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         }
         int icon = -1;
         switch (id) {
-            case R.id.pencil:
-                icon = (!active ? R.drawable.ic_pencil_grey600_24dp : R.drawable.ic_pencil_white_24dp);
-                break;
             case R.id.brush:
                 icon = (!active ? R.drawable.ic_brush_grey600_24dp : R.drawable.ic_brush_white_24dp);
                 break;

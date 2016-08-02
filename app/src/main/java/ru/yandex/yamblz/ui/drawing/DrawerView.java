@@ -12,8 +12,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.google.android.flexbox.FlexboxLayout;
-
 public class DrawerView extends View implements Drawer {
 
     private static final int BACKGROUND_COLOR = Color.WHITE;
@@ -25,7 +23,7 @@ public class DrawerView extends View implements Drawer {
     private Path mPath;
     private float mSize = 10;
     private int mColor;
-    private Tool mTool = Tool.PENCIL;
+    private Tool mTool = Tool.BRUSH;
 
     private float mPrevTouchX, mPrevTouchY;
 
@@ -52,7 +50,7 @@ public class DrawerView extends View implements Drawer {
         mPath = new Path();
 
         initFilters();
-        pencil();
+        brush();
     }
 
     private void initFilters() {
@@ -167,10 +165,8 @@ public class DrawerView extends View implements Drawer {
 
     private void handleTouch(MotionEvent event) {
         switch (mTool) {
-            case PENCIL:
-                drawPencil(event);
-                break;
             case BRUSH:
+                drawBrush(event);
                 break;
             case ERASER:
                 drawEraser(event);
@@ -178,7 +174,7 @@ public class DrawerView extends View implements Drawer {
         }
     }
 
-    private void drawPencil(MotionEvent event) {
+    private void drawBrush(MotionEvent event) {
         drawLine(mPrevTouchX, mPrevTouchY, event.getX(), event.getY());
     }
 
@@ -218,18 +214,8 @@ public class DrawerView extends View implements Drawer {
         return mSize;
     }
 
-    @Override
-    public void brush() {
+    private void brush() {
         mTool = Tool.BRUSH;
-
-        mPaint.reset();
-
-        mPaint.setColor(mColor);
-    }
-
-    @Override
-    public void pencil() {
-        mTool = Tool.PENCIL;
 
         mPaint.reset();
 
@@ -241,8 +227,7 @@ public class DrawerView extends View implements Drawer {
         mPaint.setStyle(Paint.Style.STROKE);
     }
 
-    @Override
-    public void eraser() {
+    private void eraser() {
         mTool = Tool.ERASER;
 
         mPaint.reset();
@@ -303,9 +288,6 @@ public class DrawerView extends View implements Drawer {
     @Override
     public void selectTool(Tool tool) {
         switch (tool) {
-            case PENCIL:
-                pencil();
-                break;
             case BRUSH:
                 brush();
                 break;
