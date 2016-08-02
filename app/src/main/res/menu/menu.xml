@@ -9,6 +9,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/menu_color"
+        android:icon="@drawable/ic_color_lens_24dp"
+        android:title="@string/color"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_new"
         android:title="@string/new_image"
         app:showAsAction="never" />

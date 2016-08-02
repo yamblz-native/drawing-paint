@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
@@ -35,22 +34,21 @@ public class PaintFragment extends DialogFragment {
         View view = layoutInflater.inflate(R.layout.dialog_paint, null);
         ButterKnife.bind(this, view);
 
-        OnSizeChangedListener onSizeChangedListener = (OnSizeChangedListener) getParentFragment();
+        OnSizeChangeListener onSizeChangeListener = (OnSizeChangeListener) getParentFragment();
 
         Bundle arguments = getArguments();
         final int minValue = arguments.getInt(MIN_VALUE);
         final int maxValue = arguments.getInt(MAX_VALUE);
         final int defaultValue = arguments.getInt(DEFAULT_VALUE);
 
-        imageView.setPaint(onSizeChangedListener.getPaint());
+        imageView.setPaint(onSizeChangeListener.getPaint());
 
         seekBar.setMax(maxValue - minValue);
         seekBar.setProgress(defaultValue - minValue);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Log.d("qq", "" + progress);
-                imageView.setPaint(onSizeChangedListener.onSizeChanged(progress + minValue));
+                imageView.setPaint(onSizeChangeListener.onSizeChanged(progress + minValue));
                 imageView.invalidate();
             }
 
@@ -70,9 +68,7 @@ public class PaintFragment extends DialogFragment {
         return builder.create();
     }
 
-    public interface OnSizeChangedListener {
-        Paint getPaint();
-
+    public interface OnSizeChangeListener extends PaintProvider {
         Paint onSizeChanged(int newSize);
     }
 }

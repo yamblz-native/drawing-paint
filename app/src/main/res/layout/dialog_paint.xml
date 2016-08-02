@@ -7,7 +7,7 @@
 
     <ru.yandex.yamblz.ui.fragments.PaintImageView
         android:id="@+id/paint_size_image_view"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_gravity="center"
         tools:ignore="ContentDescription" />

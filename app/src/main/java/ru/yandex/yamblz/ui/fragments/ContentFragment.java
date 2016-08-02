@@ -37,7 +37,8 @@ import solid.stream.Stream;
 public class ContentFragment extends BaseFragment implements
         SaveFragment.OnFileEnteredListener,
         OpenFragment.OnFilePickedListener,
-        PaintFragment.OnSizeChangedListener {
+        PaintFragment.OnSizeChangeListener,
+        ColorFragment.OnColorChangeListener {
 
     private static final String EXTENSION = ".bitmap";
     @BindView(R.id.no_image_text)
@@ -85,7 +86,13 @@ public class ContentFragment extends BaseFragment implements
 
                 DialogFragment dialogFragment = new PaintFragment();
                 dialogFragment.setArguments(arguments);
-                dialogFragment.show(getChildFragmentManager(), "save");
+                dialogFragment.show(getChildFragmentManager(), "paint");
+                break;
+            }
+
+            case R.id.menu_color: {
+                DialogFragment dialogFragment = new ColorFragment();
+                dialogFragment.show(getChildFragmentManager(), "color");
                 break;
             }
 
@@ -210,5 +217,11 @@ public class ContentFragment extends BaseFragment implements
     public Paint onSizeChanged(int newSize) {
         paint.setStrokeWidth(newSize);
         return paint;
+    }
+
+    @Override
+    public Paint onColorChanged(int newColor) {
+        paint.setColor(newColor);
+        return getPaint();
     }
 }
