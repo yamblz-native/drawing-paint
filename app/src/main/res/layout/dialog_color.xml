@@ -13,39 +13,34 @@
         android:layout_gravity="center"
         tools:ignore="ContentDescription" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:orientation="horizontal">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
-        <TextView
-            android:id="@+id/paint_alpha_text_view"
+        <ImageButton
+            android:id="@+id/eye_dropper_image_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:visibility="gone" />
+            android:layout_gravity="left|center_vertical"
+            android:src="@drawable/ic_colorize_24dp"
+            tools:ignore="ContentDescription,RtlHardcoded" />
 
-        <TextView
-            android:id="@+id/paint_red_text_view"
+        <EditText
+            android:id="@+id/paint_color_edit_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/paint_green_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/paint_blue_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
-
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:fontFamily="monospace"
+            android:imeOptions="actionDone"
+            android:inputType="textNoSuggestions"
+            android:maxLength="6"
+            android:maxLines="1"
+            tools:ignore="LabelFor,RtlHardcoded" />
+    </FrameLayout>
 
     <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"

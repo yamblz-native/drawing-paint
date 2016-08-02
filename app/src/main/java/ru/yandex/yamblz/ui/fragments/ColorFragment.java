@@ -7,23 +7,27 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.SeekBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnEditorAction;
 import ru.yandex.yamblz.R;
 
 public class ColorFragment extends DialogFragment {
 
     @BindView(R.id.paint_color_image_view)
     PaintImageView imageView;
-    @BindViews({R.id.paint_alpha_text_view,
-            R.id.paint_red_text_view, R.id.paint_green_text_view, R.id.paint_blue_text_view})
-    TextView textViews[];
+    @BindView(R.id.paint_color_edit_text)
+    EditText editText;
     @BindViews({R.id.paint_alpha_seek_bar,
             R.id.paint_red_seek_bar, R.id.paint_green_seek_bar, R.id.paint_blue_seek_bar})
     SeekBar seekBars[];
@@ -75,6 +79,29 @@ public class ColorFragment extends DialogFragment {
         return builder.create();
     }
 
+    @OnClick(R.id.eye_dropper_image_button)
+    void onClick(@SuppressWarnings("UnusedParameters") View view) {
+        onColorChangeListener.onEyeDropperRequested();
+        dismiss();
+    }
+
+    @OnEditorAction(R.id.paint_color_edit_text)
+    boolean onEditorAction(EditText editText, int actionId,
+                           @SuppressWarnings("UnusedParameters") KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            try {
+                int color = Integer.parseInt(editText.getText().toString(), 16) | 0xFF000000;
+                setSeekBars(color);
+                setPaint(onColorChangeListener.onColorChanged(composeColor()));
+            } catch (NumberFormatException e) {
+                Toast.makeText(getContext(), R.string.incorrect_color, Toast.LENGTH_SHORT)
+                        .show();
+                setPaint(onColorChangeListener.getPaint());
+            }
+        }
+        return false;
+    }
+
     private int getColorComponent(int color, int i) {
         int mask = 0xFF000000 >>> (i * 8);
         return (color & mask) >>> ((3 - i) * 8);
@@ -84,11 +111,11 @@ public class ColorFragment extends DialogFragment {
         imageView.setPaint(onColorChangeListener.getPaint());
 
         int color = paint.getColor();
-        for (int i = 0; i < 4; ++i) {
-            int colorComponent = getColorComponent(color, i);
-            String hexText = String.format("%02X", colorComponent);
-            textViews[i].setText(hexText);
-        }
+        setEditText(color & 0x00FFFFFF);
+    }
+
+    private void setEditText(int color) {
+        editText.setText(String.format("%06X", color));
     }
 
     private void setSeekBars(int color) {
@@ -109,5 +136,7 @@ public class ColorFragment extends DialogFragment {
 
     public interface OnColorChangeListener extends PaintProvider {
         Paint onColorChanged(int newColor);
+
+        void onEyeDropperRequested();
     }
 }

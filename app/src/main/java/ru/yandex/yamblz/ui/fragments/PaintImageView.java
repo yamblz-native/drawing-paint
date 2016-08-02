@@ -22,13 +22,13 @@ public class PaintImageView extends ImageView {
     }
 
     /**
-     * Inverts color but keeps alpha.
+     * Invert color but keep alpha.
      *
      * @param color color to invert.
      * @return inverted color.
      */
     public static int invertColor(int color) {
-        return (0xFF000000 & color) | ~color;
+        return (0xFF000000 & color) | ~(0x00FFFFFF & color);
     }
 
     public void setPaint(Paint paint) {
@@ -38,7 +38,10 @@ public class PaintImageView extends ImageView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawColor(invertColor(paint.getColor()));
+        int color = paint.getColor();
+        paint.setColor(invertColor(color));
+        canvas.drawRect(0, 0, canvas.getWidth() / 2, canvas.getHeight(), paint);
+        paint.setColor(color);
         canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2,
                 ((int) paint.getStrokeWidth()) / 2, paint);
     }

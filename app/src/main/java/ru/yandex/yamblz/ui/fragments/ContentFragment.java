@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import butterknife.BindView;
-import butterknife.OnTouch;
 import ru.yandex.yamblz.R;
 import rx.Observable;
 import rx.Subscription;
@@ -52,6 +52,31 @@ public class ContentFragment extends BaseFragment implements
     private float lastX, lastY;
     private Paint paint = new Paint();
 
+    private View.OnTouchListener drawListener = (view, event) -> {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_MOVE:
+                canvas.drawLine(lastX, lastY, event.getX(), event.getY(), paint);
+                break;
+
+            case MotionEvent.ACTION_DOWN:
+                canvas.drawCircle(event.getX(), event.getY(), paint.getStrokeWidth() / 2, paint);
+                break;
+        }
+        lastX = event.getX();
+        lastY = event.getY();
+
+        image.invalidate();
+        return true;
+    };
+
+    private View.OnTouchListener eyeDropperListener = (view, event) -> {
+        paint.setColor(bitmap.getPixel((int) event.getX(), (int) event.getY()));
+        image.setOnTouchListener(drawListener);
+        DialogFragment dialogFragment = new ColorFragment();
+        dialogFragment.show(getChildFragmentManager(), "color");
+        return false;
+    };
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +92,12 @@ public class ContentFragment extends BaseFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_content, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        image.setOnTouchListener(drawListener);
     }
 
     @Override
@@ -97,10 +128,17 @@ public class ContentFragment extends BaseFragment implements
             }
 
             case R.id.menu_new:
+                if (loadSubscription != null) {
+                    loadSubscription.unsubscribe();
+                }
                 loadSubscription = Observable
-                        .fromCallable(() -> Bitmap.createBitmap(
-                                image.getWidth(), image.getHeight(),
-                                Bitmap.Config.ARGB_8888))
+                        .fromCallable(() -> {
+                            Bitmap bitmap = Bitmap.createBitmap(
+                                    image.getWidth(), image.getHeight(),
+                                    Bitmap.Config.ARGB_8888);
+                            bitmap.eraseColor(Color.WHITE);
+                            return bitmap;
+                        })
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(this::onBitmapLoaded);
@@ -159,24 +197,6 @@ public class ContentFragment extends BaseFragment implements
         super.onStop();
     }
 
-    @OnTouch(R.id.user_image)
-    boolean onTouch(@SuppressWarnings("UnusedParameters") View view, MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_MOVE:
-                canvas.drawLine(lastX, lastY, event.getX(), event.getY(), paint);
-                break;
-
-            case MotionEvent.ACTION_DOWN:
-                canvas.drawCircle(event.getX(), event.getY(), paint.getStrokeWidth() / 2, paint);
-                break;
-        }
-        lastX = event.getX();
-        lastY = event.getY();
-
-        image.invalidate();
-        return true;
-    }
-
     @Override
     public void onFileEntered(String file) {
         Observable.just(file)
@@ -223,5 +243,10 @@ public class ContentFragment extends BaseFragment implements
     public Paint onColorChanged(int newColor) {
         paint.setColor(newColor);
         return getPaint();
+    }
+
+    @Override
+    public void onEyeDropperRequested() {
+        image.setOnTouchListener(eyeDropperListener);
     }
 }
