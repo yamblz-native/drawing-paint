@@ -8,6 +8,8 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +17,11 @@ import android.view.View;
 public class DrawerView extends View implements Drawer {
 
     private static final int BACKGROUND_COLOR = Color.WHITE;
+
+    private static final String SIZE_EXTRA = "size";
+    private static final String COLOR_EXTRA = "color";
+    private static final String TOOL_EXTRA = "tool";
+    private static final String SUPER_EXTRA = "super";
 
     private Bitmap mBitmap;
     private Paint mPaint;
@@ -326,5 +333,27 @@ public class DrawerView extends View implements Drawer {
         mCanvas.drawBitmap(mBitmap, 0, 0, mFilterPaint);
         mBitmap = bitmap;
         invalidate();
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SUPER_EXTRA, super.onSaveInstanceState());
+        bundle.putFloat(SIZE_EXTRA, mSize);
+        bundle.putInt(COLOR_EXTRA, mColor);
+        bundle.putString(TOOL_EXTRA, mTool.getName());
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if(state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            setSize(bundle.getFloat(SIZE_EXTRA));
+            setColor(bundle.getInt(COLOR_EXTRA));
+            selectTool(Tool.findByName(bundle.getString(TOOL_EXTRA)));
+            state = bundle.getParcelable(SUPER_EXTRA);
+        }
+        super.onRestoreInstanceState(state);
     }
 }

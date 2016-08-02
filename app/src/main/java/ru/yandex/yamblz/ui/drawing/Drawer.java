@@ -5,9 +5,28 @@ import android.graphics.Bitmap;
 public interface Drawer {
 
     enum Tool {
-        BRUSH,
-        ERASER,
-        NO,
+        BRUSH("brush"),
+        ERASER("eraser"),
+        NO("no");
+
+        String mName;
+
+        Tool(String name) {
+            mName = name;
+        }
+
+        public String getName() {
+            return mName;
+        }
+
+        public static Tool findByName(String name) {
+            for(Tool tool : values()) {
+                if(tool.getName().equals(name)) {
+                    return tool;
+                }
+            }
+            return null;
+        }
     }
 
     enum Filter {

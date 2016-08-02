@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -55,13 +55,21 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
     private BottomSheetBehavior mBottomSheetBehavior;
 
-    private int mSelectedTool = -1;
+    private Drawer.Tool mSelectedTool = Drawer.Tool.NO;
 
     private Map<Integer, Drawer.Tool> mId2tool = new HashMap<>();
     private Map<Drawer.Tool, Integer> mTool2id = new HashMap<>();
     private Map<Integer, View> mColorToView = new HashMap<>();
 
     private int[] mColors;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        initColors();
+        initMaps();
+    }
 
     @NonNull
     @Override
@@ -70,37 +78,49 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
         ButterKnife.bind(this, view);
 
+        mBottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.paint_toolbar));
+        sizeSeekBar.setOnSeekBarChangeListener(mOnSizeSeekBarChangeListener);
+
+        initPalette();
+
         return view;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
 
-        drawerView.setSize(20);
+        if(savedInstanceState == null) {
+            onToolSelected(Drawer.Tool.BRUSH);
+            onColorSelected(mColors[0]);
+            onSizeSelected(20f);
+        } else {
+            onToolSelected(drawerView.getTool());
+            onColorSelected(drawerView.getColor());
+            onSizeSelected(drawerView.getSize());
+        }
+    }
 
-        mBottomSheetBehavior = BottomSheetBehavior.from(getView().findViewById(R.id.paint_toolbar));
-
+    private void onSizeSelected(float size) {
+        drawerView.setSize(size);
         sizeSeekBar.setProgress((int)drawerView.getSize());
-        sizeSeekBar.setOnSeekBarChangeListener(mOnSizeSeekBarChangeListener);
-
-        initColors();
-        initPalette();
-        initMaps();
-        initTool();
-
-        drawerView.setColor(-1);
-        onColorPicked(mColors[0]);
     }
 
     private void initColors() {
         mColors = getResources().getIntArray(R.array.palette);
     }
 
-    private void initTool() {
-        Drawer.Tool tool = drawerView.getTool();
-        mSelectedTool = mTool2id.get(tool);
-        setToolIcon(mSelectedTool, true);
+    private void onToolSelected(Drawer.Tool tool) {
+        if(mSelectedTool == tool) {
+            drawerView.disable();
+            setToolIcon(tool, false);
+            mSelectedTool = Drawer.Tool.NO;
+        } else {
+            setToolIcon(mSelectedTool, false);
+            setToolIcon(tool, true);
+            mSelectedTool = tool;
+        }
+        drawerView.selectTool(mSelectedTool);
     }
 
     private void initMaps() {
@@ -113,7 +133,6 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     }
 
     private void initPalette() {
-        palette.removeAllViews(); //TODO
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         for(int color : mColors) {
             ViewGroup vg = (ViewGroup) layoutInflater.inflate(R.layout.color, palette, false);
@@ -128,15 +147,16 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     }
 
     private final View.OnClickListener mColorClickListener = (view) -> {
-        onColorPicked((int)view.getTag(R.id.color));
+        onColorSelected((int)view.getTag(R.id.color));
     };
 
-    private void onColorPicked(int color) {
+    private void onColorSelected(int color) {
+        Log.e("TAG", "COLOR " + color);
         Animator curAnimator = animateColor(mColorToView.get(color), true);
-        if(drawerView.getColor() == 0) {
+        if(drawerView.getColor() == color) {
             curAnimator.setDuration(COLOR_SCALE_DURATION);
             curAnimator.start();
-        } else if(color != drawerView.getColor()) {
+        } else {
             Animator prevAnimator = animateColor(mColorToView.get(drawerView.getColor()), false);
             AnimatorSet animatorSet = new AnimatorSet();
             animatorSet.playTogether(prevAnimator, curAnimator);
@@ -185,16 +205,9 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
             showFilterDialog();
             return;
         }
-        if(mSelectedTool == id) {
-            drawerView.disable();
-            setToolIcon(mSelectedTool, false);
-            mSelectedTool = -1;
-        } else {
-            setToolIcon(mSelectedTool, false);
-            setToolIcon(id, true);
-            selectTool(id);
-            mSelectedTool = id;
-        }
+
+        onToolSelected(mId2tool.get(id));
+
     }
 
     private void showFilterDialog() {
@@ -208,31 +221,24 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
-    private void selectTool(int id) {
-        drawerView.selectTool(mId2tool.get(id));
-    }
-
-    private void setToolIcon(int id, boolean active) {
-        if(id == -1) {
+    private void setToolIcon(Drawer.Tool tool, boolean active) {
+        if(tool == Drawer.Tool.NO) {
             return;
         }
         int icon = -1;
-        switch (id) {
-            case R.id.brush:
+        switch (tool) {
+            case BRUSH:
                 icon = (!active ? R.drawable.ic_brush_grey600_24dp : R.drawable.ic_brush_white_24dp);
                 break;
-            case R.id.eraser:
+            case ERASER:
                 icon = (!active ? R.drawable.ic_eraser_grey600_24dp : R.drawable.ic_eraser_white_24dp);
                 break;
-            case R.id.clean:
-                icon = (!active ? R.drawable.ic_close_circle_grey600_24dp : R.drawable.ic_close_circle_white_24dp);
-                break;
         }
-        ((ImageView)viewById(id)).setImageResource(icon);
+        ((ImageView)findToolView(tool)).setImageResource(icon);
     }
 
-    private View viewById(int id) {
-        return getView().findViewById(id);
+    private View findToolView(Drawer.Tool tool) {
+        return getView().findViewById(mTool2id.get(tool));
     }
 
     @OnClick(R.id.open)
