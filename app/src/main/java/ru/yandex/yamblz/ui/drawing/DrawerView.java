@@ -110,26 +110,26 @@ public class DrawerView extends View implements Drawer {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        int curW = mBitmap != null ? mBitmap.getWidth() : 0;
-        int curH = mBitmap != null ? mBitmap.getHeight() : 0;
+        int curBitmapWidth = mBitmap != null ? mBitmap.getWidth() : 0;
+        int curBitmapHeight = mBitmap != null ? mBitmap.getHeight() : 0;
 
-        if(curW >= w && curH >= h) {
+        if(curBitmapWidth >= w && curBitmapHeight >= h) {
             return;
         }
 
-        if(curW < w) {
-            curW = w;
+        if(curBitmapWidth < w) {
+            curBitmapWidth = w;
         }
 
-        if(curH < h) {
-            curH = h;
+        if(curBitmapHeight < h) {
+            curBitmapHeight = h;
         }
 
-        if(curW == 0 || curH == 0) {
+        if(curBitmapWidth == 0 || curBitmapHeight == 0) {
             return;
         }
 
-        Bitmap newBitmap = Bitmap.createBitmap(curW, curH, Bitmap.Config.ARGB_8888);
+        Bitmap newBitmap = Bitmap.createBitmap(curBitmapWidth, curBitmapHeight, Bitmap.Config.ARGB_8888);
         newBitmap.eraseColor(BACKGROUND_COLOR);
 
         Canvas newCanvas = new Canvas();
@@ -264,7 +264,6 @@ public class DrawerView extends View implements Drawer {
         }
     }
 
-
     @Override
     public int getColor() {
         return mColor;
@@ -272,7 +271,14 @@ public class DrawerView extends View implements Drawer {
 
     @Override
     public void setBitmap(Bitmap bitmap) {
-        mCanvas.drawBitmap(bitmap, 0, 0, null);
+        if(mBitmap == null) {
+            mBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            mCanvas = new Canvas(mBitmap);
+        } else {
+            mBitmap.eraseColor(BACKGROUND_COLOR);
+            mCanvas.drawBitmap(bitmap, 0, 0, null);
+        }
+        invalidate();
     }
 
     @Override

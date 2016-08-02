@@ -27,12 +27,19 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import ru.yandex.yamblz.App;
+import ru.yandex.yamblz.DaggerApplicationComponent;
 import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.ui.drawing.Drawer;
 import ru.yandex.yamblz.ui.drawing.DrawerView;
+import ru.yandex.yamblz.ui.fragments.dialogs.EditTextDialog;
+import ru.yandex.yamblz.ui.fragments.dialogs.ListDialog;
+import ru.yandex.yamblz.ui.other.ImageCache;
 
 public class ContentFragment extends BaseFragment implements EditTextDialog.Callbacks, ListDialog.Callbacks {
 
@@ -44,6 +51,8 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
     private static final int FILTER_DIALOG_ID = 3;
 
+    private static final String BITMAP_EXTRA = "bitmap";
+
     @BindView(R.id.drawer)
     DrawerView drawerView;
 
@@ -52,6 +61,9 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
     @BindView(R.id.palette)
     FlexboxLayout palette;
+
+    @Inject
+    ImageCache mImageCache;
 
     private BottomSheetBehavior mBottomSheetBehavior;
 
@@ -66,6 +78,8 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ((App)getActivity().getApplicationContext()).applicationComponent().inject(this);
 
         initColors();
         initMaps();
@@ -87,10 +101,16 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mImageCache.put(BITMAP_EXTRA, drawerView.getBitmap());
+    }
+
+    @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        if(savedInstanceState == null) {
+        if (savedInstanceState == null) {
             onToolSelected(Drawer.Tool.BRUSH);
             onColorSelected(mColors[0]);
             onSizeSelected(20f);
@@ -98,20 +118,89 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
             onToolSelected(drawerView.getTool());
             onColorSelected(drawerView.getColor());
             onSizeSelected(drawerView.getSize());
+            Bitmap bitmap = mImageCache.remove(BITMAP_EXTRA);
+            if(bitmap != null) {
+                drawerView.setBitmap(bitmap);
+            }
         }
-    }
-
-    private void onSizeSelected(float size) {
-        drawerView.setSize(size);
-        sizeSeekBar.setProgress((int)drawerView.getSize());
     }
 
     private void initColors() {
         mColors = getResources().getIntArray(R.array.palette);
     }
 
+    private void initMaps() {
+        mTool2id.put(Drawer.Tool.BRUSH, R.id.brush);
+        mTool2id.put(Drawer.Tool.ERASER, R.id.eraser);
+
+        for (Map.Entry<Drawer.Tool, Integer> entry : mTool2id.entrySet()) {
+            mId2tool.put(entry.getValue(), entry.getKey());
+        }
+    }
+
+    private void initPalette() {
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        for (int color : mColors) {
+            ViewGroup vg = (ViewGroup) layoutInflater.inflate(R.layout.color, palette, false);
+            ImageView iv = (ImageView) vg.findViewById(R.id.color);
+            iv.setImageResource(R.drawable.color);
+            ((GradientDrawable) iv.getDrawable()).setColor(color);
+            palette.addView(vg);
+            iv.setTag(R.id.color, color);
+            mColorToView.put(color, iv);
+            iv.setOnClickListener(mColorClickListener);
+        }
+    }
+
+    private final View.OnClickListener mColorClickListener = (view) ->
+            onColorSelected((int) view.getTag(R.id.color));
+
+    private final SeekBar.OnSeekBarChangeListener mOnSizeSeekBarChangeListener =
+            new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    drawerView.setSize(progress);
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            };
+
+    @OnClick({R.id.eraser, R.id.brush, R.id.clean, R.id.filter})
+    void onToolClick(View view) {
+        final int id = view.getId();
+        if (id == R.id.clean) {
+            drawerView.clean();
+            return;
+        }
+        if (id == R.id.filter) {
+            showFilterDialog();
+            return;
+        }
+
+        onToolSelected(mId2tool.get(id));
+
+    }
+
+    @OnClick(R.id.paint_toolbar)
+    void onToolbarClick() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    private void onSizeSelected(float size) {
+        drawerView.setSize(size);
+        sizeSeekBar.setProgress((int) drawerView.getSize());
+    }
+
     private void onToolSelected(Drawer.Tool tool) {
-        if(mSelectedTool == tool) {
+        if (mSelectedTool == tool) {
             drawerView.disable();
             setToolIcon(tool, false);
             mSelectedTool = Drawer.Tool.NO;
@@ -123,37 +212,10 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         drawerView.selectTool(mSelectedTool);
     }
 
-    private void initMaps() {
-        mTool2id.put(Drawer.Tool.BRUSH, R.id.brush);
-        mTool2id.put(Drawer.Tool.ERASER, R.id.eraser);
-
-        for(Map.Entry<Drawer.Tool, Integer> entry : mTool2id.entrySet()) {
-            mId2tool.put(entry.getValue(), entry.getKey());
-        }
-    }
-
-    private void initPalette() {
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        for(int color : mColors) {
-            ViewGroup vg = (ViewGroup) layoutInflater.inflate(R.layout.color, palette, false);
-            ImageView iv = (ImageView)vg.findViewById(R.id.color);
-            iv.setImageResource(R.drawable.color);
-            ((GradientDrawable)iv.getDrawable()).setColor(color);
-            palette.addView(vg);
-            iv.setTag(R.id.color, color);
-            mColorToView.put(color, iv);
-            iv.setOnClickListener(mColorClickListener);
-        }
-    }
-
-    private final View.OnClickListener mColorClickListener = (view) -> {
-        onColorSelected((int)view.getTag(R.id.color));
-    };
 
     private void onColorSelected(int color) {
-        Log.e("TAG", "COLOR " + color);
         Animator curAnimator = animateColor(mColorToView.get(color), true);
-        if(drawerView.getColor() == color) {
+        if (drawerView.getColor() == color) {
             curAnimator.setDuration(COLOR_SCALE_DURATION);
             curAnimator.start();
         } else {
@@ -166,6 +228,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         drawerView.setColor(color);
     }
 
+
     private Animator animateColor(View view, boolean scale) {
         float from, to;
         from = (scale ? 1.0f : 1.3f);
@@ -176,53 +239,14 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         return set;
     }
 
-    private final SeekBar.OnSeekBarChangeListener mOnSizeSeekBarChangeListener =
-            new SeekBar.OnSeekBarChangeListener() {
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            drawerView.setSize(progress);
-        }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-
-        }
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-
-        }
-    };
-
-    @OnClick({R.id.eraser, R.id.brush, R.id.clean, R.id.filter})
-    void onToolClick(View view) {
-        final int id = view.getId();
-        if(id == R.id.clean) {
-            drawerView.clean();
-            return;
-        }
-        if(id == R.id.filter) {
-            showFilterDialog();
-            return;
-        }
-
-        onToolSelected(mId2tool.get(id));
-
-    }
-
     private void showFilterDialog() {
         ListDialog listDialog = ListDialog.newInstance(getString(R.string.filter), null,
                 Drawer.Filter.getFilterNames(), null, null, getString(R.string.cancel), true, FILTER_DIALOG_ID);
         listDialog.show(getChildFragmentManager(), "tag");
     }
 
-    @OnClick(R.id.paint_toolbar)
-    void onToolbarClick() {
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
-
     private void setToolIcon(Drawer.Tool tool, boolean active) {
-        if(tool == Drawer.Tool.NO) {
+        if (tool == Drawer.Tool.NO) {
             return;
         }
         int icon = -1;
@@ -234,7 +258,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
                 icon = (!active ? R.drawable.ic_eraser_grey600_24dp : R.drawable.ic_eraser_white_24dp);
                 break;
         }
-        ((ImageView)findToolView(tool)).setImageResource(icon);
+        ((ImageView) findToolView(tool)).setImageResource(icon);
     }
 
     private View findToolView(Drawer.Tool tool) {
@@ -261,13 +285,13 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
     @Override
     public void onPositive(String value, int id) {
-        if(id == SAVE_FILE_DIALOG_ID) {
+        if (id == SAVE_FILE_DIALOG_ID) {
             saveFileToInternalStorage(value);
         }
     }
 
     private void saveFileToInternalStorage(String filename) {
-        if(!filename.endsWith(".png") && !filename.endsWith(".png")) {
+        if (!filename.endsWith(".png") && !filename.endsWith(".png")) {
             filename += ".png";
         }
         File file = new File(getContext().getFilesDir(), filename);
@@ -287,16 +311,16 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
     @Override
     public void onSelected(String value, int id) {
-        if(id == OPEN_FILE_DIALOG_ID) {
+        if (id == OPEN_FILE_DIALOG_ID) {
             try {
                 drawerView.setBitmap(BitmapFactory.decodeStream(
                         new FileInputStream(getContext().getFilesDir() + "/" + value)));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-        } else if(id == FILTER_DIALOG_ID) {
-            for(Drawer.Filter filter : Drawer.Filter.values()) {
-                if(filter.getName().equals(value)) {
+        } else if (id == FILTER_DIALOG_ID) {
+            for (Drawer.Filter filter : Drawer.Filter.values()) {
+                if (filter.getName().equals(value)) {
                     drawerView.filter(filter);
                     break;
                 }
