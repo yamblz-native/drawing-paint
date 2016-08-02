@@ -102,6 +102,15 @@ public class DrawingView extends View {
         drawPaint.setColor(paintColor);
     }
 
+    public Bitmap getCanvasBitmap() {
+        return canvasBitmap;
+    }
+
+    public void setCanvasBitmap(Bitmap canvasBitmap) {
+        this.canvasBitmap = canvasBitmap;
+        drawCanvas = new Canvas(canvasBitmap);
+    }
+
     @Override
     protected Parcelable onSaveInstanceState() {
         return Icepick.saveInstanceState(this, super.onSaveInstanceState());
@@ -111,4 +120,6 @@ public class DrawingView extends View {
     protected void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(Icepick.restoreInstanceState(this, state));
     }
+
+
 }
