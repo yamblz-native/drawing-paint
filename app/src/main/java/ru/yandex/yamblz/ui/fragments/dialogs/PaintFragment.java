@@ -16,6 +16,7 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.ui.fragments.brush.Brush;
+import ru.yandex.yamblz.ui.fragments.brush.CatBrush;
 import ru.yandex.yamblz.ui.fragments.brush.Line;
 import ru.yandex.yamblz.ui.fragments.brush.Pencil;
 
@@ -30,10 +31,10 @@ public class PaintFragment extends DialogFragment {
     @BindView(R.id.paint_size_seek_bar)
     SeekBar seekBar;
 
-    @BindViews({R.id.paint_pencil, R.id.paint_line})
+    @BindViews({R.id.paint_pencil, R.id.paint_line, R.id.paint_cat})
     Button brushButtons[];
 
-    private Brush brushes[] = new Brush[]{new Pencil(), new Line()};
+    private Brush brushes[] = new Brush[]{new Pencil(), new Line(), new CatBrush()};
 
     @NonNull
     @Override

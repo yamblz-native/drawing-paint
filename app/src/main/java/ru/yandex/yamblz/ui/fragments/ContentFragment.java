@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,7 +32,6 @@ import ru.yandex.yamblz.ui.fragments.dialogs.ColorFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.OpenFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.PaintFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.SaveFragment;
-import ru.yandex.yamblz.ui.other.Cat;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -59,7 +57,6 @@ public class ContentFragment extends BaseFragment implements
     private Subscription loadSubscription;
 
     private Bitmap bitmap;
-    private Canvas canvas;
     private Paint paint = new Paint();
     private Brush brush;
 
@@ -158,10 +155,6 @@ public class ContentFragment extends BaseFragment implements
                                     drawView.getWidth(), drawView.getHeight(),
                                     Bitmap.Config.ARGB_8888);
                             bitmap.eraseColor(Color.WHITE);
-                            canvas = new Canvas(bitmap);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                Cat.drawCat(canvas);
-                            }
                             return bitmap;
                         })
                         .subscribeOn(Schedulers.computation())

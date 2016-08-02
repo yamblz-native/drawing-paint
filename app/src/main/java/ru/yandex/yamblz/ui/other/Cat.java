@@ -9,14 +9,10 @@ import android.os.Build;
 
 public class Cat {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static void drawCat(Canvas canvas) {
+    public static void drawCat(Canvas canvas, float centerX, float centerY, float radius) {
         final Paint paint = new Paint();
         final Path path = new Path();
         paint.setAntiAlias(true);
-
-        float centerX = (float) (canvas.getWidth() / 2);
-        float centerY = (float) (canvas.getHeight() / 2);
-        float radius = (float) (Math.min(centerX, centerY) * 0.8);
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(4);

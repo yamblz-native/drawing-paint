@@ -34,7 +34,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/tool_pencil" />
+            android:text="@string/brush_pencil" />
 
         <Button
             android:id="@+id/paint_line"
@@ -42,7 +42,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/tool_line" />
+            android:text="@string/brush_line" />
+
+        <Button
+            android:id="@+id/paint_cat"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/brush_cat" />
 
     </LinearLayout>
 
