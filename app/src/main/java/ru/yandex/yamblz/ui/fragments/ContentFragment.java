@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import java.io.OutputStream;
 
 import butterknife.BindView;
 import ru.yandex.yamblz.R;
+import ru.yandex.yamblz.ui.other.Cat;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -112,7 +114,7 @@ public class ContentFragment extends BaseFragment implements
             case R.id.menu_paint: {
                 Bundle arguments = new Bundle();
                 arguments.putInt(PaintFragment.MIN_VALUE, image.getWidth() / 100);
-                arguments.putInt(PaintFragment.MAX_VALUE, image.getWidth() / 5);
+                arguments.putInt(PaintFragment.MAX_VALUE, image.getWidth() / 3);
                 arguments.putInt(PaintFragment.DEFAULT_VALUE, (int) paint.getStrokeWidth());
 
                 DialogFragment dialogFragment = new PaintFragment();
@@ -137,6 +139,10 @@ public class ContentFragment extends BaseFragment implements
                                     image.getWidth(), image.getHeight(),
                                     Bitmap.Config.ARGB_8888);
                             bitmap.eraseColor(Color.WHITE);
+                            canvas = new Canvas(bitmap);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                Cat.drawCat(canvas);
+                            }
                             return bitmap;
                         })
                         .subscribeOn(Schedulers.computation())
@@ -180,7 +186,6 @@ public class ContentFragment extends BaseFragment implements
     private void onBitmapLoaded(Bitmap bitmap) {
         loadSubscription = null;
         this.bitmap = bitmap;
-        canvas = new Canvas(bitmap);
         image.setImageBitmap(bitmap);
 
         noImageTextView.setVisibility(View.INVISIBLE);
