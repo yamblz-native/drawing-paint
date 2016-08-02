@@ -83,6 +83,9 @@ android {
     }
 }
 
+repositories {
+    maven { url 'https://clojars.org/repo/' }
+}
 // Libraries declared in dependencies.gradle in the root of the project
 dependencies {
     compile libraries.dagger
