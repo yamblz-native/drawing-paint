@@ -85,6 +85,7 @@ android {
 
 repositories {
     maven { url 'https://clojars.org/repo/' }
+    maven { url "https://jitpack.io" }
 }
 // Libraries declared in dependencies.gradle in the root of the project
 dependencies {
@@ -111,6 +112,8 @@ dependencies {
 
     compile 'frankiesardo:icepick:3.1.0'
     apt 'frankiesardo:icepick-processor:3.1.0'
+
+    compile 'com.github.QuadFlask:colorpicker:0.0.10'
 
     testCompile libraries.junit
     testCompile libraries.robolectric

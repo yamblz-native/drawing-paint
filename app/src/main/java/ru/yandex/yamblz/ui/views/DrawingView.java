@@ -23,7 +23,8 @@ public class DrawingView extends View {
 
     private Paint drawPaint, canvasPaint;
 
-    private int paintColor = 0xFF660000;
+    @State
+    int paintColor = 0xFF660000;
 
     private Canvas drawCanvas;
 
@@ -94,6 +95,11 @@ public class DrawingView extends View {
         }
         invalidate();
         return true;
+    }
+
+    public void setNewColorForBrush(int color) {
+        paintColor = color;
+        drawPaint.setColor(paintColor);
     }
 
     @Override
