@@ -13,6 +13,7 @@ import ru.yandex.yamblz.developer_settings.DeveloperSettingsModel;
 import ru.yandex.yamblz.developer_settings.DeveloperSettingsModule;
 import ru.yandex.yamblz.developer_settings.LeakCanaryProxy;
 import ru.yandex.yamblz.ui.activities.MainActivity;
+import ru.yandex.yamblz.ui.fragments.ContentFragment;
 
 @Singleton
 @Component(modules = {
@@ -36,4 +37,6 @@ public interface ApplicationComponent {
     Handler mainThreadHandler();
 
     void inject(@NonNull MainActivity mainActivity);
+
+    void inject(@NonNull ContentFragment contentFragment);
 }

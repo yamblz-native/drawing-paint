@@ -2,5 +2,19 @@
 <resources>
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#00796B</color>
-    <color name="colorAccent">#03A9F4</color>
+    <color name="colorAccent">#ff3f80</color>
+    <color name="paintToolbarColor">#4DB6AC</color>
+    <array name="palette">
+        <item>@android:color/holo_blue_dark</item>
+        <item>@android:color/holo_green_light</item>
+        <item>@android:color/holo_red_light</item>
+        <item>@android:color/holo_green_dark</item>
+        <item>@android:color/holo_purple</item>
+        <item>@android:color/holo_orange_light</item>
+        <item>@android:color/holo_orange_dark</item>
+        <item>@android:color/holo_blue_bright</item>
+        <item>@android:color/holo_red_dark</item>
+        <item>@android:color/white</item>
+        <item>@android:color/black</item>
+    </array>
 </resources>

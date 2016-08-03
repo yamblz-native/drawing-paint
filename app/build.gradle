@@ -20,6 +20,8 @@ android {
 
         // Make generated apks contain version name and code.
         archivesBaseName = "app-${versions.name}-${versions.code}"
+
+        vectorDrawables.useSupportLibrary = true
     }
 
     compileOptions {
@@ -92,6 +94,7 @@ dependencies {
     compile libraries.supportDesign
     compile libraries.supportRecyclerView
     compile libraries.supportCardView
+    compile libraries.flexbox
 
     compile libraries.butterKnife
     apt libraries.butterKnifeCompiler

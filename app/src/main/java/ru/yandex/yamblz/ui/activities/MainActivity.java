@@ -3,6 +3,7 @@ package ru.yandex.yamblz.ui.activities;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatDelegate;
 
 import javax.inject.Inject;
 import javax.inject.Named;
