@@ -103,6 +103,14 @@ public class ContentFragment extends BaseFragment implements
 
         brush = new Pencil();
         brush.setPaint(paint);
+
+        // For caching
+        Observable.fromCallable(() -> {
+            Context context = getContext();
+            context.getResources().getDrawable(R.mipmap.android_robot, null);
+            context.getResources().getDrawable(R.mipmap.icon_heart, null);
+            return null;
+        }).subscribeOn(Schedulers.io()).subscribe();
     }
 
     @NonNull

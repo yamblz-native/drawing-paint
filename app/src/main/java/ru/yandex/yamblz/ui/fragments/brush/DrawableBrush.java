@@ -16,6 +16,10 @@ public class DrawableBrush extends AbstractBrush {
         this.drawable = drawable;
         this.id = id;
 
+        init(drawable);
+    }
+
+    private void init(BitmapDrawable drawable) {
         drawable.setAntiAlias(true);
 
         width = drawable.getBitmap().getWidth();

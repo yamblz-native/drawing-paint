@@ -20,8 +20,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import ru.yandex.yamblz.R;
+import ru.yandex.yamblz.ui.fragments.Utils;
 import ru.yandex.yamblz.ui.fragments.brush.Brush;
-import ru.yandex.yamblz.ui.other.Utils;
 
 public class ColorFragment extends DialogFragment {
 

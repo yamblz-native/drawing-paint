@@ -1,4 +1,4 @@
-package ru.yandex.yamblz.ui.other;
+package ru.yandex.yamblz.ui.fragments;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

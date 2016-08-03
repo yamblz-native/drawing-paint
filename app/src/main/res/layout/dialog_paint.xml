@@ -44,6 +44,14 @@
             android:layout_weight="1"
             android:text="@string/brush_line" />
 
+        <Button
+            android:id="@+id/paint_dash"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/brush_dash" />
+
     </LinearLayout>
 
     <LinearLayout

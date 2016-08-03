@@ -2,7 +2,7 @@ package ru.yandex.yamblz.ui.fragments.brush;
 
 import android.graphics.Canvas;
 
-import ru.yandex.yamblz.ui.other.Utils;
+import ru.yandex.yamblz.ui.fragments.Utils;
 
 public class CatBrush extends AbstractBrush {
     @Override
