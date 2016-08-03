@@ -127,7 +127,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
             if(bitmap != null) {
                 drawerView.setBitmap(bitmap);
             }
-            if(stamp != null) {
+            if(drawerView.getTool() == Drawer.Tool.STAMP && stamp != null) {
                 drawerView.selectStamp(stamp);
             }
             onToolSelected(drawerView.getTool());
@@ -205,6 +205,11 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
             return;
         }
 
+        if(id == R.id.stamp && mSelectedTool != Drawer.Tool.STAMP) {
+            showStampsDialog();
+            return;
+        }
+
         onToolSelected(mId2tool.get(id));
 
     }
@@ -220,7 +225,6 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     }
 
     private void onToolSelected(Drawer.Tool tool) {
-        Log.e("TAG", "ON TOOL SELECTED " + tool.getName());
         if (mSelectedTool == tool) {
             drawerView.disable();
             setToolIcon(tool, false);
@@ -231,10 +235,6 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
             mSelectedTool = tool;
         }
         drawerView.selectTool(mSelectedTool);
-
-        if(mSelectedTool == Drawer.Tool.STAMP) {
-            showStampsDialog();
-        }
     }
 
     private void disableTool() {
@@ -277,13 +277,13 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     private void showFilterDialog() {
         ListDialog listDialog = ListDialog.newInstance(getString(R.string.filter), null,
                 Drawer.Filter.getFilterNames(), null, null, getString(R.string.cancel), true, FILTER_DIALOG_ID);
-        listDialog.show(getChildFragmentManager(), "tag");
+        listDialog.show(getChildFragmentManager(), null);
     }
 
     private void showStampsDialog() {
         ListDialog listDialog = ListDialog.newInstance(getString(R.string.stamps), null, mStampsNames,
                 null, null, getString(R.string.cancel), false, STAMP_DIALOG_ID);
-        listDialog.show(getChildFragmentManager(), "tag");
+        listDialog.show(getChildFragmentManager(), null);
     }
 
     private void setToolIcon(Drawer.Tool tool, boolean active) {
@@ -314,7 +314,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         ListDialog dialog = ListDialog.newInstance(getString(R.string.open),
                 null, getContext().getFilesDir().list(), null, null, getString(R.string.cancel),
                 true, OPEN_FILE_DIALOG_ID);
-        dialog.show(getChildFragmentManager(), "tag");
+        dialog.show(getChildFragmentManager(), null);
     }
 
     @OnClick(R.id.save)
@@ -323,7 +323,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
                 getString(R.string.filename), getString(R.string.ok), null, getString(R.string.cancel),
                 true, SAVE_FILE_DIALOG_ID);
 
-        editTextDialog.show(getChildFragmentManager(), "tag");
+        editTextDialog.show(getChildFragmentManager(), null);
 
     }
 
@@ -372,6 +372,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         } else if(id == STAMP_DIALOG_ID) {
             int drawableId = getDrawableIdForStampName(value);
             Bitmap stamp = BitmapFactory.decodeResource(getResources(), drawableId);
+            onToolSelected(Drawer.Tool.STAMP);
             drawerView.selectStamp(stamp);
         }
     }
