@@ -85,15 +85,10 @@ public class DrawView extends ImageView {
         }
     }
 
-    public void writeHistory() {
-        for (int i = 0; i < historySize; ++i) {
-            canvas.drawBitmap(history[0], 0, 0, null);
-        }
-        historySize = 0;
-    }
-
-    public Bitmap getBitmap() {
-        return bitmap;
+    public Bitmap getDrawingCacheBitmap() {
+        setDrawingCacheEnabled(true);
+        buildDrawingCache();
+        return getDrawingCache();
     }
 
     public boolean canUndo() {

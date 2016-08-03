@@ -9,11 +9,13 @@ public class Pencil extends AbstractBrush {
     @Override
     public void start(Point point) {
         super.start(point);
-        path.moveTo(startX, startY);
     }
 
     @Override
     public void move(Point point) {
+        if (path.isEmpty()) {
+            path.moveTo(startX, startY);
+        }
         path.lineTo(point.getX(), point.getY());
     }
 
@@ -25,8 +27,11 @@ public class Pencil extends AbstractBrush {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawPath(path, paint);
-        canvas.drawPoint(startX, startY, paint);
+        if (path.isEmpty()) {
+            canvas.drawPoint(startX, startY, paint);
+        } else {
+            canvas.drawPath(path, paint);
+        }
     }
 
     @Override

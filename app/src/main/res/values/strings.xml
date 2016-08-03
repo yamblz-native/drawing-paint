@@ -9,6 +9,9 @@
     <string name="new_image">Новое изображение</string>
     <string name="save_image">Сохранить изображение</string>
     <string name="open_image">Открыть изображение</string>
+    <string name="export">Экспортировать</string>
+
+    <string name="not_saved">Изображение не сохранено</string>
 
     <string name="button_save">Сохранить</string>
     <string name="button_cancel">Отмена</string>

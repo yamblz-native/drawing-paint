@@ -14,8 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.yandex.yamblz.R;
 
-@SuppressWarnings("WeakerAccess")
-public class SaveFragment extends DialogFragment {
+public class FileNameEnterFragment extends DialogFragment {
 
     @BindView(R.id.save_text_view)
     EditText editText;
@@ -23,7 +22,8 @@ public class SaveFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        OnFileEnteredListener onFileEnteredListener = (OnFileEnteredListener) getParentFragment();
+        OnFileNameEnteredListener onFileNameEnteredListener =
+                (OnFileNameEnteredListener) getParentFragment();
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         @SuppressLint("InflateParams")
@@ -34,8 +34,8 @@ public class SaveFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
         builder.setPositiveButton(getString(R.string.button_save), (dialog, which) -> {
-            if (onFileEnteredListener != null) {
-                onFileEnteredListener.onFileEntered(editText.getText().toString());
+            if (onFileNameEnteredListener != null) {
+                onFileNameEnteredListener.onFileNameEntered(editText.getText().toString());
             }
         });
         builder.setNegativeButton(getString(R.string.button_cancel), null);
@@ -44,7 +44,7 @@ public class SaveFragment extends DialogFragment {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public interface OnFileEnteredListener {
-        void onFileEntered(String file);
+    public interface OnFileNameEnteredListener {
+        void onFileNameEntered(String file);
     }
 }

@@ -6,10 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-@SuppressWarnings("WeakerAccess")
 public class OpenFragment extends DialogFragment {
 
-    @SuppressWarnings("WeakerAccess")
     public static final String ARGUMENT_FILES = "files";
 
     @NonNull

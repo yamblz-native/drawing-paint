@@ -36,4 +36,10 @@
         android:title="@string/open_image"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menu_export"
+        android:enabled="false"
+        android:title="@string/export"
+        app:showAsAction="never" />
+
 </menu>

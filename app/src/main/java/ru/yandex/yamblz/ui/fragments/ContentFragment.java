@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -20,8 +21,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -31,34 +35,36 @@ import ru.yandex.yamblz.ui.fragments.brush.Brush;
 import ru.yandex.yamblz.ui.fragments.brush.Pencil;
 import ru.yandex.yamblz.ui.fragments.brush.Point;
 import ru.yandex.yamblz.ui.fragments.dialogs.ColorFragment;
+import ru.yandex.yamblz.ui.fragments.dialogs.FileNameEnterFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.OpenFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.PaintFragment;
-import ru.yandex.yamblz.ui.fragments.dialogs.SaveFragment;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import solid.collectors.ToArray;
 import solid.stream.Stream;
 
 public class ContentFragment extends BaseFragment implements
-        SaveFragment.OnFileEnteredListener,
+        FileNameEnterFragment.OnFileNameEnteredListener,
         OpenFragment.OnFilePickedListener,
         PaintFragment.OnBrushChangeListener,
         ColorFragment.OnColorChangeListener,
         DrawView.TmpDrawer {
 
     private static final String EXTENSION = ".bitmap";
+    private static final String FOLDER = "Paint";
     private static final int HISTORY_SIZE = 5;
 
     @BindView(R.id.no_image_text)
     TextView noImageTextView;
     @BindView(R.id.user_image)
     DrawView drawView;
-    Bitmap drawingCacheBitmap;
 
     private MenuItem saveItem;
     private MenuItem undoItem;
+    private MenuItem exportItem;
 
     private Subscription loadSubscription;
 
@@ -88,17 +94,18 @@ public class ContentFragment extends BaseFragment implements
     };
 
     private View.OnTouchListener eyeDropperListener = (view, event) -> {
-        drawView.setDrawingCacheEnabled(true);
-        drawView.buildDrawingCache();
-        drawingCacheBitmap = drawView.getDrawingCache();
+        Bitmap drawingCacheBitmap = drawView.getDrawingCacheBitmap();
 
         int color = drawingCacheBitmap.getPixel((int) event.getX(), (int) event.getY());
         brush.getPaint().setColor(color);
+
         drawView.setOnTouchListener(drawListener);
         DialogFragment dialogFragment = new ColorFragment();
         dialogFragment.show(getChildFragmentManager(), "color");
         return false;
     };
+
+    private Action1<String> fileNameEnteredAction;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -143,6 +150,7 @@ public class ContentFragment extends BaseFragment implements
         inflater.inflate(R.menu.menu, menu);
         saveItem = menu.findItem(R.id.menu_save);
         undoItem = menu.findItem(R.id.menu_undo);
+        exportItem = menu.findItem(R.id.menu_export);
     }
 
     @Override
@@ -193,7 +201,22 @@ public class ContentFragment extends BaseFragment implements
                 break;
 
             case R.id.menu_save: {
-                DialogFragment dialogFragment = new SaveFragment();
+                fileNameEnteredAction = (fileName) -> {
+                    final Bitmap bitmap = drawView.getDrawingCacheBitmap();
+                    Observable.fromCallable(() -> {
+                        String longFileName = fileName + EXTENSION;
+                        try (OutputStream out = getActivity()
+                                .openFileOutput(longFileName, Context.MODE_PRIVATE)) {
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                        } catch (IOException e) {
+                            Log.e(ContentFragment.class.getSimpleName(), "couldn't save file", e);
+                        }
+                        return null;
+                    })
+                            .subscribeOn(Schedulers.io())
+                            .subscribe();
+                };
+                DialogFragment dialogFragment = new FileNameEnterFragment();
                 dialogFragment.show(getChildFragmentManager(), "save");
                 break;
             }
@@ -218,6 +241,38 @@ public class ContentFragment extends BaseFragment implements
                 break;
             }
 
+            case R.id.menu_export: {
+                final Bitmap bitmap = drawView.getDrawingCacheBitmap();
+                fileNameEnteredAction = (fileName) ->
+                        Observable.fromCallable(() -> {
+                            String sdcard = Environment.getExternalStorageDirectory().toString();
+                            String location = String.format("%s/%s/%s.png",
+                                    sdcard, FOLDER, fileName);
+                            File file = new File(location);
+                            //noinspection ResultOfMethodCallIgnored
+                            file.getParentFile().mkdir();
+                            try (FileOutputStream stream = new FileOutputStream(file)) {
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                stream.flush();
+                            }
+                            return location;
+                        })
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(location -> {
+                                    Toast.makeText(getContext(), location, Toast.LENGTH_LONG)
+                                            .show();
+                                }, e -> {
+                                    Log.d(this.getClass().getSimpleName(), "image not saved", e);
+                                    Toast.makeText(getContext(),
+                                            getString(R.string.not_saved),
+                                            Toast.LENGTH_LONG).show();
+                                });
+                DialogFragment dialogFragment = new FileNameEnterFragment();
+                dialogFragment.show(getChildFragmentManager(), "export");
+                break;
+            }
+
             default:
                 Log.w(this.getClass().getSimpleName(), "menu click not handled");
                 break;
@@ -233,6 +288,7 @@ public class ContentFragment extends BaseFragment implements
         noImageTextView.setVisibility(View.INVISIBLE);
         drawView.setVisibility(View.VISIBLE);
         saveItem.setEnabled(true);
+        exportItem.setEnabled(true);
         undoItem.setEnabled(drawView.canUndo());
     }
 
@@ -246,19 +302,9 @@ public class ContentFragment extends BaseFragment implements
     }
 
     @Override
-    public void onFileEntered(String file) {
-        drawView.writeHistory();
-        Observable.just(file)
-                .subscribeOn(Schedulers.io())
-                .forEach(fileName -> {
-                    fileName = fileName + EXTENSION;
-                    try (OutputStream out =
-                                 getActivity().openFileOutput(fileName, Context.MODE_PRIVATE)) {
-                        drawView.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
-                    } catch (IOException e) {
-                        Log.e(ContentFragment.class.getSimpleName(), "couldn't save file", e);
-                    }
-                });
+    public void onFileNameEntered(String file) {
+        fileNameEnteredAction.call(file);
+        fileNameEnteredAction = null;
     }
 
     @Override
