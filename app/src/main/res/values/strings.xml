@@ -5,6 +5,7 @@
 
     <string name="instrument">Инструмент</string>
     <string name="color">Цвет</string>
+    <string name="undo">Отменить</string>
     <string name="new_image">Новое изображение</string>
     <string name="save_image">Сохранить изображение</string>
     <string name="open_image">Открыть изображение</string>

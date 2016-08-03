@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.util.Pair;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,16 +49,19 @@ public class ContentFragment extends BaseFragment implements
         DrawView.TmpDrawer {
 
     private static final String EXTENSION = ".bitmap";
+    private static final int HISTORY_SIZE = 5;
 
     @BindView(R.id.no_image_text)
     TextView noImageTextView;
     @BindView(R.id.user_image)
     DrawView drawView;
+    Bitmap drawingCacheBitmap;
+
     private MenuItem saveItem;
+    private MenuItem undoItem;
 
     private Subscription loadSubscription;
 
-    private Bitmap bitmap;
     private Brush brush;
 
     private View.OnTouchListener drawListener = (view, event) -> {
@@ -72,8 +76,10 @@ public class ContentFragment extends BaseFragment implements
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                brush.draw(drawView.getCanvas());
+                drawView.beginCommit();
+                brush.draw(drawView.getCommitCanvas());
                 brush.finish();
+                undoItem.setEnabled(drawView.canUndo());
                 break;
         }
 
@@ -82,7 +88,12 @@ public class ContentFragment extends BaseFragment implements
     };
 
     private View.OnTouchListener eyeDropperListener = (view, event) -> {
-        brush.getPaint().setColor(bitmap.getPixel((int) event.getX(), (int) event.getY()));
+        drawView.setDrawingCacheEnabled(true);
+        drawView.buildDrawingCache();
+        drawingCacheBitmap = drawView.getDrawingCache();
+
+        int color = drawingCacheBitmap.getPixel((int) event.getX(), (int) event.getY());
+        brush.getPaint().setColor(color);
         drawView.setOnTouchListener(drawListener);
         DialogFragment dialogFragment = new ColorFragment();
         dialogFragment.show(getChildFragmentManager(), "color");
@@ -131,6 +142,7 @@ public class ContentFragment extends BaseFragment implements
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu, menu);
         saveItem = menu.findItem(R.id.menu_save);
+        undoItem = menu.findItem(R.id.menu_undo);
     }
 
     @Override
@@ -155,6 +167,12 @@ public class ContentFragment extends BaseFragment implements
                 break;
             }
 
+            case R.id.menu_undo:
+                drawView.undo();
+                drawView.invalidate();
+                undoItem.setEnabled(drawView.canUndo());
+                break;
+
             case R.id.menu_new:
                 if (loadSubscription != null) {
                     loadSubscription.unsubscribe();
@@ -165,7 +183,9 @@ public class ContentFragment extends BaseFragment implements
                                     drawView.getWidth(), drawView.getHeight(),
                                     Bitmap.Config.ARGB_8888);
                             bitmap.eraseColor(Color.WHITE);
-                            return bitmap;
+
+                            Bitmap history[] = drawView.createHistory(HISTORY_SIZE);
+                            return new Pair<>(bitmap, history);
                         })
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -205,14 +225,15 @@ public class ContentFragment extends BaseFragment implements
         return true;
     }
 
-    private void onBitmapLoaded(Bitmap bitmap) {
+    private void onBitmapLoaded(Pair<Bitmap, Bitmap[]> pair) {
         loadSubscription = null;
-        this.bitmap = bitmap;
-        drawView.setImageBitmap(bitmap);
+        drawView.setImageBitmap(pair.first);
+        drawView.setHistory(pair.second);
 
         noImageTextView.setVisibility(View.INVISIBLE);
         drawView.setVisibility(View.VISIBLE);
         saveItem.setEnabled(true);
+        undoItem.setEnabled(drawView.canUndo());
     }
 
     @Override
@@ -226,13 +247,14 @@ public class ContentFragment extends BaseFragment implements
 
     @Override
     public void onFileEntered(String file) {
+        drawView.writeHistory();
         Observable.just(file)
                 .subscribeOn(Schedulers.io())
                 .forEach(fileName -> {
                     fileName = fileName + EXTENSION;
                     try (OutputStream out =
                                  getActivity().openFileOutput(fileName, Context.MODE_PRIVATE)) {
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                        drawView.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
                     } catch (IOException e) {
                         Log.e(ContentFragment.class.getSimpleName(), "couldn't save file", e);
                     }
@@ -246,9 +268,12 @@ public class ContentFragment extends BaseFragment implements
             loadSubscription = null;
         }
         loadSubscription = Observable.fromCallable(() -> {
+            Bitmap history[] = drawView.createHistory(HISTORY_SIZE);
+
             try (FileInputStream fileInputStream = getActivity().openFileInput(file + EXTENSION)) {
-                return BitmapFactory.decodeStream(fileInputStream)
+                Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream)
                         .copy(Bitmap.Config.ARGB_8888, true);
+                return new Pair<>(bitmap, history);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

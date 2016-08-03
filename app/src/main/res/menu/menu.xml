@@ -15,6 +15,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/menu_undo"
+        android:enabled="false"
+        android:title="@string/undo"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/menu_new"
         android:title="@string/new_image"
         app:showAsAction="never" />
