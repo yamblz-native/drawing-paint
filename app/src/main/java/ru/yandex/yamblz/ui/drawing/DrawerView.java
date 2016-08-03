@@ -4,13 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -24,6 +27,7 @@ public class DrawerView extends View implements Drawer {
     private static final String SUPER_EXTRA = "super";
 
     private Bitmap mBitmap;
+    private Bitmap mStamp;
     private Paint mPaint;
     private Paint mFilterPaint;
     private Canvas mCanvas;
@@ -151,9 +155,14 @@ public class DrawerView extends View implements Drawer {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 writeTouchCoordinates(event);
+                if(mTool == Tool.STAMP) {
+                    handleTouch(event);
+                }
                 return true;
             case MotionEvent.ACTION_MOVE:
-                handleTouch(event);
+                if(mTool != Tool.STAMP) {
+                    handleTouch(event);
+                }
                 writeTouchCoordinates(event);
                 break;
             case MotionEvent.ACTION_CANCEL:
@@ -178,7 +187,16 @@ public class DrawerView extends View implements Drawer {
             case ERASER:
                 drawEraser(event);
                 break;
+            case STAMP:
+                drawStamp(event);
+                break;
         }
+    }
+
+    private void drawStamp(MotionEvent event) {
+        mCanvas.drawBitmap(mStamp, event.getX() - mStamp.getWidth() / 2, event.getY()
+                - mStamp.getHeight() / 2, mPaint);
+        invalidate();
     }
 
     private void drawBrush(MotionEvent event) {
@@ -189,16 +207,6 @@ public class DrawerView extends View implements Drawer {
         drawLine(mPrevTouchX, mPrevTouchY, event.getX(), event.getY());
     }
 
-    private void drawCircle(float x, float y, float radius) {
-        mCanvas.drawCircle(x, y, radius, mPaint);
-        invalidate();
-    }
-
-    private void drawRect(float left, float top, float right, float bottom) {
-        mCanvas.drawRect(left, top, right, bottom, mPaint);
-        invalidate();
-    }
-
     private void drawLine(float x1, float y1, float x2, float y2) {
         mPath.reset();
         mPath.moveTo(x1, y1);
@@ -206,8 +214,6 @@ public class DrawerView extends View implements Drawer {
         mCanvas.drawPath(mPath, mPaint);
         invalidate();
     }
-
-
 
     @Override
     public void setSize(float size) {
@@ -247,6 +253,14 @@ public class DrawerView extends View implements Drawer {
         mPaint.setStyle(Paint.Style.STROKE);
     }
 
+    private void stamp() {
+        mTool = Tool.STAMP;
+
+        mPaint.reset();
+
+        mPaint.setColor(mColor);
+    }
+
     @Override
     public void disable() {
         mPaint.reset();
@@ -259,7 +273,9 @@ public class DrawerView extends View implements Drawer {
         if(mColor == 0) {
             return;
         }
-        if(mTool != Tool.ERASER) {
+        if(mTool == Tool.STAMP) {
+            changeColorOfStamp(mColor);
+        } else if(mTool != Tool.ERASER) {
             mPaint.setColor(mColor);
         }
     }
@@ -299,7 +315,41 @@ public class DrawerView extends View implements Drawer {
     }
 
     @Override
+    public void selectStamp(Bitmap stamp) {
+        mTool = Tool.STAMP;
+
+        mPaint.reset();
+
+        mStamp = stamp.copy(Bitmap.Config.ARGB_8888, true);
+        changeColorOfStamp(mColor);
+    }
+
+    @Override
+    public Bitmap getStamp() {
+        return mStamp;
+    }
+
+    private void changeColorOfStamp(int needColor) {
+        final int width = mStamp.getWidth();
+        final int height = mStamp.getHeight();
+        for(int i = 0; i < width; i++) {
+            for(int j = 0; j < height; j++) {
+                final int color = mStamp.getPixel(i, j);
+                if(color != 0) {
+                    mStamp.setPixel(i, j, needColor);
+                }
+            }
+        }
+    }
+
+    @Override
     public void selectTool(Tool tool) {
+        if(mTool == tool) {
+            return;
+        }
+        if(mTool == Tool.STAMP) {
+            mStamp = null;
+        }
         switch (tool) {
             case BRUSH:
                 brush();
@@ -307,7 +357,13 @@ public class DrawerView extends View implements Drawer {
             case ERASER:
                 eraser();
                 break;
+            case STAMP:
+                stamp();
+                break;
             case NO:
+                disable();
+                break;
+            default:
                 disable();
                 break;
         }

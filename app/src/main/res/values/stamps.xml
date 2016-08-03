@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="stamps">
+        <item>@drawable/ic_android_black_48dp</item>
+        <item>@drawable/ic_flower_black_48dp</item>
+    </integer-array>
+    <string-array name="stamps_names">
+        <item>android</item>
+        <item>flower</item>
+    </string-array>
+</resources>

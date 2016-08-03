@@ -3,6 +3,7 @@ package ru.yandex.yamblz.ui.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.GradientDrawable;
@@ -33,7 +34,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.yandex.yamblz.App;
-import ru.yandex.yamblz.DaggerApplicationComponent;
 import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.ui.drawing.Drawer;
 import ru.yandex.yamblz.ui.drawing.DrawerView;
@@ -51,7 +51,11 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
     private static final int FILTER_DIALOG_ID = 3;
 
+    private static final int STAMP_DIALOG_ID = 4;
+
     private static final String BITMAP_EXTRA = "bitmap";
+
+    private static final String STAMP_EXTRA = "stamp";
 
     @BindView(R.id.drawer)
     DrawerView drawerView;
@@ -74,6 +78,8 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     private Map<Integer, View> mColorToView = new HashMap<>();
 
     private int[] mColors;
+    private int[] mStamps;
+    private String[] mStampsNames;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,7 +87,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
         ((App)getActivity().getApplicationContext()).applicationComponent().inject(this);
 
-        initColors();
+        initArrays();
         initMaps();
     }
 
@@ -104,6 +110,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mImageCache.put(BITMAP_EXTRA, drawerView.getBitmap());
+        mImageCache.put(STAMP_EXTRA, drawerView.getStamp());
     }
 
     @Override
@@ -115,23 +122,36 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
             onColorSelected(mColors[0]);
             onSizeSelected(20f);
         } else {
-            onToolSelected(drawerView.getTool());
-            onColorSelected(drawerView.getColor());
-            onSizeSelected(drawerView.getSize());
             Bitmap bitmap = mImageCache.remove(BITMAP_EXTRA);
+            Bitmap stamp = mImageCache.remove(STAMP_EXTRA);
             if(bitmap != null) {
                 drawerView.setBitmap(bitmap);
             }
+            if(stamp != null) {
+                drawerView.selectStamp(stamp);
+            }
+            onToolSelected(drawerView.getTool());
+            onColorSelected(drawerView.getColor());
+            onSizeSelected(drawerView.getSize());
+
         }
     }
 
-    private void initColors() {
+    private void initArrays() {
         mColors = getResources().getIntArray(R.array.palette);
+        TypedArray stamps = getResources().obtainTypedArray(R.array.stamps);
+        mStamps = new int[stamps.length()];
+        for(int i = 0; i < mStamps.length; i++) {
+            mStamps[i] = stamps.getResourceId(i, 0);
+        }
+        stamps.recycle();
+        mStampsNames = getResources().getStringArray(R.array.stamps_names);
     }
 
     private void initMaps() {
         mTool2id.put(Drawer.Tool.BRUSH, R.id.brush);
         mTool2id.put(Drawer.Tool.ERASER, R.id.eraser);
+        mTool2id.put(Drawer.Tool.STAMP, R.id.stamp);
 
         for (Map.Entry<Drawer.Tool, Integer> entry : mTool2id.entrySet()) {
             mId2tool.put(entry.getValue(), entry.getKey());
@@ -173,7 +193,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
                 }
             };
 
-    @OnClick({R.id.eraser, R.id.brush, R.id.clean, R.id.filter})
+    @OnClick({R.id.eraser, R.id.brush, R.id.clean, R.id.filter, R.id.stamp})
     void onToolClick(View view) {
         final int id = view.getId();
         if (id == R.id.clean) {
@@ -200,6 +220,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     }
 
     private void onToolSelected(Drawer.Tool tool) {
+        Log.e("TAG", "ON TOOL SELECTED " + tool.getName());
         if (mSelectedTool == tool) {
             drawerView.disable();
             setToolIcon(tool, false);
@@ -210,6 +231,20 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
             mSelectedTool = tool;
         }
         drawerView.selectTool(mSelectedTool);
+
+        if(mSelectedTool == Drawer.Tool.STAMP) {
+            showStampsDialog();
+        }
+    }
+
+    private void disableTool() {
+        disableTool(mSelectedTool);
+    }
+
+    private void disableTool(Drawer.Tool tool) {
+        setToolIcon(tool, false);
+        mSelectedTool = Drawer.Tool.NO;
+        drawerView.disable();
     }
 
 
@@ -245,6 +280,12 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         listDialog.show(getChildFragmentManager(), "tag");
     }
 
+    private void showStampsDialog() {
+        ListDialog listDialog = ListDialog.newInstance(getString(R.string.stamps), null, mStampsNames,
+                null, null, getString(R.string.cancel), false, STAMP_DIALOG_ID);
+        listDialog.show(getChildFragmentManager(), "tag");
+    }
+
     private void setToolIcon(Drawer.Tool tool, boolean active) {
         if (tool == Drawer.Tool.NO) {
             return;
@@ -256,6 +297,9 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
                 break;
             case ERASER:
                 icon = (!active ? R.drawable.ic_eraser_grey600_24dp : R.drawable.ic_eraser_white_24dp);
+                break;
+            case STAMP:
+                icon = (!active ? R.drawable.ic_android_grey600_24dp : R.drawable.ic_android_white_24dp);
                 break;
         }
         ((ImageView) findToolView(tool)).setImageResource(icon);
@@ -325,7 +369,20 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
                     break;
                 }
             }
+        } else if(id == STAMP_DIALOG_ID) {
+            int drawableId = getDrawableIdForStampName(value);
+            Bitmap stamp = BitmapFactory.decodeResource(getResources(), drawableId);
+            drawerView.selectStamp(stamp);
         }
+    }
+
+    private int getDrawableIdForStampName(String name) {
+        for(int i = 0; i < mStampsNames.length; i++) {
+            if(mStampsNames[i].equals(name)) {
+                return mStamps[i];
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -340,7 +397,9 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
     @Override
     public void onNeutral(int id) {
-
+        if(id == STAMP_DIALOG_ID) {
+            disableTool();
+        }
     }
 
     @Override

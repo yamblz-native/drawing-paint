@@ -151,19 +151,19 @@ public class ListDialog extends DialogFragment {
 
         if(!TextUtils.isEmpty(mPositive)) {
             builder.setPositiveButton(mPositive, (DialogInterface dialogInterface, int which) -> {
-                //todo implement
+                mCallbacks.onPositive(mId);
             });
         }
 
         if(!TextUtils.isEmpty(mNegative)) {
             builder.setNegativeButton(mNegative, (DialogInterface dialogInterface, int which) -> {
-                //todo implement
+                mCallbacks.onNegative(mId);
             });
         }
 
         if(!TextUtils.isEmpty(mNeutral)) {
             builder.setNeutralButton(mNeutral, (DialogInterface dialogInterface, int which) -> {
-                //todo implement
+                mCallbacks.onNeutral(mId);
             });
         }
 

@@ -7,6 +7,7 @@ public interface Drawer {
     enum Tool {
         BRUSH("brush"),
         ERASER("eraser"),
+        STAMP("stamp"),
         NO("no");
 
         String mName;
@@ -70,6 +71,10 @@ public interface Drawer {
     void selectTool(Tool tool);
 
     Tool getTool();
+
+    void selectStamp(Bitmap stamp);
+
+    Bitmap getStamp();
 
     /**
      * Disable drawing
