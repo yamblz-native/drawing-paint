@@ -7,7 +7,7 @@ ext.versions = [
         compileSdk                   : 23,
         buildTools                   : '23.0.3',
 
-        androidGradlePlugin          : '2.2.0-alpha4',
+        androidGradlePlugin          : '2.2.0-alpha7',
         aptGradlePlugin              : '1.8',
         retrolambdaGradlePlugin      : '3.2.5',
         lombokGradlePlugin           : '0.2.3.a2',
@@ -19,6 +19,8 @@ ext.versions = [
         versionsGradlePlugin         : '0.13.0',
 
         dagger                       : '2.4',
+
+        horizontalwheelview          : '0.9.4',
 
         supportLibs                  : '23.1.1',
         butterKnife                  : '8.0.1',
@@ -54,6 +56,8 @@ ext.gradlePlugins = [
 ext.libraries = [
         dagger                  : "com.google.dagger:dagger:$versions.dagger",
         daggerCompiler          : "com.google.dagger:dagger-compiler:$versions.dagger",
+
+        horizontalwheelview     : "com.github.shchurov:horizontalwheelview:$versions.horizontalwheelview",
 
         autoValue               : "com.google.auto.value:auto-value:$versions.autoValue",
 

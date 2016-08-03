@@ -98,6 +98,8 @@ dependencies {
 
     compile libraries.timber
 
+    compile libraries.horizontalwheelview
+
     // Developer tools (Developer Settings)
     compile libraries.stetho
     compile libraries.leakCanary
