@@ -16,6 +16,8 @@
     <string name="brush_pencil">Кисть</string>
     <string name="brush_line">Линия</string>
     <string name="brush_cat">Кот</string>
+    <string name="brush_android">Андроид</string>
+    <string name="brush_heart">Сердце</string>
 
     <string name="incorrect_color">Некорректный цвет</string>
     <string name="alpha">Alpha</string>

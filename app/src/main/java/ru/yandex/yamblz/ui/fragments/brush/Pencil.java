@@ -5,13 +5,10 @@ import android.graphics.Path;
 
 public class Pencil extends AbstractBrush {
     private Path path = new Path();
-    private float startX, startY;
 
     @Override
     public void start(Point point) {
         super.start(point);
-        startX = point.getX();
-        startY = point.getY();
         path.moveTo(startX, startY);
     }
 
@@ -39,6 +36,6 @@ public class Pencil extends AbstractBrush {
 
     @Override
     public int getId() {
-        return 2;
+        return -2;
     }
 }

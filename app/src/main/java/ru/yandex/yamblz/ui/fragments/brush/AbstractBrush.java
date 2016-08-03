@@ -6,6 +6,7 @@ import android.graphics.Paint;
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractBrush implements Brush {
     protected Paint paint;
+    protected float startX, startY;
     private boolean isDrawn = false;
 
     @Override
@@ -21,6 +22,8 @@ public abstract class AbstractBrush implements Brush {
     @Override
     public void start(Point point) {
         isDrawn = true;
+        startX = point.getX();
+        startY = point.getY();
     }
 
     @Override
@@ -39,8 +42,7 @@ public abstract class AbstractBrush implements Brush {
         }
     }
 
-    protected void onDraw(Canvas canvas) {
-    }
+    protected abstract void onDraw(Canvas canvas);
 
     protected Brush copy(Brush brush) {
         brush.setPaint(paint);

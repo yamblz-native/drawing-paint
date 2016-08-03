@@ -44,6 +44,17 @@
             android:layout_weight="1"
             android:text="@string/brush_line" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp">
+
         <Button
             android:id="@+id/paint_cat"
             style="?android:attr/buttonBarButtonStyle"
@@ -51,6 +62,22 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/brush_cat" />
+
+        <Button
+            android:id="@+id/paint_android"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/brush_android" />
+
+        <Button
+            android:id="@+id/paint_heart"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/brush_heart" />
 
     </LinearLayout>
 

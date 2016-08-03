@@ -4,14 +4,11 @@ import android.graphics.Canvas;
 import android.graphics.Path;
 
 public class Line extends AbstractBrush {
-    private float startX, startY;
     private Path path = new Path();
 
     @Override
     public void start(Point point) {
         super.start(point);
-        startX = point.getX();
-        startY = point.getY();
         path.moveTo(startX, startY);
     }
 
@@ -41,6 +38,6 @@ public class Line extends AbstractBrush {
 
     @Override
     public int getId() {
-        return 1;
+        return -1;
     }
 }

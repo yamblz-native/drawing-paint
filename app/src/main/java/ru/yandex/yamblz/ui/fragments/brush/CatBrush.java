@@ -5,18 +5,9 @@ import android.graphics.Canvas;
 import ru.yandex.yamblz.ui.other.Utils;
 
 public class CatBrush extends AbstractBrush {
-    private float x, y;
-
-    @Override
-    public void start(Point point) {
-        super.start(point);
-        x = point.getX();
-        y = point.getY();
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
-        Utils.drawCat(canvas, paint.getColor(), x, y, paint.getStrokeWidth());
+        Utils.drawCat(canvas, paint.getColor(), startX, startY, paint.getStrokeWidth());
     }
 
     @Override
@@ -26,6 +17,6 @@ public class CatBrush extends AbstractBrush {
 
     @Override
     public int getId() {
-        return 3;
+        return -3;
     }
 }
