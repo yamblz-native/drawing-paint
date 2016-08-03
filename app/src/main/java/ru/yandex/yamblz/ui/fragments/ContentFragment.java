@@ -65,6 +65,9 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     @BindView(R.id.palette)
     FlexboxLayout palette;
 
+    @BindView(R.id.collapser)
+    ImageView collapser;
+
     @Inject
     ImageCache mImageCache;
 
@@ -98,6 +101,22 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         ButterKnife.bind(this, view);
 
         mBottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.paint_toolbar));
+
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if(newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    collapser.setImageResource(R.drawable.ic_keyboard_arrow_down_black_24dp);
+                } else if(newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    collapser.setImageResource(R.drawable.ic_keyboard_arrow_up_black_24dp);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
         sizeSeekBar.setOnSeekBarChangeListener(mOnSizeSeekBarChangeListener);
 
         initPalette();
@@ -203,6 +222,15 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
                 }
             };
+
+    @OnClick(R.id.collapser)
+    void onCollapserClick() {
+        if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        } else if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+    }
 
     @OnClick({R.id.eraser, R.id.brush, R.id.clean, R.id.filter, R.id.stamp})
     void onToolClick(View view) {
