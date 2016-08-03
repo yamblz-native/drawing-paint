@@ -28,6 +28,7 @@ import butterknife.BindView;
 import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.ui.fragments.brush.Brush;
 import ru.yandex.yamblz.ui.fragments.brush.Pencil;
+import ru.yandex.yamblz.ui.fragments.brush.Point;
 import ru.yandex.yamblz.ui.fragments.dialogs.ColorFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.OpenFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.PaintFragment;
@@ -42,7 +43,7 @@ import solid.stream.Stream;
 public class ContentFragment extends BaseFragment implements
         SaveFragment.OnFileEnteredListener,
         OpenFragment.OnFilePickedListener,
-        PaintFragment.OnPaintChangeListener,
+        PaintFragment.OnBrushChangeListener,
         ColorFragment.OnColorChangeListener,
         DrawView.TmpDrawer {
 
@@ -57,23 +58,22 @@ public class ContentFragment extends BaseFragment implements
     private Subscription loadSubscription;
 
     private Bitmap bitmap;
-    private Paint paint = new Paint();
     private Brush brush;
 
     private View.OnTouchListener drawListener = (view, event) -> {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                brush.start(event);
+                brush.start(new Point(event));
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                brush.move(event);
+                brush.move(new Point(event));
                 break;
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 brush.draw(drawView.getCanvas());
-                brush.finish(event);
+                brush.finish();
                 break;
         }
 
@@ -82,7 +82,7 @@ public class ContentFragment extends BaseFragment implements
     };
 
     private View.OnTouchListener eyeDropperListener = (view, event) -> {
-        paint.setColor(bitmap.getPixel((int) event.getX(), (int) event.getY()));
+        brush.getPaint().setColor(bitmap.getPixel((int) event.getX(), (int) event.getY()));
         drawView.setOnTouchListener(drawListener);
         DialogFragment dialogFragment = new ColorFragment();
         dialogFragment.show(getChildFragmentManager(), "color");
@@ -94,6 +94,7 @@ public class ContentFragment extends BaseFragment implements
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        Paint paint = new Paint();
         paint.setStrokeWidth(60);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStyle(Paint.Style.STROKE);
@@ -131,7 +132,8 @@ public class ContentFragment extends BaseFragment implements
                 Bundle arguments = new Bundle();
                 arguments.putInt(PaintFragment.MIN_VALUE, drawView.getWidth() / 100);
                 arguments.putInt(PaintFragment.MAX_VALUE, drawView.getWidth() / 3);
-                arguments.putInt(PaintFragment.DEFAULT_VALUE, (int) paint.getStrokeWidth());
+                arguments.putInt(PaintFragment.DEFAULT_VALUE,
+                        (int) brush.getPaint().getStrokeWidth());
 
                 DialogFragment dialogFragment = new PaintFragment();
                 dialogFragment.setArguments(arguments);
@@ -246,29 +248,24 @@ public class ContentFragment extends BaseFragment implements
     }
 
     @Override
-    public Paint getPaint() {
-        return paint;
-    }
-
-    @Override
-    public void onSizeChanged(int newSize) {
-        paint.setStrokeWidth(newSize);
-    }
-
-    @Override
-    public Brush getCurrentBrush() {
+    public Brush getBrush() {
         return brush;
     }
 
     @Override
+    public void onSizeChanged(int newSize) {
+        brush.getPaint().setStrokeWidth(newSize);
+    }
+
+    @Override
     public void onBrushChanged(Brush newBrush) {
+        newBrush.setPaint(brush.getPaint());
         brush = newBrush;
-        brush.setPaint(paint);
     }
 
     @Override
     public void onColorChanged(int newColor) {
-        paint.setColor(newColor);
+        brush.getPaint().setColor(newColor);
     }
 
     @Override

@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ru.yandex.yamblz.ui.fragments.dialogs.PaintImageView
+    <ru.yandex.yamblz.ui.fragments.dialogs.BrushImageView
         android:id="@+id/paint_size_image_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_gravity="center"
-        android:layout_margin="16dp"
+        android:layout_marginBottom="16dp"
         tools:ignore="ContentDescription" />
 
     <SeekBar

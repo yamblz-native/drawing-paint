@@ -1,21 +1,19 @@
 package ru.yandex.yamblz.ui.other;
 
-import android.annotation.TargetApi;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Build;
 
-public class Cat {
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static void drawCat(Canvas canvas, float centerX, float centerY, float radius) {
+public class Utils {
+    public static void drawCat(Canvas canvas, int color,
+                               float centerX, float centerY, float radius) {
         final Paint paint = new Paint();
         final Path path = new Path();
         paint.setAntiAlias(true);
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(4);
+        paint.setColor(color);
 
         canvas.drawArc(centerX - radius, centerY - radius, centerX + radius, centerY + radius,
                 -40, 180 + 40 + 40, false, paint);
@@ -36,11 +34,9 @@ public class Cat {
         canvas.drawCircle(centerX - radius * 0.4f, centerY - radius * 0.3f, radius * 0.1f, paint);
         canvas.drawCircle(centerX + radius * 0.4f, centerY - radius * 0.3f, radius * 0.1f, paint);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setColor(Color.DKGRAY);
         canvas.drawCircle(centerX - radius * 0.4f + radius * 0.03f, centerY - radius * 0.3f, radius * 0.03f, paint);
         canvas.drawCircle(centerX + radius * 0.4f + radius * 0.03f, centerY - radius * 0.3f, radius * 0.03f, paint);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.BLACK);
 
         moustache(path, canvas, paint, centerX, centerY, radius, 0);
         moustache(path, canvas, paint, centerX, centerY, radius, 10);
@@ -54,7 +50,6 @@ public class Cat {
                 0, 180, false, paint);
 
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setColor(Color.MAGENTA);
         path.reset();
         path.moveTo(centerX, centerY + radius * 0.35f);
         path.lineTo(centerX - radius * 0.1f, centerY + radius * 0.25f);
@@ -69,7 +64,6 @@ public class Cat {
                 centerY + radius * 0.3f, -180, 180);
         path.close();
         canvas.drawPath(path, paint);
-        paint.setColor(Color.BLACK);
     }
 
     private static void moustache(Path path, Canvas canvas, Paint paint,
@@ -92,5 +86,15 @@ public class Cat {
         path.moveTo(ax, ay);
         path.lineTo(bx, by);
         canvas.drawPath(path, paint);
+    }
+
+    /**
+     * Invert color but keep alpha.
+     *
+     * @param color color to invert.
+     * @return inverted color.
+     */
+    public static int invertColor(int color) {
+        return (0xFF000000 & color) | (0x00FFFFFF & ~color);
     }
 }

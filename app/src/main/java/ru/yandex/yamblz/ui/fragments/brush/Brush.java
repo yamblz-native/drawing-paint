@@ -2,19 +2,22 @@ package ru.yandex.yamblz.ui.fragments.brush;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.view.MotionEvent;
 
 @SuppressWarnings("WeakerAccess")
 public interface Brush {
+    Paint getPaint();
+
     void setPaint(Paint paint);
 
-    void start(MotionEvent event);
+    void start(Point point);
 
-    void move(MotionEvent event);
+    void move(Point point);
 
-    void finish(MotionEvent event);
+    void finish();
 
     void draw(Canvas canvas);
+
+    Brush copy();
 
     int getId();
 }

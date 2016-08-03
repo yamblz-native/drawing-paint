@@ -27,7 +27,7 @@ public class PaintFragment extends DialogFragment {
     public static final String DEFAULT_VALUE = "default value";
 
     @BindView(R.id.paint_size_image_view)
-    PaintImageView imageView;
+    BrushImageView imageView;
     @BindView(R.id.paint_size_seek_bar)
     SeekBar seekBar;
 
@@ -44,14 +44,14 @@ public class PaintFragment extends DialogFragment {
         View view = layoutInflater.inflate(R.layout.dialog_paint, null);
         ButterKnife.bind(this, view);
 
-        OnPaintChangeListener onPaintChangeListener = (OnPaintChangeListener) getParentFragment();
+        OnBrushChangeListener onPaintChangeListener = (OnBrushChangeListener) getParentFragment();
 
         Bundle arguments = getArguments();
         final int minValue = arguments.getInt(MIN_VALUE);
         final int maxValue = arguments.getInt(MAX_VALUE);
         final int defaultValue = arguments.getInt(DEFAULT_VALUE);
 
-        imageView.setPaint(onPaintChangeListener.getPaint());
+        imageView.setBrush(onPaintChangeListener.getBrush());
 
         seekBar.setMax(maxValue - minValue);
         seekBar.setProgress(defaultValue - minValue);
@@ -59,7 +59,7 @@ public class PaintFragment extends DialogFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 onPaintChangeListener.onSizeChanged(progress + minValue);
-                imageView.setPaint(onPaintChangeListener.getPaint());
+                imageView.setBrush(onPaintChangeListener.getBrush());
                 imageView.invalidate();
             }
 
@@ -73,7 +73,7 @@ public class PaintFragment extends DialogFragment {
         });
 
         for (int i = 0; i < brushButtons.length; ++i) {
-            if (onPaintChangeListener.getCurrentBrush().getId() == brushes[i].getId()) {
+            if (onPaintChangeListener.getBrush().getId() == brushes[i].getId()) {
                 brushButtons[i].setEnabled(false);
             }
 
@@ -85,6 +85,8 @@ public class PaintFragment extends DialogFragment {
                 }
                 brushButtons[closureI].setEnabled(false);
                 onPaintChangeListener.onBrushChanged(brushes[closureI]);
+                imageView.setBrush(onPaintChangeListener.getBrush());
+                imageView.invalidate();
             });
         }
 
@@ -95,10 +97,8 @@ public class PaintFragment extends DialogFragment {
         return builder.create();
     }
 
-    public interface OnPaintChangeListener extends PaintProvider {
+    public interface OnBrushChangeListener extends BrushProvider {
         void onSizeChanged(int newSize);
-
-        Brush getCurrentBrush();
 
         void onBrushChanged(Brush newBrush);
     }

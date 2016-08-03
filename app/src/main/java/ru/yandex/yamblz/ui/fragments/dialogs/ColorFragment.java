@@ -2,7 +2,6 @@ package ru.yandex.yamblz.ui.fragments.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -21,11 +20,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import ru.yandex.yamblz.R;
+import ru.yandex.yamblz.ui.fragments.brush.Brush;
+import ru.yandex.yamblz.ui.other.Utils;
 
 public class ColorFragment extends DialogFragment {
 
     @BindView(R.id.paint_color_image_view)
-    PaintImageView imageView;
+    BrushImageView imageView;
     @BindView(R.id.paint_color_edit_text)
     EditText editText;
     @BindViews({R.id.paint_alpha_seek_bar,
@@ -44,9 +45,9 @@ public class ColorFragment extends DialogFragment {
         onColorChangeListener = (OnColorChangeListener) getParentFragment();
 
         imageView.setOnClickListener(v -> {
-            onColorChangeListener.onColorChanged(PaintImageView.invertColor(composeColor()));
-            setPaint();
-            setSeekBars(onColorChangeListener.getPaint().getColor());
+            onColorChangeListener.onColorChanged(Utils.invertColor(composeColor()));
+            setBrush();
+            setSeekBars(onColorChangeListener.getBrush().getPaint().getColor());
         });
         for (SeekBar seekBar : seekBars) {
             seekBar.setMax(0xFF);
@@ -54,7 +55,7 @@ public class ColorFragment extends DialogFragment {
                 @Override
                 public void onProgressChanged(SeekBar ignored, int progress, boolean fromUser) {
                     onColorChangeListener.onColorChanged(composeColor());
-                    setPaint();
+                    setBrush();
                     imageView.invalidate();
                 }
 
@@ -68,9 +69,9 @@ public class ColorFragment extends DialogFragment {
             });
         }
 
-        final Paint paint = onColorChangeListener.getPaint();
-        setPaint();
-        setSeekBars(paint.getColor());
+        final Brush brush = onColorChangeListener.getBrush();
+        setBrush();
+        setSeekBars(brush.getPaint().getColor());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
@@ -93,11 +94,11 @@ public class ColorFragment extends DialogFragment {
                 int color = Integer.parseInt(editText.getText().toString(), 16);
                 setSeekBars(color);
                 onColorChangeListener.onColorChanged(composeColor());
-                setPaint();
+                setBrush();
             } catch (NumberFormatException e) {
                 Toast.makeText(getContext(), R.string.incorrect_color, Toast.LENGTH_SHORT)
                         .show();
-                setPaint();
+                setBrush();
             }
         }
         return false;
@@ -108,11 +109,11 @@ public class ColorFragment extends DialogFragment {
         return (color & mask) >>> ((3 - i) * 8);
     }
 
-    private void setPaint() {
-        Paint paint = onColorChangeListener.getPaint();
-        imageView.setPaint(paint);
+    private void setBrush() {
+        Brush brush = onColorChangeListener.getBrush();
+        imageView.setBrush(brush);
 
-        int color = paint.getColor();
+        int color = brush.getPaint().getColor();
         setEditText(color);
     }
 
@@ -136,7 +137,7 @@ public class ColorFragment extends DialogFragment {
         return color;
     }
 
-    public interface OnColorChangeListener extends PaintProvider {
+    public interface OnColorChangeListener extends BrushProvider {
         void onColorChanged(int newColor);
 
         void onEyeDropperRequested();

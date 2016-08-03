@@ -1,35 +1,27 @@
 package ru.yandex.yamblz.ui.fragments.brush;
 
 import android.graphics.Canvas;
-import android.view.MotionEvent;
 
-import ru.yandex.yamblz.ui.other.Cat;
+import ru.yandex.yamblz.ui.other.Utils;
 
 public class CatBrush extends AbstractBrush {
-    private boolean isDrawn;
     private float x, y;
 
     @Override
-    public void start(MotionEvent event) {
-        isDrawn = true;
-        x = event.getX();
-        y = event.getY();
+    public void start(Point point) {
+        super.start(point);
+        x = point.getX();
+        y = point.getY();
     }
 
     @Override
-    public void move(MotionEvent event) {
+    protected void onDraw(Canvas canvas) {
+        Utils.drawCat(canvas, paint.getColor(), x, y, paint.getStrokeWidth());
     }
 
     @Override
-    public void finish(MotionEvent event) {
-        isDrawn = false;
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        if (isDrawn) {
-            Cat.drawCat(canvas, x, y, paint.getStrokeWidth());
-        }
+    public Brush copy() {
+        return copy(new CatBrush());
     }
 
     @Override

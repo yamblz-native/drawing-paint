@@ -2,33 +2,41 @@ package ru.yandex.yamblz.ui.fragments.brush;
 
 import android.graphics.Canvas;
 import android.graphics.Path;
-import android.view.MotionEvent;
 
 public class Line extends AbstractBrush {
     private float startX, startY;
     private Path path = new Path();
 
     @Override
-    public void start(MotionEvent event) {
-        startX = event.getX();
-        startY = event.getY();
+    public void start(Point point) {
+        super.start(point);
+        startX = point.getX();
+        startY = point.getY();
+        path.moveTo(startX, startY);
     }
 
     @Override
-    public void move(MotionEvent event) {
+    public void move(Point point) {
         path.reset();
         path.moveTo(startX, startY);
-        path.lineTo(event.getX(), event.getY());
+        path.lineTo(point.getX(), point.getY());
     }
 
     @Override
-    public void finish(MotionEvent event) {
+    public void finish() {
+        super.finish();
         path.reset();
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         canvas.drawPath(path, paint);
+        canvas.drawPoint(startX, startY, paint);
+    }
+
+    @Override
+    public Brush copy() {
+        return copy(new Line());
     }
 
     @Override
