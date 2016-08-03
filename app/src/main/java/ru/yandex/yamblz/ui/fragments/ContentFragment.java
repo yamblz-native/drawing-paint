@@ -19,7 +19,6 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnLongClick;
 import butterknife.Unbinder;
 import ru.yandex.yamblz.FileManager;
 import ru.yandex.yamblz.R;
@@ -39,6 +38,9 @@ public class ContentFragment extends BaseFragment {
     @BindView(R.id.download_button)
     ImageView downloadButton;
 
+    @BindView(R.id.palette_button)
+    ImageView paletteButton;
+
     @BindView(R.id.my_drawing_view)
     DrawingView drawingView;
 
@@ -55,10 +57,8 @@ public class ContentFragment extends BaseFragment {
         return v;
     }
 
-    @OnLongClick(R.id.brush_button)
-    public boolean onLongClick(View v) {
-        Log.d(DEBUG_TAG, "In long click");
-
+    @OnClick(R.id.palette_button)
+    public void onPaletteClick(View v) {
         ColorPickerDialogBuilder
                 .with(v.getContext())
                 .setTitle("Choose color")
@@ -68,13 +68,13 @@ public class ContentFragment extends BaseFragment {
                 .setOnColorSelectedListener(selectedColor -> Log.d(DEBUG_TAG, "onColorSelected: 0x" + Integer.toHexString(selectedColor)))
                 .setPositiveButton("ok", (dialog, selectedColor, allColors) -> {
                     drawingView.setNewColorForBrush(selectedColor);
+                    paletteButton.setColorFilter(selectedColor);
+                    paletteButton.invalidate();
                 })
                 .setNegativeButton("cancel", (dialog, which) -> {
                 })
                 .build()
                 .show();
-
-        return true;
     }
 
     @OnClick(R.id.save_button)
@@ -121,7 +121,6 @@ public class ContentFragment extends BaseFragment {
         }
 
     }
-
 
     @Override
     public void onDestroyView() {
