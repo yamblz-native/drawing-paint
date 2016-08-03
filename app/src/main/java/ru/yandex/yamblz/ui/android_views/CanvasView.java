@@ -18,7 +18,7 @@ public class CanvasView extends View {
     private Paint canvasPaint;
     private Path path;
     private Canvas canvas;
-    private Bitmap canvasBitmap;
+    private Bitmap bitmap;
 
     public CanvasView(Context context) {
         super(context);
@@ -87,14 +87,36 @@ public class CanvasView extends View {
     @Override
     protected void onDraw(Canvas c) {
         super.onDraw(canvas);
-        c.drawBitmap(canvasBitmap, 0, 0, canvasPaint);
+        c.drawBitmap(bitmap, 0, 0, canvasPaint);
         c.drawPath(path, drawPaint);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        canvasBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(canvasBitmap);
+        clearCanvas(w, h);
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        canvas = new Canvas(this.bitmap);
+        invalidate();
+    }
+
+    private void clearCanvas(int width, int height) {
+        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bitmap.eraseColor(Color.WHITE);
+        canvas = new Canvas(bitmap);
+    }
+
+    public void clear() {
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        clearCanvas(width, height);
+        invalidate();
     }
 }

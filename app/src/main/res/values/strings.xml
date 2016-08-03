@@ -10,4 +10,9 @@
     <string name="text">Текст</string>
     <string name="color_pick">Выберите цвет</string>
     <string name="ok">OK</string>
+    <string name="image_saving_error">Изображение не сохранено</string>
+    <string name="saved">Сохранено</string>
+    <string name="choose_photo">Выберите изображение</string>
+    <string name="filter_pick">Выберите фильтр</string>
+    <string name="clear">Очистить</string>
 </resources>
