@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import ru.yandex.yamblz.ui.fragments.brush.Brush;
 import ru.yandex.yamblz.ui.fragments.brush.Point;
 
+/**
+ * Preview of a {@link Brush}.
+ */
 public class BrushImageView extends ImageView {
     private Brush brush;
     private Point point = new Point(0, 0);
@@ -24,6 +27,11 @@ public class BrushImageView extends ImageView {
         super(context, attrs, defStyleAttr);
     }
 
+    /**
+     * Set brush to preview.
+     *
+     * @param brush brush to preview.
+     */
     public void setBrush(Brush brush) {
         this.brush = brush.copy();
     }

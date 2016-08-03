@@ -2,6 +2,9 @@ package ru.yandex.yamblz.ui.fragments.brush;
 
 import android.view.MotionEvent;
 
+/**
+ * Mutable point.
+ */
 @SuppressWarnings("WeakerAccess")
 public class Point {
     private float x, y;
@@ -11,6 +14,11 @@ public class Point {
         this.y = y;
     }
 
+    /**
+     * Create new instance from {@link MotionEvent} coordinates.
+     *
+     * @param event event to take coordinates from.
+     */
     public Point(MotionEvent event) {
         this(event.getX(), event.getY());
     }

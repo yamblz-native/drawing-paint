@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.DashPathEffect;
 import android.graphics.PathEffect;
 
-public class DashLine extends Line {
+public class DashLine extends Pencil {
 
     @Override
     public Brush copy() {

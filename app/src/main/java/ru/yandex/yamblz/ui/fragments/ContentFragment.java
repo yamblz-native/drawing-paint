@@ -82,8 +82,8 @@ public class ContentFragment extends BaseFragment implements
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                drawView.beginCommit();
-                brush.draw(drawView.getCommitCanvas());
+                drawView.beginNewAction();
+                brush.draw(drawView.getActionCanvas());
                 brush.finish();
                 undoItem.setEnabled(drawView.canUndo());
                 break;
@@ -210,6 +210,9 @@ public class ContentFragment extends BaseFragment implements
                             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
                         } catch (IOException e) {
                             Log.e(ContentFragment.class.getSimpleName(), "couldn't save file", e);
+                            Toast.makeText(getContext(),
+                                    getString(R.string.not_saved),
+                                    Toast.LENGTH_LONG).show();
                         }
                         return null;
                     })
