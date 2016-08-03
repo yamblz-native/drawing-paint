@@ -23,18 +23,28 @@ public class DrawerView extends View implements Drawer {
     private static final String TOOL_EXTRA = "tool";
     private static final String SUPER_EXTRA = "super";
 
+    //Bitmap to draw at
     private Bitmap mBitmap;
+
+    //Stamp to put on
     private Bitmap mStamp;
+
     private Paint mPaint;
     private Paint mFilterPaint;
     private Canvas mCanvas;
     private Path mPath;
+
+    //Current line width
     private float mSize = 10;
+    //Current color
     private int mColor;
+    //Current selected tool, brush by default
     private Tool mTool = Tool.BRUSH;
 
+    //Previous touch position
     private float mPrevTouchX, mPrevTouchY;
 
+    //Color filters
     private ColorMatrixColorFilter mGrayscaleFilter, mSepiaFilter, mBinaryFilter, mInvertFilter;
 
     public DrawerView(Context context) {
@@ -114,14 +124,17 @@ public class DrawerView extends View implements Drawer {
         int curBitmapWidth = mBitmap != null ? mBitmap.getWidth() : 0;
         int curBitmapHeight = mBitmap != null ? mBitmap.getHeight() : 0;
 
+        //if current bitmap is larger than view then do nothing
         if(curBitmapWidth >= w && curBitmapHeight >= h) {
             return;
         }
 
+        //make bitmap wider if view is wider
         if(curBitmapWidth < w) {
             curBitmapWidth = w;
         }
 
+        //make bitmap taller if view is taller
         if(curBitmapHeight < h) {
             curBitmapHeight = h;
         }
@@ -130,6 +143,7 @@ public class DrawerView extends View implements Drawer {
             return;
         }
 
+        //redraw on new bitmap
         Bitmap newBitmap = Bitmap.createBitmap(curBitmapWidth, curBitmapHeight, Bitmap.Config.ARGB_8888);
         newBitmap.eraseColor(BACKGROUND_COLOR);
 
@@ -153,11 +167,13 @@ public class DrawerView extends View implements Drawer {
             case MotionEvent.ACTION_DOWN:
                 writeTouchCoordinates(event);
                 if(mTool == Tool.STAMP) {
+                    //draw stamp only on down
                     handleTouch(event);
                 }
                 return true;
             case MotionEvent.ACTION_MOVE:
                 if(mTool != Tool.STAMP) {
+                    //we don't need drawing stamp on move
                     handleTouch(event);
                 }
                 writeTouchCoordinates(event);
@@ -171,11 +187,19 @@ public class DrawerView extends View implements Drawer {
         return super.onTouchEvent(event);
     }
 
+    /**
+     * Memorizes last touch event coordinates
+     * @param event touch event
+     */
     private void writeTouchCoordinates(MotionEvent event) {
         mPrevTouchX = event.getX();
         mPrevTouchY = event.getY();
     }
 
+    /**
+     * Navigates touch event to selected tool
+     * @param event touch event
+     */
     private void handleTouch(MotionEvent event) {
         switch (mTool) {
             case BRUSH:
@@ -190,20 +214,39 @@ public class DrawerView extends View implements Drawer {
         }
     }
 
+    /**
+     * Draws stamp at the given position
+     * @param event the event to retrieve position from
+     */
     private void drawStamp(MotionEvent event) {
         mCanvas.drawBitmap(mStamp, event.getX() - mStamp.getWidth() / 2, event.getY()
                 - mStamp.getHeight() / 2, mPaint);
         invalidate();
     }
 
+    /**
+     * Draws using brush at the given position
+     * @param event the event to retrieve position from
+     */
     private void drawBrush(MotionEvent event) {
         drawLine(mPrevTouchX, mPrevTouchY, event.getX(), event.getY());
     }
 
+    /**
+     * Draws using eraser at the given position
+     * @param event the event to retrieve position from
+     */
     private void drawEraser(MotionEvent event) {
         drawLine(mPrevTouchX, mPrevTouchY, event.getX(), event.getY());
     }
 
+    /**
+     * Draws line from (x1, y1) to (x2, y2)
+     * @param x1
+     * @param y1
+     * @param x2
+     * @param y2
+     */
     private void drawLine(float x1, float y1, float x2, float y2) {
         mPath.reset();
         mPath.moveTo(x1, y1);
@@ -224,6 +267,9 @@ public class DrawerView extends View implements Drawer {
         return mSize;
     }
 
+    /**
+     * Turns on the brush tool
+     */
     private void brush() {
         mTool = Tool.BRUSH;
 
@@ -237,6 +283,9 @@ public class DrawerView extends View implements Drawer {
         mPaint.setStyle(Paint.Style.STROKE);
     }
 
+    /**
+     * Turns on the eraser tool
+     */
     private void eraser() {
         mTool = Tool.ERASER;
 
@@ -250,6 +299,9 @@ public class DrawerView extends View implements Drawer {
         mPaint.setStyle(Paint.Style.STROKE);
     }
 
+    /**
+     * Turns on the stamp tool
+     */
     private void stamp() {
         mTool = Tool.STAMP;
 
@@ -326,6 +378,11 @@ public class DrawerView extends View implements Drawer {
         return mStamp;
     }
 
+    /**
+     * Changes color of the stamp
+     * Finds all {@code != 0} pixels and sets the to the color
+     * @param needColor the needed color
+     */
     private void changeColorOfStamp(int needColor) {
         final int width = mStamp.getWidth();
         final int height = mStamp.getHeight();

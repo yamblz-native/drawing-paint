@@ -1,7 +1,11 @@
 package ru.yandex.yamblz.ui.drawing;
 
 import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
 
+/**
+ * Interface for something that can draw
+ */
 public interface Drawer {
 
     enum Tool {
@@ -20,6 +24,11 @@ public interface Drawer {
             return mName;
         }
 
+        /**
+         * Finds tool by the given name
+         * @param name the name of a tool
+         * @return the tool with the give name
+         */
         public static Tool findByName(String name) {
             for(Tool tool : values()) {
                 if(tool.getName().equals(name)) {
@@ -46,6 +55,10 @@ public interface Drawer {
             return mName;
         }
 
+        /**
+         * Returns the names of the filters
+         * @return the names
+         */
         public static String[] getFilterNames() {
             String[] names = new String[values().length];
             int iter = 0;
@@ -68,13 +81,29 @@ public interface Drawer {
      */
     float getSize();
 
+    /**
+     * Selects the given tool
+     * @param tool the tool
+     */
     void selectTool(Tool tool);
 
+    /**
+     * Returns the selected tool
+     * @return the tool
+     */
     Tool getTool();
 
+    /**
+     * Select stamp tool with the given bitmap
+     * @param stamp the bitmap
+     */
     void selectStamp(Bitmap stamp);
 
-    Bitmap getStamp();
+    /**
+     * Returns the stamp bitmap if {@link Tool#STAMP} selected
+     * @return the stamp bitmap, or {@code null} if {@link Tool#STAMP} not selected
+     */
+    @Nullable Bitmap getStamp();
 
     /**
      * Disable drawing
@@ -99,6 +128,10 @@ public interface Drawer {
      */
     void setBitmap(Bitmap bitmap);
 
+    /**
+     * Returns the drawn bitmap
+     * @return the drawn bitmap
+     */
     Bitmap getBitmap();
 
     /**
@@ -106,6 +139,10 @@ public interface Drawer {
      */
     void clean();
 
+    /**
+     * Applies the given filter to the image
+     * @param filter the filter to apply
+     */
     void filter(Filter filter);
 
 }

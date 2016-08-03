@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,15 +117,18 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         super.onViewStateRestored(savedInstanceState);
 
         if (savedInstanceState == null) {
+            //if first start then set default config for drawer
             onToolSelected(Drawer.Tool.BRUSH);
             onColorSelected(mColors[0]);
             onSizeSelected(20f);
         } else {
+            //retrieve cached bitmap to continue drawing
             Bitmap bitmap = mImageCache.remove(BITMAP_EXTRA);
             Bitmap stamp = mImageCache.remove(STAMP_EXTRA);
             if(bitmap != null) {
                 drawerView.setBitmap(bitmap);
             }
+            //if stamp was the last tool the retrieve the stamp bitmap from cache
             if(drawerView.getTool() == Drawer.Tool.STAMP && stamp != null) {
                 drawerView.selectStamp(stamp);
             }
@@ -137,6 +139,9 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         }
     }
 
+    /**
+     * Retrieves predefined arrays from resources
+     */
     private void initArrays() {
         mColors = getResources().getIntArray(R.array.palette);
         TypedArray stamps = getResources().obtainTypedArray(R.array.stamps);
@@ -148,6 +153,9 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         mStampsNames = getResources().getStringArray(R.array.stamps_names);
     }
 
+    /**
+     * Inits maps from ids 2 tools, and vice versa
+     */
     private void initMaps() {
         mTool2id.put(Drawer.Tool.BRUSH, R.id.brush);
         mTool2id.put(Drawer.Tool.ERASER, R.id.eraser);
@@ -158,6 +166,9 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         }
     }
 
+    /**
+     * Adds palette to ui
+     */
     private void initPalette() {
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         for (int color : mColors) {
@@ -205,6 +216,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
             return;
         }
 
+        //show dialog only if first time clicked
         if(id == R.id.stamp && mSelectedTool != Drawer.Tool.STAMP) {
             showStampsDialog();
             return;
@@ -226,6 +238,7 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
 
     private void onToolSelected(Drawer.Tool tool) {
         if (mSelectedTool == tool) {
+            //if the tool was twice clicked then turn it off and update ui
             drawerView.disable();
             setToolIcon(tool, false);
             mSelectedTool = Drawer.Tool.NO;
@@ -247,14 +260,17 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         drawerView.disable();
     }
 
-
+    /**
+     * Animates color selection
+     * @param color the selected color
+     */
     private void onColorSelected(int color) {
-        Animator curAnimator = animateColor(mColorToView.get(color), true);
+        Animator curAnimator = createColorAnimation(mColorToView.get(color), true);
         if (drawerView.getColor() == color) {
             curAnimator.setDuration(COLOR_SCALE_DURATION);
             curAnimator.start();
         } else {
-            Animator prevAnimator = animateColor(mColorToView.get(drawerView.getColor()), false);
+            Animator prevAnimator = createColorAnimation(mColorToView.get(drawerView.getColor()), false);
             AnimatorSet animatorSet = new AnimatorSet();
             animatorSet.playTogether(prevAnimator, curAnimator);
             animatorSet.setDuration(COLOR_SCALE_DURATION);
@@ -263,8 +279,13 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         drawerView.setColor(color);
     }
 
-
-    private Animator animateColor(View view, boolean scale) {
+    /**
+     * Returns color scale animation
+     * @param view the view to animate
+     * @param scale {@code true} if increase scale
+     * @return the animator
+     */
+    private Animator createColorAnimation(View view, boolean scale) {
         float from, to;
         from = (scale ? 1.0f : 1.3f);
         to = (scale ? 1.3f : 1.0f);
@@ -286,6 +307,11 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
         listDialog.show(getChildFragmentManager(), null);
     }
 
+    /**
+     * Sets tool appropriate icon
+     * @param tool the tool
+     * @param active {@code true} if tool is active
+     */
     private void setToolIcon(Drawer.Tool tool, boolean active) {
         if (tool == Drawer.Tool.NO) {
             return;
@@ -330,11 +356,15 @@ public class ContentFragment extends BaseFragment implements EditTextDialog.Call
     @Override
     public void onPositive(String value, int id) {
         if (id == SAVE_FILE_DIALOG_ID) {
-            saveFileToInternalStorage(value);
+            saveImageToInternalStorage(value);
         }
     }
 
-    private void saveFileToInternalStorage(String filename) {
+    /**
+     * Saves image to internal storage, appending .png suffix
+     * @param filename file name to save in
+     */
+    private void saveImageToInternalStorage(String filename) {
         if (!filename.endsWith(".png") && !filename.endsWith(".png")) {
             filename += ".png";
         }
