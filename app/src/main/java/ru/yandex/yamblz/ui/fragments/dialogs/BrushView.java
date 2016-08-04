@@ -3,7 +3,7 @@ package ru.yandex.yamblz.ui.fragments.dialogs;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import android.view.View;
 
 import ru.yandex.yamblz.ui.fragments.brush.Brush;
 import ru.yandex.yamblz.ui.fragments.brush.Point;
@@ -11,19 +11,19 @@ import ru.yandex.yamblz.ui.fragments.brush.Point;
 /**
  * Preview of a {@link Brush}.
  */
-public class BrushImageView extends ImageView {
+public class BrushView extends View {
     private Brush brush;
     private Point point = new Point(0, 0);
 
-    public BrushImageView(Context context) {
+    public BrushView(Context context) {
         super(context);
     }
 
-    public BrushImageView(Context context, AttributeSet attrs) {
+    public BrushView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public BrushImageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BrushView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

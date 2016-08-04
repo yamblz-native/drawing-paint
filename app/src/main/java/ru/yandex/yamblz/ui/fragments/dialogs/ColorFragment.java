@@ -26,7 +26,7 @@ import ru.yandex.yamblz.ui.fragments.brush.Brush;
 public class ColorFragment extends DialogFragment {
 
     @BindView(R.id.brush_color_image_view)
-    BrushImageView imageView;
+    BrushView imageView;
     @BindView(R.id.brush_color_edit_text)
     EditText editText;
     @BindViews({R.id.brush_alpha_seek_bar,

@@ -33,7 +33,7 @@ public class BrushFragment extends DialogFragment {
     public static final String DEFAULT_VALUE = "default value";
 
     @BindView(R.id.brush_image_view)
-    BrushImageView imageView;
+    BrushView imageView;
     @BindView(R.id.brush_size_seek_bar)
     SeekBar seekBar;
 
@@ -96,6 +96,10 @@ public class BrushFragment extends DialogFragment {
             }
         });
 
+        if (onBrushChangeListener.getBrush().getId() == textBrush.getId()) {
+            textBrush = (TextBrush) onBrushChangeListener.getBrush().copy();
+            editText.setText(textBrush.getText());
+        }
         for (int i = 0; i < brushButtons.length; ++i) {
             brushButtons[i].setEnabled(
                     onBrushChangeListener.getBrush().getId() != brushes[i].getId());
@@ -110,10 +114,6 @@ public class BrushFragment extends DialogFragment {
                 imageView.setBrush(onBrushChangeListener.getBrush());
                 imageView.invalidate();
             });
-        }
-
-        if (onBrushChangeListener.getBrush().getId() == textBrush.getId()) {
-            editText.setText(((TextBrush) onBrushChangeListener.getBrush()).getText());
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

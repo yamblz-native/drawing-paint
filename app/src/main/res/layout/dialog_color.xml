@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ru.yandex.yamblz.ui.fragments.dialogs.BrushImageView
+    <ru.yandex.yamblz.ui.fragments.dialogs.BrushView
         android:id="@+id/brush_color_image_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
