@@ -6,6 +6,13 @@ import ru.yandex.yamblz.ui.fragments.Utils;
 
 public class CatBrush extends AbstractBrush {
     @Override
+    public void move(Point point) {
+        super.move(point);
+        startX = point.getX();
+        startY = point.getY();
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         Utils.drawCat(canvas, paint.getColor(), startX, startY, paint.getStrokeWidth());
     }

@@ -27,6 +27,13 @@ public class DrawableBrush extends AbstractBrush {
         radius = Math.max(width, height);
     }
 
+    @Override
+    public void move(Point point) {
+        super.move(point);
+        startX = point.getX();
+        startY = point.getY();
+    }
+
     @SuppressLint("DrawAllocation") // Sorry :(
     @Override
     protected void onDraw(Canvas canvas) {
