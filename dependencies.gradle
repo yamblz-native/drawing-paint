@@ -21,6 +21,7 @@ ext.versions = [
         dagger                       : '2.4',
 
         horizontalwheelview          : '0.9.4',
+        colorpicker                  : '1.7.0',
 
         supportLibs                  : '23.1.1',
         butterKnife                  : '8.0.1',
@@ -58,6 +59,7 @@ ext.libraries = [
         daggerCompiler          : "com.google.dagger:dagger-compiler:$versions.dagger",
 
         horizontalwheelview     : "com.github.shchurov:horizontalwheelview:$versions.horizontalwheelview",
+        colorpicker             : "com.rarepebble:colorpicker:$versions.colorpicker",
 
         autoValue               : "com.google.auto.value:auto-value:$versions.autoValue",
 

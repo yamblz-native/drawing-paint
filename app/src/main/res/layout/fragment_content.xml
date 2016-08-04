@@ -1,20 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
     <com.github.shchurov.horizontalwheelview.HorizontalWheelView
         android:id="@+id/fragment_content_wheel_view"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_toEndOf="@+id/fragment_content_paint_view"
+        android:layout_toRightOf="@+id/fragment_content_paint_view"
         app:activeColor="#f9a825"
         app:normalColor="#000000"/>
+
+    <ru.yandex.yamblz.ui.views.PaintView
+        android:id="@+id/fragment_content_paint_view"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
     <ru.yandex.yamblz.ui.views.CanvasView
         android:id="@+id/fragment_content_canvas_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fragment_content_wheel_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
-</LinearLayout>
+</RelativeLayout>

@@ -21,30 +21,23 @@ public class CanvasView extends View {
 
     public CanvasView(Context context) {
         super(context);
+        init();
     }
 
     public CanvasView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public CanvasView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public CanvasView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    public void setPaintSize(float size) {
-        mPaint = new Paint();
-        initPaint();
-        mPaint.setStrokeWidth(size);
-    }
-
-    private void initPaint() {
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setColor(0x99887766);
+        init();
     }
 
     @Override
@@ -61,7 +54,7 @@ public class CanvasView extends View {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mPath = new Path();
-                mPathList.add(new Pair<>(mPath, mPaint));
+                mPathList.add(new Pair<>(mPath, new Paint(mPaint)));
                 mPath.moveTo(x, y);
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -78,15 +71,18 @@ public class CanvasView extends View {
         return true;
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        init();
-    }
-
     private void init() {
         mPath = new Path();
+
         mPaint = new Paint();
-        initPaint();
+        mPaint.setStyle(Paint.Style.STROKE);
+    }
+
+    public void setPaintSize(float size) {
+        mPaint.setStrokeWidth(size);
+    }
+
+    public void setPaintColor(int color) {
+        mPaint.setColor(color);
     }
 }

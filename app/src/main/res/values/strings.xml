@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Yamblz</string>
     <string name="content">Hello</string>
+    <string name="color_chooser_title">Choose color</string>
+    <string name="color_chooser_positive_button">Good</string>
+    <string name="color_chooser_negative_button">Back</string>
 </resources>
