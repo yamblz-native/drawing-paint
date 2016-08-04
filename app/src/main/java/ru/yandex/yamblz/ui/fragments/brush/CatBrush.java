@@ -4,13 +4,7 @@ import android.graphics.Canvas;
 
 import ru.yandex.yamblz.ui.fragments.Utils;
 
-public class CatBrush extends AbstractBrush {
-    @Override
-    public void move(Point point) {
-        super.move(point);
-        startX = point.getX();
-        startY = point.getY();
-    }
+public class CatBrush extends StampBrush {
 
     @Override
     protected void onDraw(Canvas canvas) {

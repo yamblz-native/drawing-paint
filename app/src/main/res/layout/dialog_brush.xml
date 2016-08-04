@@ -17,7 +17,9 @@
         android:id="@+id/brush_size_seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" />
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" />
 
     <LinearLayout
         style="?android:attr/buttonBarStyle"
@@ -86,6 +88,32 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/brush_heart" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp">
+
+        <EditText
+            android:id="@+id/brush_text_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="@string/brush_text"
+            android:inputType="textNoSuggestions" />
+
+        <Button
+            android:id="@+id/brush_text"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/brush_text" />
 
     </LinearLayout>
 

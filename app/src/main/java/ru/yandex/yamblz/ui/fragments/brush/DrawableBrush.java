@@ -7,7 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 
-public class DrawableBrush extends AbstractBrush {
+public class DrawableBrush extends StampBrush {
     private BitmapDrawable drawable;
     private int id;
     private int width, height, radius;
@@ -25,13 +25,6 @@ public class DrawableBrush extends AbstractBrush {
         width = drawable.getBitmap().getWidth();
         height = drawable.getBitmap().getHeight();
         radius = Math.max(width, height);
-    }
-
-    @Override
-    public void move(Point point) {
-        super.move(point);
-        startX = point.getX();
-        startY = point.getY();
     }
 
     @SuppressLint("DrawAllocation") // Sorry :(

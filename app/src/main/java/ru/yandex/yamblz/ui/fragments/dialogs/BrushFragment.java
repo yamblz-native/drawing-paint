@@ -10,11 +10,13 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
+import butterknife.OnTextChanged;
 import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.ui.fragments.brush.Brush;
 import ru.yandex.yamblz.ui.fragments.brush.CatBrush;
@@ -22,6 +24,7 @@ import ru.yandex.yamblz.ui.fragments.brush.DashLine;
 import ru.yandex.yamblz.ui.fragments.brush.DrawableBrush;
 import ru.yandex.yamblz.ui.fragments.brush.Line;
 import ru.yandex.yamblz.ui.fragments.brush.Pencil;
+import ru.yandex.yamblz.ui.fragments.brush.TextBrush;
 
 public class BrushFragment extends DialogFragment {
 
@@ -35,10 +38,13 @@ public class BrushFragment extends DialogFragment {
     SeekBar seekBar;
 
     @BindViews({R.id.brush_pencil, R.id.brush_line, R.id.brush_dash,
-            R.id.brush_cat, R.id.brush_android, R.id.brush_heart})
+            R.id.brush_cat, R.id.brush_android, R.id.brush_heart, R.id.brush_text})
     Button brushButtons[];
+    @BindView(R.id.brush_text_edit_text)
+    EditText editText;
 
     private Brush brushes[];
+    private TextBrush textBrush;
 
     private OnBrushChangeListener onBrushChangeListener;
 
@@ -55,10 +61,12 @@ public class BrushFragment extends DialogFragment {
         BitmapDrawable heartBitmap = (BitmapDrawable) getContext().getResources()
                 .getDrawable(R.mipmap.icon_heart, null);
 
+        textBrush = new TextBrush();
         brushes = new Brush[]{new Pencil(), new Line(), new DashLine(),
                 new CatBrush(),
                 new DrawableBrush(androidBitmap, R.id.brush_android),
-                new DrawableBrush(heartBitmap, R.id.brush_heart)};
+                new DrawableBrush(heartBitmap, R.id.brush_heart),
+                textBrush};
 
         onBrushChangeListener = (OnBrushChangeListener) getParentFragment();
 
@@ -89,7 +97,8 @@ public class BrushFragment extends DialogFragment {
         });
 
         for (int i = 0; i < brushButtons.length; ++i) {
-            brushButtons[i].setEnabled(onBrushChangeListener.getBrush().getId() != brushes[i].getId());
+            brushButtons[i].setEnabled(
+                    onBrushChangeListener.getBrush().getId() != brushes[i].getId());
 
             final int currentI = i;
             brushButtons[i].setOnClickListener(v -> {
@@ -103,11 +112,21 @@ public class BrushFragment extends DialogFragment {
             });
         }
 
+        if (onBrushChangeListener.getBrush().getId() == textBrush.getId()) {
+            editText.setText(((TextBrush) onBrushChangeListener.getBrush()).getText());
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
         builder.setPositiveButton(getString(R.string.button_ok), null);
 
         return builder.create();
+    }
+
+    @OnTextChanged(R.id.brush_text_edit_text)
+    void onTextChanged(CharSequence text) {
+        textBrush.setText(text.toString());
+        imageView.invalidate();
     }
 
     public interface OnBrushChangeListener extends BrushProvider {
