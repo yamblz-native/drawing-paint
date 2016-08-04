@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Build;
@@ -95,6 +97,31 @@ public class CanvasView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         clearCanvas(w, h);
+    }
+
+    public void applyGrayScaleFilter() {
+        ColorMatrix colorMatrix = new ColorMatrix();
+        colorMatrix.setSaturation(0);
+        applyColorMatrix(colorMatrix);
+    }
+
+    public void applyNegativeFilter() {
+        ColorMatrix colorMatrix = new ColorMatrix();
+        float[] negMat = {-1, 0, 0, 0, 255, 0, -1, 0, 0, 255, 0, 0, -1, 0, 255, 0, 0, 0, 1, 0};
+        colorMatrix.set(negMat);
+        applyColorMatrix(colorMatrix);
+    }
+
+    private void applyColorMatrix(ColorMatrix colorMatrix) {
+        int height = canvas.getHeight();
+        int width = canvas.getWidth();
+        Bitmap grayScaleBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(grayScaleBitmap);
+        Paint paint = new Paint();
+        ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
+        paint.setColorFilter(colorMatrixColorFilter);
+        c.drawBitmap(bitmap, 0, 0, paint);
+        setBitmap(grayScaleBitmap);
     }
 
     public Bitmap getBitmap() {

@@ -31,12 +31,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/brush_btn"
         style="@style/ButtonWrapper"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/brush_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -52,12 +52,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/stamp_btn"
         style="@style/ButtonWrapper"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/stamp_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -73,12 +73,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/text_btn"
         style="@style/ButtonWrapper"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/save_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -94,12 +94,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/filter_btn"
         style="@style/ButtonWrapper"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/filter_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

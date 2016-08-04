@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.thebluealliance.spectrum.SpectrumDialog;
 
@@ -78,7 +77,7 @@ public class ContentFragment extends BaseFragment implements FilterPickerDialogF
     }
 
     @OnClick(R.id.color_pick_btn)
-    public void onColorPickClick() {
+    public void onColorPickButtonClick() {
         new SpectrumDialog.Builder(getContext())
                 .setColors(R.array.colors)
                 .setTitle(getResources().getString(R.string.color_pick))
@@ -91,6 +90,14 @@ public class ContentFragment extends BaseFragment implements FilterPickerDialogF
                         changeIconColor(color);
                     }
                 }).build().show(getFragmentManager(), "color_picker_dialog");
+    }
+
+    @OnClick(R.id.filter_btn)
+    public void onFilterButtonClick() {
+        FragmentManager fm = getFragmentManager();
+        FilterPickerDialogFragment filterPickerDialogFragment = FilterPickerDialogFragment.newInstance();
+        filterPickerDialogFragment.setTargetFragment(ContentFragment.this, FILTER_PICKER_REQUEST_CODE);
+        filterPickerDialogFragment.show(fm, "fragment_filter_picker");
     }
 
     private void saveToFile() {
@@ -108,16 +115,16 @@ public class ContentFragment extends BaseFragment implements FilterPickerDialogF
         DrawableCompat.setTint(colorIcon.getDrawable(), color);
     }
 
-    private void showFilterPicker() {
-        FragmentManager fm = getChildFragmentManager();
-        FilterPickerDialogFragment filterPickerDialogFragment = FilterPickerDialogFragment.newInstance();
-        filterPickerDialogFragment.setTargetFragment(ContentFragment.this, FILTER_PICKER_REQUEST_CODE);
-        filterPickerDialogFragment.show(fm, "fragment_filter_picker");
-    }
-
     @Override
-    public void onFilterPick(String filter) {
-        Toast.makeText(getContext(), "Hi, " + filter, Toast.LENGTH_SHORT).show();
+    public void onFilterPick(int filter) {
+        switch (filter) {
+            case R.string.grayscale:
+                canvasView.applyGrayScaleFilter();
+                break;
+            case R.string.negative:
+                canvasView.applyNegativeFilter();
+                break;
+        }
     }
 
     /**

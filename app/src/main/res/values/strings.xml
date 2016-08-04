@@ -15,4 +15,9 @@
     <string name="choose_photo">Выберите изображение</string>
     <string name="filter_pick">Выберите фильтр</string>
     <string name="clear">Очистить</string>
+    <string name="grayscale_filter">Черно-белый</string>
+    <string name="negative_filter">Инвертный</string>
+    <string name="cancel">Отмена</string>
+    <string name="grayscale">grayscale</string>
+    <string name="negative">negative</string>
 </resources>

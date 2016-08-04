@@ -8,7 +8,12 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import ru.yandex.yamblz.R;
 
 /**
@@ -16,6 +21,12 @@ import ru.yandex.yamblz.R;
  */
 
 public class FilterPickerDialogFragment extends AppCompatDialogFragment {
+    @BindView(R.id.negative_btn)
+    TextView invertButton;
+    @BindView(R.id.gray_scale_btn)
+    TextView grayScaleButton;
+
+    private Unbinder unbinder;
 
     public static FilterPickerDialogFragment newInstance() {
         return new FilterPickerDialogFragment();
@@ -31,24 +42,37 @@ public class FilterPickerDialogFragment extends AppCompatDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_filter_picker, container, false);
+        unbinder = ButterKnife.bind(this, view);
         getDialog().setTitle(getResources().getString(R.string.filter_pick));
         return view;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    @OnClick(R.id.gray_scale_btn)
+    public void onGrayScaleButtonClick() {
+        sendBackResult(R.string.grayscale);
     }
 
-    public void sendBackResult() {
+    @OnClick(R.id.negative_btn)
+    public void onNegativeButtonClick() {
+        sendBackResult(R.string.negative);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
+    public void sendBackResult(int filter) {
         FilterPickerDialogListener listener = (FilterPickerDialogListener) getTargetFragment();
-        listener.onFilterPick("MU");
+        listener.onFilterPick(filter);
         dismiss();
     }
 
 
     public interface FilterPickerDialogListener {
-        void onFilterPick(String filter);
+        void onFilterPick(int filter);
     }
 
 }

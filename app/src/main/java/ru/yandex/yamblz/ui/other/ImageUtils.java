@@ -20,7 +20,7 @@ import timber.log.Timber;
  */
 
 public class ImageUtils {
-    private static final String ALBUMS_DIR = "Yamblz";
+    private static final String ALBUM_DIR = "Yamblz";
     private Context context;
 
     public ImageUtils(Context context) {
@@ -46,7 +46,7 @@ public class ImageUtils {
      * @param bitmap image
      */
     public void saveImageToFile(Bitmap bitmap) {
-        File saveImagesDir = getAlbumStorageDir(ALBUMS_DIR);
+        File saveImagesDir = getAlbumStorageDir(ALBUM_DIR);
         String fileName = "img" + String.valueOf(System.currentTimeMillis()) + ".jpg";
         File file = new File(saveImagesDir, fileName);
 
