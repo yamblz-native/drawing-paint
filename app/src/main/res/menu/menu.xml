@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_paint"
+        android:id="@+id/menu_brush"
         android:icon="@drawable/ic_brush_24dp"
-        android:title="@string/instrument"
+        android:title="@string/brush"
         app:showAsAction="ifRoom" />
 
     <item

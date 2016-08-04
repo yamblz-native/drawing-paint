@@ -42,7 +42,7 @@ public class DrawableBrush extends AbstractBrush {
                 ((int) startY) + height * strokeWidth / radius / 2);
 
         drawable.setColorFilter(
-                new PorterDuffColorFilter(paint.getColor(), PorterDuff.Mode.SRC_ATOP));
+                new PorterDuffColorFilter(paint.getColor(), PorterDuff.Mode.SRC_IN));
         drawable.draw(canvas);
     }
 

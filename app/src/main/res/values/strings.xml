@@ -3,7 +3,7 @@
 
     <string name="no_image">Создайте новое изображение, или загрузите существующее.</string>
 
-    <string name="instrument">Инструмент</string>
+    <string name="brush">Кисть</string>
     <string name="color">Цвет</string>
     <string name="undo">Отменить</string>
     <string name="new_image">Новое изображение</string>
@@ -17,7 +17,7 @@
     <string name="button_cancel">Отмена</string>
     <string name="button_ok">Закрыть</string>
 
-    <string name="brush_pencil">Кисть</string>
+    <string name="brush_pencil">Карандаш</string>
     <string name="brush_line">Линия</string>
     <string name="brush_dash">Пунктир</string>
     <string name="brush_cat">Кот</string>

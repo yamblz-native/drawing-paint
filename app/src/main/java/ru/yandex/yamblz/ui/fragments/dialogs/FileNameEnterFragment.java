@@ -27,7 +27,7 @@ public class FileNameEnterFragment extends DialogFragment {
 
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         @SuppressLint("InflateParams")
-        View view = layoutInflater.inflate(R.layout.dialog_save, null);
+        View view = layoutInflater.inflate(R.layout.dialog_file_name_enter, null);
 
         ButterKnife.bind(this, view);
 

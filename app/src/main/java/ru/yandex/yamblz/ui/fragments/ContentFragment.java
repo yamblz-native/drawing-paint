@@ -34,10 +34,10 @@ import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.ui.fragments.brush.Brush;
 import ru.yandex.yamblz.ui.fragments.brush.Pencil;
 import ru.yandex.yamblz.ui.fragments.brush.Point;
+import ru.yandex.yamblz.ui.fragments.dialogs.BrushFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.ColorFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.FileNameEnterFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.OpenFragment;
-import ru.yandex.yamblz.ui.fragments.dialogs.PaintFragment;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -49,7 +49,7 @@ import solid.stream.Stream;
 public class ContentFragment extends BaseFragment implements
         FileNameEnterFragment.OnFileNameEnteredListener,
         OpenFragment.OnFilePickedListener,
-        PaintFragment.OnBrushChangeListener,
+        BrushFragment.OnBrushChangeListener,
         ColorFragment.OnColorChangeListener,
         DrawView.TmpDrawer {
 
@@ -156,16 +156,16 @@ public class ContentFragment extends BaseFragment implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_paint: {
+            case R.id.menu_brush: {
                 Bundle arguments = new Bundle();
-                arguments.putInt(PaintFragment.MIN_VALUE, drawView.getWidth() / 100);
-                arguments.putInt(PaintFragment.MAX_VALUE, drawView.getWidth() / 3);
-                arguments.putInt(PaintFragment.DEFAULT_VALUE,
+                arguments.putInt(BrushFragment.MIN_VALUE, drawView.getWidth() / 100);
+                arguments.putInt(BrushFragment.MAX_VALUE, drawView.getWidth() / 3);
+                arguments.putInt(BrushFragment.DEFAULT_VALUE,
                         (int) brush.getPaint().getStrokeWidth());
 
-                DialogFragment dialogFragment = new PaintFragment();
+                DialogFragment dialogFragment = new BrushFragment();
                 dialogFragment.setArguments(arguments);
-                dialogFragment.show(getChildFragmentManager(), "paint");
+                dialogFragment.show(getChildFragmentManager(), "brush");
                 break;
             }
 

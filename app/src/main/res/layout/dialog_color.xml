@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <ru.yandex.yamblz.ui.fragments.dialogs.BrushImageView
-        android:id="@+id/paint_color_image_view"
+        android:id="@+id/brush_color_image_view"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_gravity="center"
@@ -30,7 +30,7 @@
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <EditText
-            android:id="@+id/paint_color_edit_text"
+            android:id="@+id/brush_color_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="right"
@@ -56,7 +56,7 @@
             app:layout_gravity="center_vertical" />
 
         <SeekBar
-            android:id="@+id/paint_alpha_seek_bar"
+            android:id="@+id/brush_alpha_seek_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_columnWeight="1" />
@@ -68,7 +68,7 @@
             app:layout_gravity="center_vertical" />
 
         <SeekBar
-            android:id="@+id/paint_red_seek_bar"
+            android:id="@+id/brush_red_seek_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_columnWeight="1" />
@@ -80,7 +80,7 @@
             app:layout_gravity="center_vertical" />
 
         <SeekBar
-            android:id="@+id/paint_green_seek_bar"
+            android:id="@+id/brush_green_seek_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_columnWeight="1" />
@@ -92,7 +92,7 @@
             app:layout_gravity="center_vertical" />
 
         <SeekBar
-            android:id="@+id/paint_blue_seek_bar"
+            android:id="@+id/brush_blue_seek_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_columnWeight="1" />

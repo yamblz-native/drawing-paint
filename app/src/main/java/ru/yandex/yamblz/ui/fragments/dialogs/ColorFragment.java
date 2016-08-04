@@ -25,12 +25,12 @@ import ru.yandex.yamblz.ui.fragments.brush.Brush;
 
 public class ColorFragment extends DialogFragment {
 
-    @BindView(R.id.paint_color_image_view)
+    @BindView(R.id.brush_color_image_view)
     BrushImageView imageView;
-    @BindView(R.id.paint_color_edit_text)
+    @BindView(R.id.brush_color_edit_text)
     EditText editText;
-    @BindViews({R.id.paint_alpha_seek_bar,
-            R.id.paint_red_seek_bar, R.id.paint_green_seek_bar, R.id.paint_blue_seek_bar})
+    @BindViews({R.id.brush_alpha_seek_bar,
+            R.id.brush_red_seek_bar, R.id.brush_green_seek_bar, R.id.brush_blue_seek_bar})
     SeekBar seekBars[];
     private OnColorChangeListener onColorChangeListener;
 
@@ -86,7 +86,7 @@ public class ColorFragment extends DialogFragment {
         dismiss();
     }
 
-    @OnEditorAction(R.id.paint_color_edit_text)
+    @OnEditorAction(R.id.brush_color_edit_text)
     boolean onEditorAction(EditText editText, int actionId,
                            @SuppressWarnings("UnusedParameters") KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
