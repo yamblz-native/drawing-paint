@@ -38,6 +38,9 @@ import ru.yandex.yamblz.ui.fragments.dialogs.BrushFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.ColorFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.FileNameEnterFragment;
 import ru.yandex.yamblz.ui.fragments.dialogs.OpenFragment;
+import ru.yandex.yamblz.ui.fragments.drawing.DrawView;
+import ru.yandex.yamblz.ui.fragments.drawing.HistoryCanvas;
+import ru.yandex.yamblz.ui.fragments.drawing.TmpDrawer;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -51,7 +54,7 @@ public class ContentFragment extends BaseFragment implements
         OpenFragment.OnFilePickedListener,
         BrushFragment.OnBrushChangeListener,
         ColorFragment.OnColorChangeListener,
-        DrawView.TmpDrawer {
+        TmpDrawer {
 
     private static final String EXTENSION = ".bitmap";
     private static final String FOLDER = "Paint";
@@ -68,6 +71,7 @@ public class ContentFragment extends BaseFragment implements
 
     private Subscription loadSubscription;
 
+    private HistoryCanvas canvas = new HistoryCanvas();
     private Brush brush;
 
     private View.OnTouchListener drawListener = (view, event) -> {
@@ -82,10 +86,10 @@ public class ContentFragment extends BaseFragment implements
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                drawView.beginNewAction();
-                brush.draw(drawView.getActionCanvas());
+                canvas.beginNewObject();
+                brush.draw(canvas.getObjectCanvas());
                 brush.finish();
-                undoItem.setEnabled(drawView.canUndo());
+                undoItem.setEnabled(canvas.canUndo());
                 break;
         }
 
@@ -122,6 +126,8 @@ public class ContentFragment extends BaseFragment implements
         brush = new Pencil();
         brush.setPaint(paint);
 
+        canvas.setTmpDrawer(this);
+
         // For caching
         Observable.fromCallable(() -> {
             Context context = getContext();
@@ -142,7 +148,6 @@ public class ContentFragment extends BaseFragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         drawView.setOnTouchListener(drawListener);
-        drawView.setTmpDrawer(this);
     }
 
     @Override
@@ -176,9 +181,9 @@ public class ContentFragment extends BaseFragment implements
             }
 
             case R.id.menu_undo:
-                drawView.undo();
+                canvas.undo();
                 drawView.invalidate();
-                undoItem.setEnabled(drawView.canUndo());
+                undoItem.setEnabled(canvas.canUndo());
                 break;
 
             case R.id.menu_new:
@@ -192,7 +197,8 @@ public class ContentFragment extends BaseFragment implements
                                     Bitmap.Config.ARGB_8888);
                             bitmap.eraseColor(Color.WHITE);
 
-                            Bitmap history[] = drawView.createHistory(HISTORY_SIZE);
+                            Bitmap history[] = HistoryCanvas.createHistory(HISTORY_SIZE,
+                                    drawView.getWidth(), drawView.getHeight());
                             return new Pair<>(bitmap, history);
                         })
                         .subscribeOn(Schedulers.computation())
@@ -285,14 +291,18 @@ public class ContentFragment extends BaseFragment implements
 
     private void onBitmapLoaded(Pair<Bitmap, Bitmap[]> pair) {
         loadSubscription = null;
-        drawView.setImageBitmap(pair.first);
-        drawView.setHistory(pair.second);
+
+        canvas.setBitmap(pair.first);
+        canvas.setHistory(pair.second);
+
+        drawView.setCanvasDrawable(canvas);
+        drawView.invalidate();
 
         noImageTextView.setVisibility(View.INVISIBLE);
         drawView.setVisibility(View.VISIBLE);
         saveItem.setEnabled(true);
         exportItem.setEnabled(true);
-        undoItem.setEnabled(drawView.canUndo());
+        undoItem.setEnabled(canvas.canUndo());
     }
 
     @Override
@@ -317,7 +327,8 @@ public class ContentFragment extends BaseFragment implements
             loadSubscription = null;
         }
         loadSubscription = Observable.fromCallable(() -> {
-            Bitmap history[] = drawView.createHistory(HISTORY_SIZE);
+            Bitmap history[] = HistoryCanvas.createHistory(HISTORY_SIZE,
+                    drawView.getWidth(), drawView.getHeight());
 
             try (FileInputStream fileInputStream = getActivity().openFileInput(file + EXTENSION)) {
                 Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream)

@@ -1,17 +1,15 @@
-package ru.yandex.yamblz.ui.fragments;
+package ru.yandex.yamblz.ui.fragments.drawing;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.util.AttributeSet;
-import android.widget.ImageView;
 
 /**
- * View used for drawing on. Supports undo with fixed history size.
+ * Supports undo with fixed history size and drawing of temporary objects.
  */
-public class DrawView extends ImageView {
+@SuppressWarnings("WeakerAccess")
+public class HistoryCanvas implements CanvasDrawable {
     private Bitmap bitmap;
     private Canvas canvas;
     private TmpDrawer tmpDrawer;
@@ -20,16 +18,37 @@ public class DrawView extends ImageView {
     private Canvas commitCanvas;
     private int historySize;
 
-    public DrawView(Context context) {
-        super(context);
+    /**
+     * Creates array of bitmaps of specified dimensions.
+     *
+     * @param size   size of output array.
+     * @param width  width of output bitmaps.
+     * @param height height of output bitmaps.
+     * @return array which can be passed to {@link #setHistory(Bitmap[])}.
+     */
+    public static Bitmap[] createHistory(int size, int width, int height) {
+        Bitmap history[] = new Bitmap[size];
+        for (int i = 0; i < history.length; ++i) {
+            history[i] = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        }
+        return history;
     }
 
-    public DrawView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    @Override
+    public void draw(Canvas canvas) {
+        canvas.drawBitmap(bitmap, 0, 0, null);
+        for (int i = 0; i < historySize; ++i) {
+            canvas.drawBitmap(history[i], 0, 0, null);
+        }
+        tmpDrawer.drawTmp(canvas);
     }
 
-    public DrawView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    /**
+     * @param bitmap main bitmap to be drawn.
+     */
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+        canvas = new Canvas(this.bitmap);
     }
 
     /**
@@ -41,42 +60,11 @@ public class DrawView extends ImageView {
     }
 
     /**
-     * Creates array of bitmaps of the same size as this view.
-     *
-     * @param size size of output array.
-     * @return array which can be passed to {@link #setHistory(Bitmap[])}.
-     */
-    public Bitmap[] createHistory(int size) {
-        Bitmap history[] = new Bitmap[size];
-        for (int i = 0; i < history.length; ++i) {
-            history[i] = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        }
-        return history;
-    }
-
-    @Override
-    public void setImageBitmap(Bitmap bm) {
-        bitmap = bm;
-        canvas = new Canvas(bitmap);
-        super.setImageBitmap(bm);
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        canvas.drawBitmap(bitmap, 0, 0, null);
-        for (int i = 0; i < historySize; ++i) {
-            canvas.drawBitmap(history[i], 0, 0, null);
-        }
-        tmpDrawer.drawTmp(canvas);
-    }
-
-    /**
-     * Marks beginning of new action.
+     * Marks beginning of new object.
      * Affects history.
      * Erases oldest change if history is full.
      */
-    public void beginNewAction() {
+    public void beginNewObject() {
         if (history.length > 0) {
             if (historySize == history.length) {
                 Bitmap bitmap0 = history[0];
@@ -95,27 +83,16 @@ public class DrawView extends ImageView {
     }
 
     /**
-     * Get canvas to draw current action on.
+     * Get canvas to draw current object on.
      *
      * @return canvas.
      */
-    public Canvas getActionCanvas() {
+    public Canvas getObjectCanvas() {
         if (history.length > 0) {
             return commitCanvas;
         } else {
             return canvas;
         }
-    }
-
-    /**
-     * Creates a copy of drawn bitmap.
-     * @return bitmap.
-     */
-    public Bitmap getDrawingCacheBitmap() {
-        destroyDrawingCache();
-        setDrawingCacheEnabled(true);
-        buildDrawingCache();
-        return getDrawingCache();
     }
 
     public boolean canUndo() {
@@ -128,12 +105,5 @@ public class DrawView extends ImageView {
 
     public void setTmpDrawer(TmpDrawer tmpDrawer) {
         this.tmpDrawer = tmpDrawer;
-    }
-
-    /**
-     * Implementing class can provide drawing of current action before it is finished.
-     */
-    public interface TmpDrawer {
-        void drawTmp(Canvas canvas);
     }
 }
