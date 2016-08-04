@@ -1,5 +1,9 @@
 package ru.yandex.yamblz.ui.fragments.brush;
 
+/**
+ * Helper class for implementing stamp-like brushes.
+ * Overrides (startX, startY) on {@link #move(Point)}.
+ */
 @SuppressWarnings("WeakerAccess")
 public abstract class StampBrush extends AbstractBrush {
     @Override
