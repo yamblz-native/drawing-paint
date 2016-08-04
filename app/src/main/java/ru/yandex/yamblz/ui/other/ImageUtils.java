@@ -3,6 +3,7 @@ package ru.yandex.yamblz.ui.other;
 import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -21,6 +22,7 @@ import timber.log.Timber;
 
 public class ImageUtils {
     private static final String ALBUM_DIR = "Yamblz";
+    private static final int STAMP_SIZE = 100;
     private Context context;
 
     public ImageUtils(Context context) {
@@ -29,6 +31,7 @@ public class ImageUtils {
 
     /**
      * Gets album storage dir
+     *
      * @param albumName name of album
      * @return album's dir
      */
@@ -43,6 +46,7 @@ public class ImageUtils {
 
     /**
      * Saves image to file
+     *
      * @param bitmap image
      */
     public void saveImageToFile(Bitmap bitmap) {
@@ -65,6 +69,7 @@ public class ImageUtils {
 
     /**
      * Adds image to gallery
+     *
      * @param filepath absolute path of image
      * @return uri of image in gallery
      */
@@ -79,6 +84,7 @@ public class ImageUtils {
 
     /**
      * Loads bitmap from Uri
+     *
      * @param imageUri uri of image from gallery
      * @return bitmap
      */
@@ -92,5 +98,17 @@ public class ImageUtils {
         }
 
         return bitmap;
+    }
+
+    /**
+     * Gets stamp from drawable
+     *
+     * @param id resource id
+     * @return bitmap
+     */
+    public Bitmap getStampFromDrawable(int id) {
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), id);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, STAMP_SIZE, STAMP_SIZE, false);
+        return resizedBitmap;
     }
 }

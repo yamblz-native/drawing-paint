@@ -30,10 +30,15 @@ import ru.yandex.yamblz.ui.other.ImageUtils;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ContentFragment extends BaseFragment implements FilterPickerDialogFragment.FilterPickerDialogListener {
+public class ContentFragment extends BaseFragment implements
+        FilterPickerDialogFragment.FilterPickerDialogListener,
+        TextDialogFragment.EditTextDialogListener,
+        StampPickerDialogFragment.StampPickerDialogListener {
     private static final int GALLERY_PICTURE_REQUEST_CODE = 10;
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 20;
     private static final int FILTER_PICKER_REQUEST_CODE = 30;
+    private static final int TEXT_PICKER_REQUEST_CODE = 40;
+    private static final int STAMP_PICKER_REQUEST_CODE = 50;
     private ImageUtils imageUtils;
 
     @BindView(R.id.canvas)
@@ -100,6 +105,31 @@ public class ContentFragment extends BaseFragment implements FilterPickerDialogF
         filterPickerDialogFragment.show(fm, "fragment_filter_picker");
     }
 
+    @OnClick(R.id.text_btn)
+    public void onTextButtonClick() {
+        FragmentManager fm = getFragmentManager();
+        TextDialogFragment textDialogFragment = TextDialogFragment.newInstance();
+        textDialogFragment.setTargetFragment(ContentFragment.this, TEXT_PICKER_REQUEST_CODE);
+        textDialogFragment.show(fm, "fragment_text");
+    }
+
+    @OnClick(R.id.brush_btn)
+    public void onBrushButtonClick() {
+        canvasView.setBrush();
+    }
+
+    @OnClick(R.id.stamp_btn)
+    public void onStampButtonClick() {
+        FragmentManager fm = getFragmentManager();
+        StampPickerDialogFragment stampPickerDialogFragment = StampPickerDialogFragment.newInstance();
+        stampPickerDialogFragment.setTargetFragment(ContentFragment.this, STAMP_PICKER_REQUEST_CODE);
+        stampPickerDialogFragment.show(fm, "fragment_stamp_picker");
+    }
+
+
+    /**
+     * Checks permissions and saves bitmap to gallery
+     */
     private void saveToFile() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
@@ -111,6 +141,11 @@ public class ContentFragment extends BaseFragment implements FilterPickerDialogF
         }
     }
 
+    /**
+     * Changes color of icon
+     *
+     * @param color
+     */
     private void changeIconColor(int color) {
         DrawableCompat.setTint(colorIcon.getDrawable(), color);
     }
@@ -118,10 +153,10 @@ public class ContentFragment extends BaseFragment implements FilterPickerDialogF
     @Override
     public void onFilterPick(int filter) {
         switch (filter) {
-            case R.string.grayscale:
+            case R.id.gray_scale_btn:
                 canvasView.applyGrayScaleFilter();
                 break;
-            case R.string.negative:
+            case R.id.negative_btn:
                 canvasView.applyNegativeFilter();
                 break;
         }
@@ -150,6 +185,26 @@ public class ContentFragment extends BaseFragment implements FilterPickerDialogF
                 Uri imageUri = data.getData();
                 canvasView.setBitmap(imageUtils.loadBitmapFromUri(imageUri));
             }
+        }
+    }
+
+    @Override
+    public void onEditText(String text) {
+        canvasView.setText(text);
+    }
+
+    @Override
+    public void onStampPick(int stamp) {
+        switch (stamp) {
+            case R.id.sticker_1:
+                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.sticker_1));
+                break;
+            case R.id.sticker_2:
+                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.sticker_2));
+                break;
+            case R.id.sticker_3:
+                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.sticker_3));
+                break;
         }
     }
 }

@@ -18,11 +18,11 @@ import ru.yandex.yamblz.R;
  * Created by shmakova on 02.08.16.
  */
 
-public class FilterPickerDialogFragment extends AppCompatDialogFragment {
+public class StampPickerDialogFragment extends AppCompatDialogFragment {
     private Unbinder unbinder;
 
-    public static FilterPickerDialogFragment newInstance() {
-        return new FilterPickerDialogFragment();
+    public static StampPickerDialogFragment newInstance() {
+        return new StampPickerDialogFragment();
     }
 
     @NonNull
@@ -34,17 +34,16 @@ public class FilterPickerDialogFragment extends AppCompatDialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_filter_picker, container, false);
+        View view = inflater.inflate(R.layout.fragment_stamp_picker, container, false);
         unbinder = ButterKnife.bind(this, view);
-        getDialog().setTitle(getResources().getString(R.string.filter_pick));
+        getDialog().setTitle(getResources().getString(R.string.stamp_pick));
         return view;
     }
 
-    @OnClick({R.id.gray_scale_btn, R.id.negative_btn})
-    public void onFilterClick(View v) {
+    @OnClick({R.id.sticker_1, R.id.sticker_2, R.id.sticker_3})
+    public void onStickerOneClick(View v) {
         sendBackResult(v.getId());
     }
-
 
     @Override
     public void onDestroy() {
@@ -52,15 +51,15 @@ public class FilterPickerDialogFragment extends AppCompatDialogFragment {
         unbinder.unbind();
     }
 
-    public void sendBackResult(int filter) {
-        FilterPickerDialogListener listener = (FilterPickerDialogListener) getTargetFragment();
-        listener.onFilterPick(filter);
+    public void sendBackResult(int stamp) {
+        StampPickerDialogListener listener = (StampPickerDialogListener) getTargetFragment();
+        listener.onStampPick(stamp);
         dismiss();
     }
 
 
-    public interface FilterPickerDialogListener {
-        void onFilterPick(int filter);
+    public interface StampPickerDialogListener {
+        void onStampPick(int stamp);
     }
 
 }
