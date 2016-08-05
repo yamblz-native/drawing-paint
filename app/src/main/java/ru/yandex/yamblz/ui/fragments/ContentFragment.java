@@ -4,14 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.util.Pair;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -58,7 +56,7 @@ public class ContentFragment extends BaseFragment implements
 
     private static final String EXTENSION = ".bitmap";
     private static final String FOLDER = "Paint";
-    private static final int HISTORY_SIZE = 5;
+    private static final int HISTORY_SIZE = 10;
 
     @BindView(R.id.no_image_text)
     TextView noImageTextView;
@@ -77,6 +75,7 @@ public class ContentFragment extends BaseFragment implements
     private View.OnTouchListener drawListener = (view, event) -> {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                canvas.beginNewObject();
                 brush.start(new Point(event));
                 break;
 
@@ -86,7 +85,6 @@ public class ContentFragment extends BaseFragment implements
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                canvas.beginNewObject();
                 brush.draw(canvas.getObjectCanvas());
                 brush.finish();
                 undoItem.setEnabled(canvas.canUndo());
@@ -98,9 +96,7 @@ public class ContentFragment extends BaseFragment implements
     };
 
     private View.OnTouchListener eyeDropperListener = (view, event) -> {
-        Bitmap drawingCacheBitmap = drawView.getDrawingCacheBitmap();
-
-        int color = drawingCacheBitmap.getPixel((int) event.getX(), (int) event.getY());
+        int color = canvas.getDrawnBitmap().getPixel((int) event.getX(), (int) event.getY());
         brush.getPaint().setColor(color);
 
         drawView.setOnTouchListener(drawListener);
@@ -191,24 +187,16 @@ public class ContentFragment extends BaseFragment implements
                     loadSubscription.unsubscribe();
                 }
                 loadSubscription = Observable
-                        .fromCallable(() -> {
-                            Bitmap bitmap = Bitmap.createBitmap(
-                                    drawView.getWidth(), drawView.getHeight(),
-                                    Bitmap.Config.ARGB_8888);
-                            bitmap.eraseColor(Color.WHITE);
-
-                            Bitmap history[] = HistoryCanvas.createHistory(HISTORY_SIZE,
-                                    drawView.getWidth(), drawView.getHeight());
-                            return new Pair<>(bitmap, history);
-                        })
+                        .fromCallable(() -> HistoryCanvas.createBitmapStack(HISTORY_SIZE + 1,
+                                drawView.getWidth(), drawView.getHeight()))
                         .subscribeOn(Schedulers.computation())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(this::onBitmapLoaded);
+                        .subscribe(this::onBitmapStackLoaded);
                 break;
 
             case R.id.menu_save: {
                 fileNameEnteredAction = (fileName) -> {
-                    final Bitmap bitmap = drawView.getDrawingCacheBitmap();
+                    final Bitmap bitmap = Bitmap.createBitmap(canvas.getDrawnBitmap());
                     Observable.fromCallable(() -> {
                         String longFileName = fileName + EXTENSION;
                         try (OutputStream out = getActivity()
@@ -251,7 +239,7 @@ public class ContentFragment extends BaseFragment implements
             }
 
             case R.id.menu_export: {
-                final Bitmap bitmap = drawView.getDrawingCacheBitmap();
+                final Bitmap bitmap = Bitmap.createBitmap(canvas.getDrawnBitmap());
                 fileNameEnteredAction = (fileName) ->
                         Observable.fromCallable(() -> {
                             String sdcard = Environment.getExternalStorageDirectory().toString();
@@ -289,11 +277,10 @@ public class ContentFragment extends BaseFragment implements
         return true;
     }
 
-    private void onBitmapLoaded(Pair<Bitmap, Bitmap[]> pair) {
+    private void onBitmapStackLoaded(Bitmap bitmapStack[]) {
         loadSubscription = null;
 
-        canvas.setBitmap(pair.first);
-        canvas.setHistory(pair.second);
+        canvas.setBitmapStack(bitmapStack);
 
         drawView.setCanvasDrawable(canvas);
         drawView.invalidate();
@@ -327,17 +314,19 @@ public class ContentFragment extends BaseFragment implements
             loadSubscription = null;
         }
         loadSubscription = Observable.fromCallable(() -> {
-            Bitmap history[] = HistoryCanvas.createHistory(HISTORY_SIZE,
+            Bitmap history[] = HistoryCanvas.createBitmapStack(HISTORY_SIZE,
                     drawView.getWidth(), drawView.getHeight());
+            Bitmap bitmapStack[] = new Bitmap[history.length + 1];
+            System.arraycopy(history, 0, bitmapStack, 1, history.length);
 
             try (FileInputStream fileInputStream = getActivity().openFileInput(file + EXTENSION)) {
-                Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream)
+                bitmapStack[0] = BitmapFactory.decodeStream(fileInputStream)
                         .copy(Bitmap.Config.ARGB_8888, true);
-                return new Pair<>(bitmap, history);
+                return bitmapStack;
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onBitmapLoaded);
+                .subscribe(this::onBitmapStackLoaded);
     }
 
     @Override

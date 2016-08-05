@@ -1,7 +1,6 @@
 package ru.yandex.yamblz.ui.fragments.drawing;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
@@ -38,17 +37,5 @@ public class DrawView extends View {
      */
     public void setCanvasDrawable(CanvasDrawable canvasDrawable) {
         this.canvasDrawable = canvasDrawable;
-    }
-
-    /**
-     * Creates a copy of drawn bitmap.
-     * @return bitmap.
-     */
-    // Дешёвый способ взятия bitmap для сохранения.
-    public Bitmap getDrawingCacheBitmap() {
-        destroyDrawingCache();
-        setDrawingCacheEnabled(true);
-        buildDrawingCache();
-        return getDrawingCache();
     }
 }
