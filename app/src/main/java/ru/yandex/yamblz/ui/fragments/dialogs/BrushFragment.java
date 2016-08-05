@@ -44,7 +44,7 @@ public class BrushFragment extends DialogFragment {
     EditText editText;
 
     private Brush brushes[];
-    private TextBrush textBrush;
+    private TextBrush textBrush = new TextBrush();
 
     private OnBrushChangeListener onBrushChangeListener;
 
@@ -61,21 +61,34 @@ public class BrushFragment extends DialogFragment {
         BitmapDrawable heartBitmap = (BitmapDrawable) getContext().getResources()
                 .getDrawable(R.mipmap.icon_heart, null);
 
-        textBrush = new TextBrush();
+        onBrushChangeListener = (OnBrushChangeListener) getParentFragment();
+
+        if (onBrushChangeListener.getBrush().getId() == textBrush.getId()) {
+            textBrush = (TextBrush) onBrushChangeListener.getBrush().copy();
+            editText.setText(textBrush.getText());
+        }
+
         brushes = new Brush[]{new Pencil(), new Line(), new DashLine(),
                 new CatBrush(),
                 new DrawableBrush(androidBitmap, R.id.brush_android),
                 new DrawableBrush(heartBitmap, R.id.brush_heart),
                 textBrush};
 
-        onBrushChangeListener = (OnBrushChangeListener) getParentFragment();
+        for (Brush brush : brushes) {
+            brush.setPaint(onBrushChangeListener.getBrush().getPaint());
+        }
+
+        for (Brush brush : brushes) {
+            if (onBrushChangeListener.getBrush().getId() == brush.getId()) {
+                imageView.setBrush(brush);
+                break;
+            }
+        }
 
         Bundle arguments = getArguments();
         final int minValue = arguments.getInt(MIN_VALUE);
         final int maxValue = arguments.getInt(MAX_VALUE);
         final int defaultValue = arguments.getInt(DEFAULT_VALUE);
-
-        imageView.setBrush(onBrushChangeListener.getBrush());
 
         seekBar.setMax(maxValue - minValue);
         seekBar.setProgress(defaultValue - minValue);
@@ -83,7 +96,7 @@ public class BrushFragment extends DialogFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 onBrushChangeListener.onSizeChanged(progress + minValue);
-                imageView.setBrush(onBrushChangeListener.getBrush());
+                //imageView.setBrush(onBrushChangeListener.getBrush());
                 imageView.invalidate();
             }
 
@@ -96,10 +109,6 @@ public class BrushFragment extends DialogFragment {
             }
         });
 
-        if (onBrushChangeListener.getBrush().getId() == textBrush.getId()) {
-            textBrush = (TextBrush) onBrushChangeListener.getBrush().copy();
-            editText.setText(textBrush.getText());
-        }
         for (int i = 0; i < brushButtons.length; ++i) {
             brushButtons[i].setEnabled(
                     onBrushChangeListener.getBrush().getId() != brushes[i].getId());
@@ -110,8 +119,9 @@ public class BrushFragment extends DialogFragment {
                     button.setEnabled(true);
                 }
                 brushButtons[currentI].setEnabled(false);
-                onBrushChangeListener.onBrushChanged(brushes[currentI]);
-                imageView.setBrush(onBrushChangeListener.getBrush());
+
+                onBrushChangeListener.onBrushChanged(brushes[currentI].copy());
+                imageView.setBrush(brushes[currentI]);
                 imageView.invalidate();
             });
         }

@@ -53,8 +53,7 @@ public class DrawableBrush extends StampBrush {
 
     @Override
     public Brush copy() {
-        DrawableBrush brush = new DrawableBrush(drawable, id);
-        return copy(brush);
+        return copy(new DrawableBrush(drawable, id));
     }
 
     @Override
