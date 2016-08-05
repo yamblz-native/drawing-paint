@@ -15,7 +15,8 @@ import ru.yandex.yamblz.ui.other.ViewModifier;
 
 public class MainActivity extends BaseActivity {
 
-    @Inject @Named(DeveloperSettingsModule.MAIN_ACTIVITY_VIEW_MODIFIER)
+    @Inject
+    @Named(DeveloperSettingsModule.MAIN_ACTIVITY_VIEW_MODIFIER)
     ViewModifier viewModifier;
 
     @SuppressLint("InflateParams") // It's okay in our case.

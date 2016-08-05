@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_brush"
+        android:icon="@drawable/ic_brush_24dp"
+        android:title="@string/brush"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_color"
+        android:icon="@drawable/ic_color_lens_24dp"
+        android:title="@string/color"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_undo"
+        android:enabled="false"
+        android:title="@string/undo"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_new"
+        android:title="@string/new_image"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_save"
+        android:enabled="false"
+        android:title="@string/save_image"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_open"
+        android:title="@string/open_image"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_export"
+        android:enabled="false"
+        android:title="@string/export"
+        app:showAsAction="never" />
+
+</menu>

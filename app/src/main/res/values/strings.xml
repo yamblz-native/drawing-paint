@@ -1,4 +1,35 @@
 <resources>
-    <string name="app_name">Yamblz</string>
-    <string name="content">Hello</string>
+    <string name="app_name">Paint</string>
+
+    <string name="no_image">Создайте новое изображение, или загрузите существующее.</string>
+
+    <string name="brush">Кисть</string>
+    <string name="color">Цвет</string>
+    <string name="undo">Отменить</string>
+    <string name="new_image">Новое изображение</string>
+    <string name="save_image">Сохранить изображение</string>
+    <string name="open_image">Открыть изображение</string>
+    <string name="export">Экспортировать</string>
+
+    <string name="not_saved">Изображение не сохранено</string>
+
+    <string name="button_save">Сохранить</string>
+    <string name="button_cancel">Отмена</string>
+    <string name="button_ok">Закрыть</string>
+
+    <string name="brush_pencil">Карандаш</string>
+    <string name="brush_line">Линия</string>
+    <string name="brush_dash">Пунктир</string>
+    <string name="brush_cat">Кот</string>
+    <string name="brush_android">Андроид</string>
+    <string name="brush_heart">Сердце</string>
+    <string name="brush_text">Текст</string>
+
+    <string name="incorrect_color">Некорректный цвет</string>
+    <string name="alpha">Alpha</string>
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="blue">Blue</string>
+
+    <string name="enter_file_name">Название файла</string>
 </resources>
