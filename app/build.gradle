@@ -82,8 +82,19 @@ android {
     }
 }
 
+repositories {
+    maven {url "https://clojars.org/repo/"}
+}
+
 // Libraries declared in dependencies.gradle in the root of the project
 dependencies {
+
+    compile 'frankiesardo:icepick:3.2.+'
+    provided 'frankiesardo:icepick-processor:3.2.+'
+
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
+
     compile libraries.dagger
     apt libraries.daggerCompiler
 
