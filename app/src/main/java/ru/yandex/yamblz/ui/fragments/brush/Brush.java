@@ -44,6 +44,14 @@ public interface Brush {
     void draw(Canvas canvas);
 
     /**
+     * Called before showing preview of this brush.
+     *
+     * @param width  width of preview canvas.
+     * @param height height of preview canvas.
+     */
+    void prepareForPreview(int width, int height);
+
+    /**
      * Create new instance of the same brush.
      * New brush should use the same {@link Paint}.
      * @return new brush.

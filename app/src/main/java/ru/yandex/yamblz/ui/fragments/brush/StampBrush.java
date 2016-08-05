@@ -12,4 +12,10 @@ public abstract class StampBrush extends AbstractBrush {
         startX = point.getX();
         startY = point.getY();
     }
+
+    @Override
+    public void prepareForPreview(int width, int height) {
+        finish();
+        start(new Point(width / 2, height / 2));
+    }
 }

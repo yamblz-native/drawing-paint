@@ -59,6 +59,19 @@ public abstract class AbstractBrush implements Brush {
      */
     protected abstract void onDraw(Canvas canvas);
 
+    @Override
+    public void prepareForPreview(int width, int height) {
+        finish();
+
+        int xStep = width / 5;
+        int yStep = height / 5;
+
+        start(new Point(xStep, height - yStep));
+        move(new Point(xStep * 2, yStep));
+        move(new Point(xStep * 3, height - yStep));
+        move(new Point(xStep * 4, yStep));
+    }
+
     /**
      * Sets current paint to the brush and returns it.
      * @param brush to set current paint to.

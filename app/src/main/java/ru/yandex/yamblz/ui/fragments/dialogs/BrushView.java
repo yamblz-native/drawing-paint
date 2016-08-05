@@ -39,10 +39,7 @@ public class BrushView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        brush.finish();
-        point.setX(canvas.getWidth() / 2);
-        point.setY(canvas.getHeight() / 2);
-        brush.start(point);
+        brush.prepareForPreview(canvas.getWidth(), canvas.getHeight());
         brush.draw(canvas);
     }
 }
