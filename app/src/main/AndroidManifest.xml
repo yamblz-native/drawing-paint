@@ -3,6 +3,8 @@
     package="ru.yandex.yamblz">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name="ru.yandex.yamblz.App"
@@ -14,6 +16,7 @@
         <activity
             android:name="ru.yandex.yamblz.ui.activities.MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -3,12 +3,10 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent">
 
-    <TextView
+    <ru.yandex.yamblz.ui.views.CanvasView
+        android:id="@+id/canvas_view"
+        android:layout_gravity="fill"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/content"
-        android:textSize="42sp"
-        android:gravity="center"
-        />
+        android:layout_height="match_parent" />
 
 </FrameLayout>
