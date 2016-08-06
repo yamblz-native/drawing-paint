@@ -28,6 +28,7 @@ public class ContentFragment extends BaseFragment {
     public static final String DEBUG_TAG = ContentFragment.class.getName();
     public static final int DOWNLOAD_RESULT_CODE = 1234;
     public static final int SAVE_RESULT_CODE = 4321;
+    private static final String IMAGE_TYPE = "image/*";
 
     @BindView(R.id.brush_button)
     ImageView brushButton;
@@ -54,6 +55,8 @@ public class ContentFragment extends BaseFragment {
         View v = inflater.inflate(R.layout.fragment_content, container, false);
         unbinder = ButterKnife.bind(this, v);
 
+        paletteButton.setColorFilter(drawingView.getColor());
+
         return v;
     }
 
@@ -61,17 +64,18 @@ public class ContentFragment extends BaseFragment {
     public void onPaletteClick(View v) {
         ColorPickerDialogBuilder
                 .with(v.getContext())
-                .setTitle("Choose color")
-                .initialColor(Color.GREEN)
+                .setTitle(getString(R.string.color_picker_title))
+                .initialColor(Color.MAGENTA)
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                .density(5)
-                .setOnColorSelectedListener(selectedColor -> Log.d(DEBUG_TAG, "onColorSelected: 0x" + Integer.toHexString(selectedColor)))
-                .setPositiveButton("ok", (dialog, selectedColor, allColors) -> {
-                    drawingView.setNewColorForBrush(selectedColor);
+                .density(10)
+                .setOnColorSelectedListener(selectedColor ->
+                        Log.d(DEBUG_TAG, "onColorSelected: 0x" + Integer.toHexString(selectedColor)))
+                .setPositiveButton(getString(R.string.color_picker_positive_button), (dialog, selectedColor, allColors) -> {
+                    drawingView.setColorForTool(selectedColor);
                     paletteButton.setColorFilter(selectedColor);
                     paletteButton.invalidate();
                 })
-                .setNegativeButton("cancel", (dialog, which) -> {
+                .setNegativeButton(getString(R.string.color_picker_negative_button), (dialog, which) -> {
                 })
                 .build()
                 .show();
@@ -80,7 +84,7 @@ public class ContentFragment extends BaseFragment {
     @OnClick(R.id.save_button)
     public void onSaveClick() {
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.setType("image/*");
+        intent.setType(IMAGE_TYPE);
         startActivityForResult(intent, SAVE_RESULT_CODE);
 
     }
@@ -89,7 +93,7 @@ public class ContentFragment extends BaseFragment {
     public void onDownloadClick() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
+        intent.setType(IMAGE_TYPE);
         startActivityForResult(intent, DOWNLOAD_RESULT_CODE);
     }
 
@@ -102,7 +106,7 @@ public class ContentFragment extends BaseFragment {
                     if (data != null) {
                         Bitmap result = fm.loadBitmapFromExternalStorage(getContext(), data.getData());
                         if (result != null) {
-                            drawingView.setCanvasBitmap(result.copy(Bitmap.Config.ARGB_8888, true));
+                            drawingView.setBitmap(result.copy(Bitmap.Config.ARGB_8888, true));
                             drawingView.invalidate();
                         }
                     }
@@ -110,7 +114,7 @@ public class ContentFragment extends BaseFragment {
                 case SAVE_RESULT_CODE:
                     if (data != null) {
                         fm.saveBitmapToExternalStorage(getActivity(),
-                                drawingView.getCanvasBitmap(),
+                                drawingView.getBitmap(),
                                 data.getData());
                     }
                     break;
