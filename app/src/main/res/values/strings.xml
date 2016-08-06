@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Yamblz</string>
-    <string name="content">Hello</string>
+
+    <string name="color_picker_title">Выберите цвет</string>
+    <string name="color_picker_positive_button">Ок</string>
+    <string name="color_picker_negative_button">Отмена</string>
+
 </resources>
