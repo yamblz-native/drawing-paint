@@ -115,8 +115,17 @@ public class CanvasView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        clear(w,h);
+    }
+
+    public void clear(int w, int h){
         currentBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         currentBitmap.eraseColor(Color.WHITE);
         canvas = new Canvas(currentBitmap);
+        invalidate();
+    }
+
+    public void setMode(PaintMode mode) {
+        this.mode = mode;
     }
 }
