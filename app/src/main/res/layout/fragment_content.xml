@@ -29,6 +29,43 @@
 
     </LinearLayout>
 
+    <RadioGroup
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/brush"
+            android:text="brush"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/cat"
+            android:text="cat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/cat2"
+            android:text="owl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/cat3"
+            android:text="batman"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/text"
+            android:text="text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RadioGroup>
+
     <ru.yandex.yamblz.ui.views.PaintboxView
         android:id="@+id/paintbox"
         android:layout_width="match_parent"

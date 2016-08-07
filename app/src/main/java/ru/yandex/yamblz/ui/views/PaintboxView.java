@@ -9,7 +9,6 @@ import android.graphics.Path;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,12 +21,19 @@ import java.util.ArrayList;
 
 public class PaintboxView extends View {
 
+    public enum PaintMode {
+        BRUSH, STAMP, TEXT
+    }
+
+    PaintMode mode = PaintMode.BRUSH;
     Paint paint;
     ArrayList<PathWrapper> paths;
-    float startX, startY;
-    float x = 1, y = 1;
+    float oldX, oldY;
     int color = Color.BLACK;
+    Bitmap stamp;
+    String text;
     Bitmap background;
+
 
     public PaintboxView(Context context) {
         super(context);
@@ -52,13 +58,28 @@ public class PaintboxView extends View {
     private void init(Context context) {
         paint = new Paint();
         paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, context.getResources().getDisplayMetrics()));
+        paint.setStrokeWidth(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()));
         paint.setStyle(Paint.Style.STROKE);
+        paint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 26, context.getResources().getDisplayMetrics()));
         paths = new ArrayList<>();
     }
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+        mode = PaintMode.TEXT;
+    }
+
+    public void setStamp(Bitmap image) {
+        this.stamp = image;
+        mode = PaintMode.STAMP;
+    }
+
+    public void setBrushOn(){
+        mode = PaintMode.BRUSH;
     }
 
     @Override
@@ -68,7 +89,17 @@ public class PaintboxView extends View {
             canvas.drawBitmap(background, 0, 0, paint);
         for (PathWrapper pathWrapper : paths) {
             paint.setColor(pathWrapper.color);
-            canvas.drawPath(pathWrapper.path, paint);
+            switch (pathWrapper.mode) {
+                case BRUSH:
+                    canvas.drawPath(pathWrapper.path, paint);
+                    break;
+                case TEXT:
+                    canvas.drawText(pathWrapper.text, pathWrapper.x, pathWrapper.y, paint);
+                    break;
+                case STAMP:
+                    canvas.drawBitmap(pathWrapper.image, pathWrapper.x, pathWrapper.y, null);
+                    break;
+            }
         }
     }
 
@@ -92,29 +123,42 @@ public class PaintboxView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        x = event.getX();
-        y = event.getY();
+        float x = event.getX();
+        float y = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                paths.add(new PathWrapper());
-                paths.get(paths.size() - 1).color = color;
-                paths.get(paths.size() - 1).path.moveTo(x, y);
+                PathWrapper pathWrapper = new PathWrapper();
+                pathWrapper.color = color;
+                pathWrapper.path.moveTo(x, y);
+                pathWrapper.mode = mode;
+                pathWrapper.text = text;
+                pathWrapper.x = x;
+                pathWrapper.y = y;
+                pathWrapper.image = stamp;
+                paths.add(pathWrapper);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_UP:
-                paths.get(paths.size() - 1).path.quadTo(startX, startY, x, y);
+                paths.get(paths.size() - 1).path.quadTo(oldX, oldY, x, y);
+                paths.get(paths.size() - 1).x = x;
+                paths.get(paths.size() - 1).y = y;
                 invalidate();
                 break;
         }
-        startX = x; startY = y;
+        oldX = x;
+        oldY = y;
         return true;
     }
 
     static class PathWrapper {
 
-        Path path;
+        public Path path;
         public int color;
+        public String text;
+        public Bitmap image;
+        public PaintMode mode;
+        public float x,y;
 
         PathWrapper() {
             path = new Path();

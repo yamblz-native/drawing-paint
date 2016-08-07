@@ -4,18 +4,21 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
 import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
@@ -51,6 +54,17 @@ public class ContentFragment extends BaseFragment {
     @BindView(R.id.color_pick)
     Button pickColor;
 
+    @BindView(R.id.brush)
+    RadioButton rbBrush;
+    @BindView(R.id.cat)
+    RadioButton rbCat;
+    @BindView(R.id.cat2)
+    RadioButton rbCat2; // things that cats
+    @BindView(R.id.cat3) // kind of look like :)
+    RadioButton rbCat3;
+    @BindView(R.id.text)
+    RadioButton rbText;
+
     DialogProperties loadDialogProperties;
     DialogProperties saveDialogProperties;
 
@@ -66,10 +80,6 @@ public class ContentFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
-        loadFile.setOnClickListener(onLoadClickListener);
-        saveFile.setOnClickListener(onSaveClickListener);
-        pickColor.setOnClickListener(onColorPickClickListener);
 
         loadDialogProperties = new DialogProperties();
         loadDialogProperties.selection_mode = DialogConfigs.SINGLE_MODE;
@@ -89,6 +99,18 @@ public class ContentFragment extends BaseFragment {
             ImageInterface retain = (ImageInterface) getTargetFragment();
             paintboxView.loadBitmap(retain.getImage());
         }
+
+        loadFile.setOnClickListener(onLoadClickListener);
+        saveFile.setOnClickListener(onSaveClickListener);
+        pickColor.setOnClickListener(onColorPickClickListener);
+
+        rbBrush.setOnCheckedChangeListener(onBrushCheckedChangeListener);
+
+        rbCat.setOnCheckedChangeListener(onCatCheckedChangeListener);
+        rbCat2.setOnCheckedChangeListener(onCatCheckedChangeListener);
+        rbCat3.setOnCheckedChangeListener(onCatCheckedChangeListener);
+
+        rbText.setOnCheckedChangeListener(onTextCheckedChangeListener);
     }
 
     private Bitmap scaleBackground(Bitmap bitmap, boolean isPortrait) {
@@ -177,6 +199,47 @@ public class ContentFragment extends BaseFragment {
                     .onColorSelected(color -> {paintboxView.setColor(color);})
                     .create()
                     .show(getChildFragmentManager(), "ChromaDialog");
+        }
+    };
+
+    CompoundButton.OnCheckedChangeListener onTextCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if ( isChecked ) {
+                AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
+                adb.setTitle("Input text");
+                final EditText editText = new EditText(getContext());
+                adb.setView(editText);
+                adb.setPositiveButton("OK", (dialog, which) -> {
+                    if (!TextUtils.isEmpty(editText.getText().toString()))
+                        paintboxView.setText(editText.getText().toString());
+                });
+                adb.show();
+            }
+        }
+    };
+
+    CompoundButton.OnCheckedChangeListener onCatCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if ( isChecked ) {
+                Bitmap image;
+                switch (buttonView.getId()) {
+                    case R.id.cat2: image = BitmapFactory.decodeResource(getResources(), R.drawable.owl); break;
+                    case R.id.cat3: image = BitmapFactory.decodeResource(getResources(), R.drawable.batman); break;
+                    default: image = BitmapFactory.decodeResource(getResources(), R.drawable.cat); break;
+                }
+                paintboxView.setStamp(image);
+            }
+        }
+    };
+
+    CompoundButton.OnCheckedChangeListener onBrushCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if ( isChecked ) {
+                paintboxView.setBrushOn();
+            }
         }
     };
 
