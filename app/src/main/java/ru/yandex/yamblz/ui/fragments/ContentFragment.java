@@ -10,6 +10,11 @@ import android.view.ViewGroup;
 import ru.yandex.yamblz.R;
 
 public class ContentFragment extends BaseFragment {
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @NonNull
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
