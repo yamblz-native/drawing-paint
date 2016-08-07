@@ -6,10 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.ui.other.Brush;
 import ru.yandex.yamblz.ui.other.PaintMode;
 
@@ -25,6 +27,7 @@ public class CanvasView extends View {
     Bitmap currentBitmap;
     Canvas canvas;
     Paint canvasPaint;
+
 
     public CanvasView(Context context) {
         super(context);
@@ -93,7 +96,7 @@ public class CanvasView extends View {
     private void actionUp(float x, float y) {
         switch (mode) {
             case BRUSH_MODE:
-                canvas.drawPath(path,paint);
+                canvas.drawPath(path, paint);
                 path.reset();
                 break;
         }
@@ -115,17 +118,26 @@ public class CanvasView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        clear(w,h);
+        clear(w, h);
     }
 
-    public void clear(int w, int h){
+    public void clear(int w, int h) {
         currentBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        currentBitmap.eraseColor(Color.WHITE);
+        currentBitmap.eraseColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
         canvas = new Canvas(currentBitmap);
         invalidate();
     }
 
     public void setMode(PaintMode mode) {
         this.mode = mode;
+    }
+        
+    public Bitmap getCurrentBitmap() {
+        return currentBitmap;
+    }
+
+    public void setCurrentBitmap(Bitmap currentBitmap) {
+        this.currentBitmap = currentBitmap;
+        invalidate();
     }
 }

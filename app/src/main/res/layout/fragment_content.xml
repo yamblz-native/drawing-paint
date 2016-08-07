@@ -5,10 +5,10 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/brush"
         android:layout_width="48dp"
         android:layout_height="47dp"
         android:src="@drawable/brush"
-        android:id="@+id/brush"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="5dp" />
 
@@ -30,13 +30,32 @@
         android:layout_toEndOf="@+id/color" />
 
     <ImageView
-        android:src="@drawable/color"
         android:id="@+id/color"
+        android:src="@drawable/color"
         android:layout_width="48dp"
         android:layout_height="47dp"
         android:padding="1dp"
         android:layout_alignTop="@+id/brush"
         android:layout_toRightOf="@+id/brush"
         android:layout_toEndOf="@+id/brush" />
+
+    <ImageView
+        android:id="@+id/saveimg"
+        android:layout_width="48dp"
+        android:layout_height="47dp"
+        android:src="@drawable/save"
+        android:layout_toEndOf="@+id/clear"
+        android:layout_above="@+id/canvasView"
+        android:layout_toRightOf="@+id/clear"
+        android:layout_alignTop="@+id/clear" />
+
+    <ImageView
+        android:id="@+id/loadimg"
+        android:layout_width="48dp"
+        android:layout_height="47dp"
+        android:src="@drawable/import_img"
+        android:layout_above="@+id/canvasView"
+        android:layout_toRightOf="@+id/saveimg"
+        android:layout_toEndOf="@+id/saveimg" />
 
 </RelativeLayout>
