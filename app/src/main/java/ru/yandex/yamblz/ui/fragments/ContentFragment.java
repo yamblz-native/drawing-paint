@@ -1,6 +1,7 @@
 package ru.yandex.yamblz.ui.fragments;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +21,7 @@ import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class ContentFragment extends BaseFragment {
     ImageExtractor imageExtractor;
+    View lastSelected = null;
 
 
     @Override
@@ -39,10 +41,14 @@ public class ContentFragment extends BaseFragment {
         ImageView saveImg = ButterKnife.findById(view,R.id.saveimg);
         ImageView loadImg = ButterKnife.findById(view,R.id.loadimg);
 
-
         View.OnClickListener iconsClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (lastSelected != null){
+                    lastSelected.setBackgroundColor(Color.WHITE);
+                }
+                v.setBackgroundColor(Color.GRAY);
+                lastSelected = v;
                 switch (v.getId()){
                     case R.id.brush:
                         setBrushMode(canvasView);
