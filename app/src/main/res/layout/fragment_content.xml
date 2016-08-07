@@ -11,19 +11,19 @@
 
         <Button
             android:id="@+id/save"
-            android:text="save"
+            android:text="@string/save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/load"
-            android:text="load"
+            android:text="@string/load"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/color_pick"
-            android:text="color"
+            android:text="@string/color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -36,34 +36,59 @@
 
         <RadioButton
             android:id="@+id/brush"
-            android:text="brush"
+            android:text="@string/brush"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"/>
 
         <RadioButton
             android:id="@+id/cat"
-            android:text="cat"
+            android:text="@string/cat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/cat2"
-            android:text="owl"
+            android:text="@string/owl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/cat3"
-            android:text="batman"
+            android:text="@string/batman"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <RadioButton
             android:id="@+id/text"
-            android:text="text"
+            android:text="@string/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RadioButton
+            android:id="@+id/normal_color"
+            android:text="@string/normal_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RadioButton
+            android:id="@+id/invert"
+            android:text="@string/invert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <RadioButton
+            android:id="@+id/black_and_white"
+            android:text="@string/black_and_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     </RadioGroup>
 
     <ru.yandex.yamblz.ui.views.PaintboxView

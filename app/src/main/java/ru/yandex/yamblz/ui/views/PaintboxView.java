@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Parcelable;
@@ -24,16 +27,34 @@ public class PaintboxView extends View {
     public enum PaintMode {
         BRUSH, STAMP, TEXT
     }
+    public enum ColorFilterMode {
+        NORMAL, INVERT, BLACK_AND_WHITE;
+    }
 
-    PaintMode mode = PaintMode.BRUSH;
-    Paint paint;
-    ArrayList<PathWrapper> paths;
-    float oldX, oldY;
-    int color = Color.BLACK;
-    Bitmap stamp;
-    String text;
-    Bitmap background;
+    private PaintMode mode = PaintMode.BRUSH;
+    private Paint paint;
+    private ArrayList<PathWrapper> paths;
+    private float oldX, oldY;
+    private int color = Color.BLACK;
+    private Bitmap stamp;
+    private String text;
+    private Bitmap background;
 
+    float[] normalColors = new float[]{
+            1, 0, 0, 0, 0,
+            0, 1, 0, 0, 0,
+            0, 0, 1, 0, 0,
+            0, 0, 0, 1, 0};
+    float[] invertColors = new float[]{
+            -1, 0, 0, 0, 255,
+            0, -1, 0, 0, 255,
+            0, 0, -1, 0, 255,
+            0, 0, 0, 1, 0,};
+    float[] bwColors = new float[]{
+            0.3f, 0.59f, 0.11f, 0, 0,
+            0.3f, 0.59f, 0.11f, 0, 0,
+            0.3f, 0.59f, 0.11f, 0, 0,
+            0, 0, 0, 1, 0,};
 
     public PaintboxView(Context context) {
         super(context);
@@ -57,7 +78,10 @@ public class PaintboxView extends View {
 
     private void init(Context context) {
         paint = new Paint();
+        ColorMatrix cm = new ColorMatrix(normalColors);
+        ColorFilter filter = new ColorMatrixColorFilter(cm);
         paint.setColor(Color.BLACK);
+        paint.setColorFilter(filter);
         paint.setStrokeWidth(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, context.getResources().getDisplayMetrics()));
         paint.setStyle(Paint.Style.STROKE);
         paint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 26, context.getResources().getDisplayMetrics()));
@@ -82,11 +106,27 @@ public class PaintboxView extends View {
         mode = PaintMode.BRUSH;
     }
 
+    public void setColorFilter(ColorFilterMode mode) {
+        ColorMatrix cm;
+        switch (mode) {
+            case INVERT: cm = new ColorMatrix(invertColors); break;
+            case BLACK_AND_WHITE: cm = new ColorMatrix(bwColors); break;
+            default: cm = new ColorMatrix(normalColors); break;
+        }
+
+        ColorFilter filter = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(filter);
+        background = getBitmap();
+        invalidate();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         if ( background != null )
             canvas.drawBitmap(background, 0, 0, paint);
+
         for (PathWrapper pathWrapper : paths) {
             paint.setColor(pathWrapper.color);
             switch (pathWrapper.mode) {
@@ -97,7 +137,7 @@ public class PaintboxView extends View {
                     canvas.drawText(pathWrapper.text, pathWrapper.x, pathWrapper.y, paint);
                     break;
                 case STAMP:
-                    canvas.drawBitmap(pathWrapper.image, pathWrapper.x, pathWrapper.y, null);
+                    canvas.drawBitmap(pathWrapper.image, pathWrapper.x, pathWrapper.y, paint);
                     break;
             }
         }

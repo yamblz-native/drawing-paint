@@ -65,6 +65,13 @@ public class ContentFragment extends BaseFragment {
     @BindView(R.id.text)
     RadioButton rbText;
 
+    @BindView(R.id.normal_color)
+    RadioButton rbNormalColor;
+    @BindView(R.id.invert)
+    RadioButton rbInvertColor;
+    @BindView(R.id.black_and_white)
+    RadioButton rbBWColor;
+
     DialogProperties loadDialogProperties;
     DialogProperties saveDialogProperties;
 
@@ -111,6 +118,10 @@ public class ContentFragment extends BaseFragment {
         rbCat3.setOnCheckedChangeListener(onCatCheckedChangeListener);
 
         rbText.setOnCheckedChangeListener(onTextCheckedChangeListener);
+
+        rbNormalColor.setOnCheckedChangeListener(onColorFilterCheckedChangeListener);
+        rbInvertColor.setOnCheckedChangeListener(onColorFilterCheckedChangeListener);
+        rbBWColor.setOnCheckedChangeListener(onColorFilterCheckedChangeListener);
     }
 
     private Bitmap scaleBackground(Bitmap bitmap, boolean isPortrait) {
@@ -207,10 +218,9 @@ public class ContentFragment extends BaseFragment {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if ( isChecked ) {
                 AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
-                adb.setTitle("Input text");
                 final EditText editText = new EditText(getContext());
                 adb.setView(editText);
-                adb.setPositiveButton("OK", (dialog, which) -> {
+                adb.setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     if (!TextUtils.isEmpty(editText.getText().toString()))
                         paintboxView.setText(editText.getText().toString());
                 });
@@ -239,6 +249,19 @@ public class ContentFragment extends BaseFragment {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if ( isChecked ) {
                 paintboxView.setBrushOn();
+            }
+        }
+    };
+
+    CompoundButton.OnCheckedChangeListener onColorFilterCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                switch (buttonView.getId()) {
+                    case R.id.normal_color: paintboxView.setColorFilter(PaintboxView.ColorFilterMode.NORMAL); break;
+                    case R.id.invert: paintboxView.setColorFilter(PaintboxView.ColorFilterMode.INVERT); break;
+                    case R.id.black_and_white: paintboxView.setColorFilter(PaintboxView.ColorFilterMode.BLACK_AND_WHITE); break;
+                }
             }
         }
     };
