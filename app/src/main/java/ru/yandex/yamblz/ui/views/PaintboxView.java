@@ -6,10 +6,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.ArrayList;
 
 /**
  * Created by Volha on 05.08.2016.
@@ -18,32 +23,42 @@ import android.view.View;
 public class PaintboxView extends View {
 
     Paint paint;
+    ArrayList<PathWrapper> paths;
     float startX, startY;
     float x = 1, y = 1;
-    Path path;
+    int color = Color.BLACK;
     Bitmap background;
 
     public PaintboxView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public PaintboxView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
     public PaintboxView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        init(context);
     }
 
-    private void init() {
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        return super.onSaveInstanceState();
+    }
+
+    private void init(Context context) {
         paint = new Paint();
         paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(10);
+        paint.setStrokeWidth(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, context.getResources().getDisplayMetrics()));
         paint.setStyle(Paint.Style.STROKE);
-        path = new Path();
+        paths = new ArrayList<>();
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
     @Override
@@ -51,12 +66,19 @@ public class PaintboxView extends View {
         super.onDraw(canvas);
         if ( background != null )
             canvas.drawBitmap(background, 0, 0, paint);
-        canvas.drawPath(path, paint);
-        Log.d("tag", "sx=" + startX + " sy=" + startY);
+        for (PathWrapper pathWrapper : paths) {
+            paint.setColor(pathWrapper.color);
+            canvas.drawPath(pathWrapper.path, paint);
+        }
     }
 
-    public void loadBitmap(Bitmap bitmap) {
+    public void loadBitmap(@Nullable Bitmap bitmap) {
+
+        if ( bitmap == null )
+            return;
+
         background = bitmap;
+        paths.clear();
         invalidate();
     }
 
@@ -74,23 +96,28 @@ public class PaintboxView extends View {
         y = event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                path.moveTo(x, y);
+                paths.add(new PathWrapper());
+                paths.get(paths.size() - 1).color = color;
+                paths.get(paths.size() - 1).path.moveTo(x, y);
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_UP:
-                path.lineTo(x, y);
+                paths.get(paths.size() - 1).path.quadTo(startX, startY, x, y);
                 invalidate();
                 break;
         }
+        startX = x; startY = y;
         return true;
     }
 
     static class PathWrapper {
-        public Path path;
-        public Paint paint;
-        public PathWrapper() {
 
+        Path path;
+        public int color;
+
+        PathWrapper() {
+            path = new Path();
         }
     }
 }
