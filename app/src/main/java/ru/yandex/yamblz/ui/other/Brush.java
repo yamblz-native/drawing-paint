@@ -9,7 +9,6 @@ import android.graphics.Path;
 public class Brush {
     public void actionDown(Path path, float x, float y) {
         path.moveTo(x,y);
-        path.lineTo(x,y);
     }
 
     public void actionMove(Path path, float x, float y) {
