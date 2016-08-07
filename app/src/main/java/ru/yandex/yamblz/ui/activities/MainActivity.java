@@ -11,6 +11,7 @@ import ru.yandex.yamblz.App;
 import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.developer_settings.DeveloperSettingsModule;
 import ru.yandex.yamblz.ui.fragments.ContentFragment;
+import ru.yandex.yamblz.ui.fragments.RetainFragment;
 import ru.yandex.yamblz.ui.other.ViewModifier;
 
 public class MainActivity extends BaseActivity {
@@ -27,9 +28,11 @@ public class MainActivity extends BaseActivity {
         setContentView(viewModifier.modify(getLayoutInflater().inflate(R.layout.activity_main, null)));
 
         if (savedInstanceState == null) {
+            RetainFragment fragment = new RetainFragment();
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.main_frame_layout, new ContentFragment())
+                    .add(fragment, RetainFragment.TAG)
+                    .replace(R.id.main_frame_layout, ContentFragment.newInstance(fragment))
                     .commit();
         }
     }
