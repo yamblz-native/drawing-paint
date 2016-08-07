@@ -1,14 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
+    <ImageView
+        android:id="@+id/brush"
+        android:layout_width="48dp"
+        android:layout_height="47dp"
+        android:src="@drawable/brush"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp" />
+
+    <ru.yandex.yamblz.ui.views.CanvasView
+        android:id="@+id/canvasView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/content"
-        android:textSize="42sp"
-        android:gravity="center"
-        />
+        android:layout_height="265dp"
+        android:layout_below="@+id/brush"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/clear"
+        android:src="@drawable/clear"
+        android:layout_width="48dp"
+        android:layout_height="47dp"
+        android:layout_alignTop="@+id/brush"
+        android:layout_toRightOf="@+id/color"
+        android:layout_toEndOf="@+id/color" />
+
+    <ImageView
+        android:id="@+id/color"
+        android:src="@drawable/color"
+        android:layout_width="48dp"
+        android:layout_height="47dp"
+        android:padding="1dp"
+        android:layout_alignTop="@+id/brush"
+        android:layout_toRightOf="@+id/brush"
+        android:layout_toEndOf="@+id/brush" />
+
+    <ImageView
+        android:id="@+id/saveimg"
+        android:layout_width="48dp"
+        android:layout_height="47dp"
+        android:src="@drawable/save"
+        android:layout_toEndOf="@+id/clear"
+        android:layout_above="@+id/canvasView"
+        android:layout_toRightOf="@+id/clear"
+        android:layout_alignTop="@+id/clear" />
+
+    <ImageView
+        android:id="@+id/loadimg"
+        android:layout_width="48dp"
+        android:layout_height="47dp"
+        android:src="@drawable/import_img"
+        android:layout_above="@+id/canvasView"
+        android:layout_toRightOf="@+id/saveimg"
+        android:layout_toEndOf="@+id/saveimg" />
+
+</RelativeLayout>
