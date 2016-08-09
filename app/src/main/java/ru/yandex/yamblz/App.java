@@ -9,6 +9,7 @@ import ru.yandex.yamblz.developer_settings.DeveloperSettingsModel;
 import timber.log.Timber;
 
 public class App extends Application {
+    
     private ApplicationComponent applicationComponent;
 
     // Prevent need in a singleton (global) reference to the application object.
