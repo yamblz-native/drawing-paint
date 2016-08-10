@@ -1,14 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                tools:ignore="RtlHardcoded">
 
-    <TextView
+    <ImageView
+        android:id="@+id/fragment_content_cancel_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_restore_black_64dp"/>
+
+    <com.github.shchurov.horizontalwheelview.HorizontalWheelView
+        android:id="@+id/fragment_content_wheel_view"
+        android:layout_width="wrap_content"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/fragment_content_cancel_image"
+        android:layout_toRightOf="@+id/fragment_content_paint_view"
+        app:activeColor="#f9a825"
+        app:normalColor="#000000"/>
+
+    <ru.yandex.yamblz.ui.views.PaintView
+        android:id="@+id/fragment_content_paint_view"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
+
+    <ru.yandex.yamblz.ui.views.CanvasView
+        android:id="@+id/fragment_content_canvas_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/content"
-        android:textSize="42sp"
-        android:gravity="center"
-        />
+        android:layout_above="@+id/fragment_content_wheel_view"
+        android:layout_alignParentLeft="true"/>
 
-</FrameLayout>
+</RelativeLayout>

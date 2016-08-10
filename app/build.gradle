@@ -98,6 +98,9 @@ dependencies {
 
     compile libraries.timber
 
+    compile libraries.horizontalwheelview
+    compile libraries.colorpicker
+
     // Developer tools (Developer Settings)
     compile libraries.stetho
     compile libraries.leakCanary
