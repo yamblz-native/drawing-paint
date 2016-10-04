@@ -16,17 +16,15 @@
         <TextView
             android:id="@+id/gray_scale_btn"
             style="@style/Filter"
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:drawableTop="@drawable/grayscale"
             android:text="@string/grayscale_filter"/>
 
         <TextView
             android:id="@+id/negative_btn"
             style="@style/Filter"
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:drawableTop="@drawable/invert"
             android:text="@string/negative_filter"/>
     </LinearLayout>
 

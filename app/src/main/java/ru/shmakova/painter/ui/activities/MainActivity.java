@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ru.shmakova.painter.App;
+import ru.shmakova.painter.BuildConfig;
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.developer_settings.DeveloperSettingsModule;
 import ru.shmakova.painter.ui.fragments.ContentFragment;
@@ -24,7 +25,11 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         App.get(this).applicationComponent().inject(this);
 
-        setContentView(viewModifier.modify(getLayoutInflater().inflate(R.layout.activity_main, null)));
+        if (BuildConfig.DEBUG) {
+            setContentView(viewModifier.modify(getLayoutInflater().inflate(R.layout.activity_main, null)));
+        } else {
+            setContentView(R.layout.activity_main);
+        }
 
         if (savedInstanceState == null) {
             getSupportFragmentManager()
