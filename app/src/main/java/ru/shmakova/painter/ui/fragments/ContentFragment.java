@@ -203,13 +203,13 @@ public class ContentFragment extends BaseFragment implements
     public void onStampPick(int stamp) {
         switch (stamp) {
             case R.id.sticker_1:
-                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.sticker_1));
+                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_android_black_24dp));
                 break;
             case R.id.sticker_2:
-                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.sticker_2));
+                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_favorite_black_24dp));
                 break;
             case R.id.sticker_3:
-                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.sticker_3));
+                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_mood_black_24dp));
                 break;
         }
     }

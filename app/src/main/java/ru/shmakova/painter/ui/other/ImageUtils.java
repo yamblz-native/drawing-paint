@@ -25,7 +25,7 @@ import timber.log.Timber;
 
 public class ImageUtils {
     private static final String ALBUM_DIR = "Yamblz";
-    private static final int STAMP_SIZE = 100;
+    private static final int STAMP_SIZE = 24;
     private Context context;
 
     public ImageUtils(Context context) {
@@ -116,8 +116,10 @@ public class ImageUtils {
      * @return bitmap
      */
     public Bitmap getStampFromDrawable(int id) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), id);
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, STAMP_SIZE, STAMP_SIZE, false);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getApplicationContext().getResources(), id);
+        final float density = context.getResources().getDisplayMetrics().density;
+        final int stampSize = (int) (STAMP_SIZE * density);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, stampSize, stampSize, false);
         return resizedBitmap;
     }
 }

@@ -17,25 +17,25 @@
             android:id="@+id/sticker_1"
             style="@style/Filter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_100"
-            android:src="@drawable/sticker_1"
-            android:contentDescription="@string/content"/>
+            android:layout_height="@dimen/size_small_24"
+            android:contentDescription="@string/content"
+            android:src="@drawable/ic_android_black_24dp"/>
 
         <ImageView
             android:id="@+id/sticker_2"
             style="@style/Filter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_100"
-            android:src="@drawable/sticker_2"
-            android:contentDescription="@string/content"/>
+            android:layout_height="@dimen/size_small_24"
+            android:contentDescription="@string/content"
+            android:src="@drawable/ic_favorite_black_24dp"/>
 
         <ImageView
             android:id="@+id/sticker_3"
             style="@style/Filter"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/size_100"
-            android:src="@drawable/sticker_3"
-            android:contentDescription="@string/content"/>
+            android:layout_height="@dimen/size_small_24"
+            android:contentDescription="@string/content"
+            android:src="@drawable/ic_mood_black_24dp"/>
     </LinearLayout>
 
 </LinearLayout>
