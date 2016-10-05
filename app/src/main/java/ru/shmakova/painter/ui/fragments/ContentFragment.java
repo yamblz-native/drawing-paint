@@ -211,6 +211,12 @@ public class ContentFragment extends BaseFragment implements
             case R.id.sticker_3:
                 canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_mood_black_24dp));
                 break;
+            case R.id.sticker_4:
+                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_cat));
+                break;
+            case R.id.sticker_5:
+                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_panda));
+                break;
         }
     }
 

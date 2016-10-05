@@ -40,7 +40,7 @@ public class StampPickerDialogFragment extends AppCompatDialogFragment {
         return view;
     }
 
-    @OnClick({R.id.sticker_1, R.id.sticker_2, R.id.sticker_3})
+    @OnClick({R.id.sticker_1, R.id.sticker_2, R.id.sticker_3, R.id.sticker_4, R.id.sticker_5})
     public void onStickerOneClick(View v) {
         sendBackResult(v.getId());
     }

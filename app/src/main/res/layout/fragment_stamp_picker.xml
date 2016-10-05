@@ -36,6 +36,22 @@
             android:layout_height="@dimen/size_small_24"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_mood_black_24dp"/>
+
+        <ImageView
+            android:id="@+id/sticker_4"
+            style="@style/Filter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_small_24"
+            android:contentDescription="@string/content"
+            android:src="@drawable/ic_cat"/>
+
+        <ImageView
+            android:id="@+id/sticker_5"
+            style="@style/Filter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_small_24"
+            android:contentDescription="@string/content"
+            android:src="@drawable/ic_panda"/>
     </LinearLayout>
 
 </LinearLayout>
