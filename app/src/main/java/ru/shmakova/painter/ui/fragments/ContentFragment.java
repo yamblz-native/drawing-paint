@@ -33,18 +33,19 @@ import static android.app.Activity.RESULT_OK;
 public class ContentFragment extends BaseFragment implements
         FilterPickerDialogFragment.FilterPickerDialogListener,
         TextDialogFragment.EditTextDialogListener,
-        StampPickerDialogFragment.StampPickerDialogListener {
+        StampPickerDialogFragment.StampPickerDialogListener,
+        BrushPickerDialogFragment.BrushPickerDialogListener {
     private static final int GALLERY_PICTURE_REQUEST_CODE = 10;
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 20;
     private static final int FILTER_PICKER_REQUEST_CODE = 30;
     private static final int TEXT_PICKER_REQUEST_CODE = 40;
     private static final int STAMP_PICKER_REQUEST_CODE = 50;
-    private ImageUtils imageUtils;
-
+    private static final int BRUSH_PICKER_REQUEST_CODE = 60;
     @BindView(R.id.canvas)
     CanvasView canvasView;
     @BindView(R.id.color)
     ImageView colorIcon;
+    private ImageUtils imageUtils;
 
     @NonNull
     @Override
@@ -116,6 +117,11 @@ public class ContentFragment extends BaseFragment implements
     @OnClick(R.id.brush_btn)
     public void onBrushButtonClick() {
         canvasView.setBrush();
+        FragmentManager fm = getFragmentManager();
+        BrushPickerDialogFragment brushPickerDialogFragment = BrushPickerDialogFragment.newInstance();
+        brushPickerDialogFragment.setTargetFragment(ContentFragment.this, BRUSH_PICKER_REQUEST_CODE);
+        brushPickerDialogFragment.show(fm, "fragment_brush_picker");
+
     }
 
     @OnClick(R.id.stamp_btn)
@@ -206,5 +212,10 @@ public class ContentFragment extends BaseFragment implements
                 canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.sticker_3));
                 break;
         }
+    }
+
+    @Override
+    public void onBrushPick(int brushWidth) {
+        canvasView.setStrokeWidth(brushWidth);
     }
 }

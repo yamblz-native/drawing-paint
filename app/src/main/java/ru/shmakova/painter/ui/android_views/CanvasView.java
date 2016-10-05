@@ -19,6 +19,7 @@ public class CanvasView extends View {
     private final static int BRUSH_TOOL = 0;
     private final static int STAMP_TOOL = 1;
     private final static int TEXT_TOOL = 2;
+    private final static int STROKE_WIDTH = 5;
     private Paint drawPaint;
     private Paint fontPaint;
     private Paint canvasPaint;
@@ -60,7 +61,7 @@ public class CanvasView extends View {
         drawPaint = new Paint();
         drawPaint.setColor(DEFAULT_COLOR);
         drawPaint.setAntiAlias(true);
-        drawPaint.setStrokeWidth(5);
+        drawPaint.setStrokeWidth(STROKE_WIDTH);
         drawPaint.setStyle(Paint.Style.STROKE);
         drawPaint.setStrokeJoin(Paint.Join.ROUND);
         drawPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -80,6 +81,11 @@ public class CanvasView extends View {
         invalidate();
         drawPaint.setColor(color);
         fontPaint.setColor(color);
+    }
+
+    public void setStrokeWidth(int strokeWidth) {
+        invalidate();
+        drawPaint.setStrokeWidth(strokeWidth);
     }
 
     @Override
