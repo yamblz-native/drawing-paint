@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "255775736399",
+    "firebase_url": "https://painter-8ae99.firebaseio.com",
+    "project_id": "painter-8ae99",
+    "storage_bucket": "painter-8ae99.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:255775736399:android:b9dccb0baa2641bb",
+        "android_client_info": {
+          "package_name": "ru.shmakova.painter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "255775736399-jn3umu0tmi38m2lvc4sncsht19jucd5b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6I1HU9qGYirxpLcfWBqltK9QHobXjrb0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.crashlytics.android.Crashlytics;
+
+import io.fabric.sdk.android.Fabric;
 import ru.shmakova.painter.developer_settings.DevMetricsProxy;
 import ru.shmakova.painter.developer_settings.DeveloperSettingsModel;
 import timber.log.Timber;
@@ -21,6 +24,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         applicationComponent = prepareApplicationComponent().build();
+        Fabric.with(this, new Crashlytics());
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());

@@ -5,6 +5,7 @@ apply from: '../code_quality_tools/jacoco.gradle'
 apply plugin: 'com.frogermcs.androiddevmetrics'
 apply from: '../code_quality_tools/quality.gradle'
 apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'io.fabric'
 
 android {
     // Declared in dependencies.gradle in the root of the project.
@@ -12,7 +13,7 @@ android {
     buildToolsVersion versions.buildTools
 
     defaultConfig {
-        applicationId 'ru.yandex.yamblz'
+        applicationId 'ru.shmakova.painter'
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode versions.code // Notice that you may want to use BUILD_NUMBER from CI in real project with own CI.
@@ -40,20 +41,12 @@ android {
         debug {
             signingConfig signingConfigs.yamblz
             applicationIdSuffix '.debug'
-
-            // Enables code coverage with Jacoco only for instrumentation tests.
-            // Coverage for JVM tests done by code_quality_tools/jacoco.gradle.
-            testCoverageEnabled true
         }
 
         release {
             signingConfig signingConfigs.yamblz
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
-
-            // Enables code coverage with Jacoco only for instrumentation tests.
-            // Coverage for JVM tests done by code_quality_tools/jacoco.gradle.
-            testCoverageEnabled true
         }
     }
 
@@ -99,6 +92,7 @@ dependencies {
     compile libraries.timber
     compile libraries.spectrum
     compile libraries.mdColors
+    compile libraries.firebase
 
     // Developer tools (Developer Settings)
     compile libraries.stetho
@@ -123,6 +117,10 @@ dependencies {
         exclude module: 'recyclerview-v7'
         exclude module: 'support-v4'
     }
+
+    compile(libraries.crashlytics) {
+        transitive = true;
+    }
 }
 
 configurations.all {
@@ -145,3 +143,5 @@ if (withDexcount) {
         maxTreeDepth = Integer.MAX_VALUE
     }
 }
+
+apply plugin: 'com.google.gms.google-services'

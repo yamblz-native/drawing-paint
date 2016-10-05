@@ -4,9 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.Display;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.io.File;
@@ -92,7 +95,13 @@ public class ImageUtils {
         Bitmap bitmap = null;
 
         try {
-            bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+            WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            final int width = size.x;
+            Bitmap rawBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+            bitmap = Bitmap.createScaledBitmap(rawBitmap, width, width * rawBitmap.getHeight() / rawBitmap.getWidth(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }

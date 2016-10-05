@@ -9,6 +9,7 @@ buildscript {
     repositories {
         jcenter()
         maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         // See dependencies.gradle for declaration of plugins.
@@ -38,6 +39,12 @@ buildscript {
 
         // Check latest version of dependencies, task: dependencyUpdates
         classpath gradlePlugins.versions
+
+        // Google services
+        classpath gradlePlugins.googleServices
+
+        // Fabric
+        classpath gradlePlugins.fabric
     }
 
     // Part of workaround for Lint + Retrolambda.
@@ -48,6 +55,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url 'http://github.com/wada811/Android-Material-Design-Colors/raw/master/repository/' }
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     // Workaround to prevent Gradle from stealing focus from other apps during tests run/etc.
