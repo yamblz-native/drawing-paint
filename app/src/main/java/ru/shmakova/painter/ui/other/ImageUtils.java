@@ -1,13 +1,18 @@
 package ru.shmakova.painter.ui.other;
 
+import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -30,6 +35,16 @@ public class ImageUtils {
 
     public ImageUtils(Context context) {
         this.context = context;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static Bitmap getBitmap(VectorDrawable vectorDrawable) {
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        vectorDrawable.draw(canvas);
+        return bitmap;
     }
 
     /**
@@ -116,10 +131,17 @@ public class ImageUtils {
      * @return bitmap
      */
     public Bitmap getStampFromDrawable(int id) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getApplicationContext().getResources(), id);
-        final float density = context.getResources().getDisplayMetrics().density;
-        final int stampSize = (int) (STAMP_SIZE * density);
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, stampSize, stampSize, false);
-        return resizedBitmap;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getApplicationContext().getResources(), id, options);
+
+        if (bitmap != null) {
+            final float density = context.getResources().getDisplayMetrics().density;
+            final int stampSize = (int) (STAMP_SIZE * density);
+            return Bitmap.createScaledBitmap(bitmap, stampSize, stampSize, false);
+        } else {
+            VectorDrawable vectorDrawable = (VectorDrawable) ContextCompat.getDrawable(context, id);
+            return getBitmap(vectorDrawable);
+        }
     }
 }
