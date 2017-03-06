@@ -1,9 +1,9 @@
 package ru.shmakova.painter.developer_settings;
 
-import ru.shmakova.painter.App;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import ru.shmakova.painter.app.App;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

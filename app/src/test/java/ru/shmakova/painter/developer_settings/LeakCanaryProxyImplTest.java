@@ -2,7 +2,7 @@ package ru.shmakova.painter.developer_settings;
 
 import org.junit.Test;
 
-import ru.shmakova.painter.App;
+import ru.shmakova.painter.app.App;
 
 import static org.mockito.Mockito.mock;
 

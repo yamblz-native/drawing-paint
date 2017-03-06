@@ -92,6 +92,8 @@ dependencies {
     compile libraries.spectrum
     compile libraries.mdColors
     compile libraries.firebase
+    compile libraries.rxandroid
+    compile libraries.rxjava
 
     // Developer tools (Developer Settings)
     compile libraries.stetho

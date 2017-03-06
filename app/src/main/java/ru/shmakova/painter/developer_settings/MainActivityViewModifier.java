@@ -6,8 +6,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import ru.shmakova.painter.ui.other.ViewModifier;
-
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 public class MainActivityViewModifier implements ViewModifier {
