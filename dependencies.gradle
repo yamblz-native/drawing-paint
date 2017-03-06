@@ -29,6 +29,7 @@ ext.versions = [
         crashlytics                  : '2.6.6@aar',
         rxandroid                    : '1.2.1',
         rxjava                       : '1.2.5',
+        rxbinding                    : '0.4.0',
 
         espresso                     : '2.2.1',
         stetho                       : '1.3.1',
@@ -75,6 +76,9 @@ ext.libraries = [
         timber             : "com.jakewharton.timber:timber:$versions.timber",
         rxandroid          : "io.reactivex:rxandroid:$versions.rxandroid",
         rxjava             : "io.reactivex:rxjava:$versions.rxjava",
+        rxbinding          : "com.jakewharton.rxbinding:rxbinding:$versions.rxbinding",
+        rxbindingSupport   : "com.jakewharton.rxbinding:rxbinding-support-v4:$versions.rxbinding",
+
         spectrum           : "com.thebluealliance:spectrum:$versions.spectrum",
         mdColors           : "com.wada811:android-material-design-colors:$versions.mdColors",
         crashlytics        : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics",

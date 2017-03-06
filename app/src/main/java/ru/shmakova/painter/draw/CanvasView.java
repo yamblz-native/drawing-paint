@@ -89,7 +89,7 @@ public class CanvasView extends View {
         fontPaint.setColor(color);
     }
 
-    public void setStrokeWidth(int strokeWidth) {
+    public void setStrokeWidth(float strokeWidth) {
         invalidate();
         halfStrokeWidth = strokeWidth / 2;
         drawPaint.setStrokeWidth(strokeWidth);

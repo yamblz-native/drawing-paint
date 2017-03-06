@@ -1,4 +1,4 @@
-package ru.shmakova.painter.main;
+package ru.shmakova.painter.draw;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import ru.shmakova.painter.R;
 import ru.shmakova.painter.app.App;
 import ru.shmakova.painter.app.di.modules.DeveloperSettingsModule;
 import ru.shmakova.painter.developer_settings.ViewModifier;
-import ru.shmakova.painter.draw.ContentFragment;
 import ru.shmakova.painter.screen.BaseActivity;
 
 public class MainActivity extends BaseActivity {

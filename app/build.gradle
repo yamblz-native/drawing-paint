@@ -94,6 +94,8 @@ dependencies {
     compile libraries.firebase
     compile libraries.rxandroid
     compile libraries.rxjava
+    compile libraries.rxbinding
+    compile libraries.rxbindingSupport
 
     // Developer tools (Developer Settings)
     compile libraries.stetho

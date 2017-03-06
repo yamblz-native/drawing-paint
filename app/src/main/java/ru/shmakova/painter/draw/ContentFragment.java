@@ -136,7 +136,6 @@ public class ContentFragment extends BaseFragment implements
         stampPickerDialogFragment.show(fm, "fragment_stamp_picker");
     }
 
-
     /**
      * Checks permissions and saves bitmap to gallery
      */
@@ -225,7 +224,7 @@ public class ContentFragment extends BaseFragment implements
     }
 
     @Override
-    public void onBrushPick(int brushWidth) {
+    public void onBrushPick(float brushWidth) {
         canvasView.setStrokeWidth(brushWidth);
     }
 }

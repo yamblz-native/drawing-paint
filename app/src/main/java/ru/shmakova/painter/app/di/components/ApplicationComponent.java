@@ -12,7 +12,8 @@ import ru.shmakova.painter.app.di.modules.DeveloperSettingsModule;
 import ru.shmakova.painter.developer_settings.DevMetricsProxy;
 import ru.shmakova.painter.developer_settings.DeveloperSettingsModel;
 import ru.shmakova.painter.developer_settings.LeakCanaryProxy;
-import ru.shmakova.painter.main.MainActivity;
+import ru.shmakova.painter.draw.MainActivity;
+import ru.shmakova.painter.draw.brush.BrushPickerDialogFragment;
 
 @Singleton
 @Component(modules = {
@@ -36,4 +37,6 @@ public interface ApplicationComponent {
     Handler mainThreadHandler();
 
     void inject(@NonNull MainActivity mainActivity);
+
+    void inject(@NonNull BrushPickerDialogFragment brushPickerDialogFragment);
 }
