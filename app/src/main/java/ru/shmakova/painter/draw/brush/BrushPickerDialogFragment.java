@@ -23,8 +23,6 @@ public class BrushPickerDialogFragment extends BaseDialogFragment {
         return new BrushPickerDialogFragment();
     }
 
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

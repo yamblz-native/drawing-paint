@@ -9,6 +9,7 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -19,7 +20,7 @@ public class CanvasView extends View {
     private final static int BRUSH_TOOL = 0;
     private final static int STAMP_TOOL = 1;
     private final static int TEXT_TOOL = 2;
-    private final static int STROKE_WIDTH = 5;
+    private final static float STROKE_WIDTH = 5f;
     private Paint drawPaint;
     private Paint fontPaint;
     private Paint canvasPaint;
@@ -29,6 +30,10 @@ public class CanvasView extends View {
     private int currentTool;
     private String text;
     private Bitmap stamp;
+    private float lastTouchX;
+    private float lastTouchY;
+    private final RectF dirtyRect = new RectF();
+    private float halfStrokeWidth = STROKE_WIDTH / 2;
 
     public CanvasView(Context context) {
         super(context);
@@ -75,6 +80,7 @@ public class CanvasView extends View {
 
     /**
      * Sets color
+     *
      * @param color of paint
      */
     public void setColor(int color) {
@@ -85,6 +91,7 @@ public class CanvasView extends View {
 
     public void setStrokeWidth(int strokeWidth) {
         invalidate();
+        halfStrokeWidth = strokeWidth / 2;
         drawPaint.setStrokeWidth(strokeWidth);
     }
 
@@ -98,21 +105,32 @@ public class CanvasView extends View {
                 onActionDown(pointX, pointY);
                 break;
             case MotionEvent.ACTION_MOVE:
-                onActionMove(pointX, pointY);
-                break;
             case MotionEvent.ACTION_UP:
-                onActionUp();
+                onActionUp(event, pointX, pointY);
                 break;
             default:
                 return false;
         }
 
-        postInvalidate();
+        // Include half the stroke width to avoid clipping.
+        invalidate(
+                (int) (dirtyRect.left - halfStrokeWidth),
+                (int) (dirtyRect.top - halfStrokeWidth),
+                (int) (dirtyRect.right + halfStrokeWidth),
+                (int) (dirtyRect.bottom + halfStrokeWidth));
+        lastTouchX = pointX;
+        lastTouchY = pointY;
+
+        if (MotionEvent.ACTION_UP == event.getAction()) {
+            canvas.drawPath(path, drawPaint);
+            path.reset();
+        }
         return true;
     }
 
     /**
      * On action down
+     *
      * @param pointX - coordinate X
      * @param pointY - coordinate Y
      */
@@ -123,6 +141,8 @@ public class CanvasView extends View {
                 break;
             case BRUSH_TOOL:
                 path.moveTo(pointX, pointY);
+                lastTouchX = pointX;
+                lastTouchY = pointY;
                 break;
             case STAMP_TOOL:
                 drawStamp(pointX, pointY);
@@ -131,34 +151,60 @@ public class CanvasView extends View {
     }
 
     /**
-     * On action move
-     * @param pointX - coordinate X
-     * @param pointY - coordinate Y
+     * On action up
      */
-    private void onActionMove(float pointX, float pointY) {
+    private void onActionUp(MotionEvent event, float pointX, float pointY) {
         switch (currentTool) {
             case BRUSH_TOOL:
+                resetDirtyRect(pointX, pointY);
+
+                int historySize = event.getHistorySize();
+
+                for (int i = 0; i < historySize; i++) {
+                    float historicalX = event.getHistoricalX(i);
+                    float historicalY = event.getHistoricalY(i);
+                    expandDirtyRect(historicalX, historicalY);
+                    path.lineTo(historicalX, historicalY);
+                }
+
                 path.lineTo(pointX, pointY);
                 break;
         }
     }
 
+
     /**
-     * On action up
+     * Called when replaying history to ensure the dirty region includes all
+     * points.
      */
-    private void onActionUp() {
-        switch (currentTool) {
-            case BRUSH_TOOL:
-                canvas.drawPath(path, drawPaint);
-                path.reset();
-                break;
+    private void expandDirtyRect(float historicalX, float historicalY) {
+        if (historicalX < dirtyRect.left) {
+            dirtyRect.left = historicalX;
+        } else if (historicalX > dirtyRect.right) {
+            dirtyRect.right = historicalX;
+        }
+
+        if (historicalY < dirtyRect.top) {
+            dirtyRect.top = historicalY;
+        } else if (historicalY > dirtyRect.bottom) {
+            dirtyRect.bottom = historicalY;
         }
     }
 
+    /**
+     * Resets the dirty region when the motion event occurs.
+     */
+    private void resetDirtyRect(float eventX, float eventY) {
+        // The lastTouchX and lastTouchY were set when the ACTION_DOWN
+        // motion event occurred.
+        dirtyRect.left = Math.min(lastTouchX, eventX);
+        dirtyRect.right = Math.max(lastTouchX, eventX);
+        dirtyRect.top = Math.min(lastTouchY, eventY);
+        dirtyRect.bottom = Math.max(lastTouchY, eventY);
+    }
 
     @Override
     protected void onDraw(Canvas c) {
-        super.onDraw(canvas);
         c.drawBitmap(bitmap, 0, 0, canvasPaint);
         c.drawPath(path, drawPaint);
     }
@@ -190,6 +236,7 @@ public class CanvasView extends View {
 
     /**
      * Applies color matrix to current bitmap
+     *
      * @param colorMatrix - color matrix
      */
     private void applyColorMatrix(ColorMatrix colorMatrix) {
@@ -206,6 +253,7 @@ public class CanvasView extends View {
 
     /**
      * Gets bitmap
+     *
      * @return bitmap
      */
     public Bitmap getBitmap() {
@@ -214,6 +262,7 @@ public class CanvasView extends View {
 
     /**
      * Sets bitmap
+     *
      * @param bitmap new bitmap
      */
     public void setBitmap(Bitmap bitmap) {
@@ -224,7 +273,8 @@ public class CanvasView extends View {
 
     /**
      * Clear canvas
-     * @param width - width of bitmap
+     *
+     * @param width  - width of bitmap
      * @param height - height
      */
     private void clearCanvas(int width, int height) {
@@ -252,6 +302,7 @@ public class CanvasView extends View {
 
     /**
      * Sets stamp tool
+     *
      * @param stamp for drawing
      */
     public void setStamp(Bitmap stamp) {
@@ -261,6 +312,7 @@ public class CanvasView extends View {
 
     /**
      * Sets text tool
+     *
      * @param text for drawing
      */
     public void setText(String text) {
@@ -270,6 +322,7 @@ public class CanvasView extends View {
 
     /**
      * Draws text in the point with coordinates
+     *
      * @param pointX - coordinate X
      * @param pointY - coordinate Y
      */
@@ -280,6 +333,7 @@ public class CanvasView extends View {
 
     /**
      * Draws stamp in the point with coordinates
+     *
      * @param pointX - coordinate X
      * @param pointY - coordinate Y
      */
