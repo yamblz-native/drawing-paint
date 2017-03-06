@@ -28,10 +28,6 @@ public class BrushPickerDialogFragment extends BaseDialogFragment implements Bru
     @Inject
     BrushPresenter presenter;
 
-    public static BrushPickerDialogFragment newInstance() {
-        return new BrushPickerDialogFragment();
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -105,7 +105,7 @@ public class ContentFragment extends BaseFragment implements
     @OnClick(R.id.filter_btn)
     public void onFilterButtonClick() {
         FragmentManager fm = getFragmentManager();
-        FilterPickerDialogFragment filterPickerDialogFragment = FilterPickerDialogFragment.newInstance();
+        FilterPickerDialogFragment filterPickerDialogFragment = new FilterPickerDialogFragment();
         filterPickerDialogFragment.setTargetFragment(ContentFragment.this, FILTER_PICKER_REQUEST_CODE);
         filterPickerDialogFragment.show(fm, "fragment_filter_picker");
     }
@@ -113,7 +113,7 @@ public class ContentFragment extends BaseFragment implements
     @OnClick(R.id.text_btn)
     public void onTextButtonClick() {
         FragmentManager fm = getFragmentManager();
-        TextDialogFragment textDialogFragment = TextDialogFragment.newInstance();
+        TextDialogFragment textDialogFragment = new TextDialogFragment();
         textDialogFragment.setTargetFragment(ContentFragment.this, TEXT_PICKER_REQUEST_CODE);
         textDialogFragment.show(fm, "fragment_text");
     }
@@ -122,7 +122,7 @@ public class ContentFragment extends BaseFragment implements
     public void onBrushButtonClick() {
         canvasView.setBrush();
         FragmentManager fm = getFragmentManager();
-        BrushPickerDialogFragment brushPickerDialogFragment = BrushPickerDialogFragment.newInstance();
+        BrushPickerDialogFragment brushPickerDialogFragment = new BrushPickerDialogFragment();
         brushPickerDialogFragment.setTargetFragment(ContentFragment.this, BRUSH_PICKER_REQUEST_CODE);
         brushPickerDialogFragment.show(fm, "fragment_brush_picker");
 
@@ -131,7 +131,7 @@ public class ContentFragment extends BaseFragment implements
     @OnClick(R.id.stamp_btn)
     public void onStampButtonClick() {
         FragmentManager fm = getFragmentManager();
-        StampPickerDialogFragment stampPickerDialogFragment = StampPickerDialogFragment.newInstance();
+        StampPickerDialogFragment stampPickerDialogFragment = new StampPickerDialogFragment();
         stampPickerDialogFragment.setTargetFragment(ContentFragment.this, STAMP_PICKER_REQUEST_CODE);
         stampPickerDialogFragment.show(fm, "fragment_stamp_picker");
     }

@@ -14,6 +14,9 @@ import ru.shmakova.painter.developer_settings.DeveloperSettingsModel;
 import ru.shmakova.painter.developer_settings.LeakCanaryProxy;
 import ru.shmakova.painter.draw.MainActivity;
 import ru.shmakova.painter.draw.brush.BrushPickerDialogFragment;
+import ru.shmakova.painter.draw.filter.FilterPickerDialogFragment;
+import ru.shmakova.painter.draw.stamp.StampPickerDialogFragment;
+import ru.shmakova.painter.draw.text.TextDialogFragment;
 
 @Singleton
 @Component(modules = {
@@ -33,10 +36,17 @@ public interface ApplicationComponent {
 
     DevMetricsProxy devMetricsProxy();
 
-    @NonNull @Named(ApplicationModule.MAIN_THREAD_HANDLER)
+    @NonNull
+    @Named(ApplicationModule.MAIN_THREAD_HANDLER)
     Handler mainThreadHandler();
 
     void inject(@NonNull MainActivity mainActivity);
 
     void inject(@NonNull BrushPickerDialogFragment brushPickerDialogFragment);
+
+    void inject(@NonNull FilterPickerDialogFragment filterPickerDialogFragment);
+
+    void inject(@NonNull StampPickerDialogFragment stampPickerDialogFragment);
+
+    void inject(@NonNull TextDialogFragment textDialogFragment);
 }

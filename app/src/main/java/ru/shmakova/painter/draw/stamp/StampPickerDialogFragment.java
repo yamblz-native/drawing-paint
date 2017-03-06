@@ -1,6 +1,5 @@
 package ru.shmakova.painter.draw.stamp;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,54 +7,71 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.ButterKnife;
+import javax.inject.Inject;
+
 import butterknife.OnClick;
-import butterknife.Unbinder;
 import ru.shmakova.painter.R;
+import ru.shmakova.painter.app.App;
 import ru.shmakova.painter.screen.BaseDialogFragment;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
-public class StampPickerDialogFragment extends BaseDialogFragment {
-    private Unbinder unbinder;
-
-    public static StampPickerDialogFragment newInstance() {
-        return new StampPickerDialogFragment();
-    }
-
+public class StampPickerDialogFragment extends BaseDialogFragment implements StampView {
     @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        return super.onCreateDialog(savedInstanceState);
-    }
+    private final PublishSubject<Integer> submitClicks = PublishSubject.create();
+
+    @Inject
+    StampPresenter presenter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_stamp_picker, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        getDialog().setTitle(getResources().getString(R.string.stamp_pick));
-        return view;
+        return inflater.inflate(R.layout.fragment_stamp_picker, container, false);
+    }
+
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        injectDependencies();
+    }
+
+    private void injectDependencies() {
+        App.get(getContext()).applicationComponent().inject(this);
     }
 
     @OnClick({R.id.sticker_1, R.id.sticker_2, R.id.sticker_3, R.id.sticker_4, R.id.sticker_5})
     public void onStickerOneClick(View v) {
-        sendBackResult(v.getId());
+        submitClicks.onNext(v.getId());
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        unbinder.unbind();
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter.bindView(this);
     }
 
+    @Override
+    public void onDestroyView() {
+        presenter.unbindView(this);
+        super.onDestroyView();
+    }
+
+    @Override
+    public Observable<Integer> submitClicks() {
+        return submitClicks;
+    }
+
+    @Override
     public void sendBackResult(int stamp) {
         StampPickerDialogListener listener = (StampPickerDialogListener) getTargetFragment();
         listener.onStampPick(stamp);
-        dismiss();
     }
 
+    @Override
+    public void dismissDialog() {
+        dismiss();
+    }
 
     public interface StampPickerDialogListener {
         void onStampPick(int stamp);
     }
-
 }
