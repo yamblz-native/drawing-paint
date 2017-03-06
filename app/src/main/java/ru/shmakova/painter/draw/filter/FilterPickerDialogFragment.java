@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +12,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import ru.shmakova.painter.R;
+import ru.shmakova.painter.screen.BaseDialogFragment;
 
-/**
- * Created by shmakova on 02.08.16.
- */
-
-public class FilterPickerDialogFragment extends AppCompatDialogFragment {
+public class FilterPickerDialogFragment extends BaseDialogFragment {
     private Unbinder unbinder;
 
     public static FilterPickerDialogFragment newInstance() {
