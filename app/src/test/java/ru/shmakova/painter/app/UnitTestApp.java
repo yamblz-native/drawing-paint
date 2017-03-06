@@ -1,9 +1,9 @@
-package ru.shmakova.painter;
+package ru.shmakova.painter.app;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
 
-import ru.shmakova.painter.app.App;
+import ru.shmakova.painter.app.di.components.DaggerApplicationComponent;
 import ru.shmakova.painter.app.di.modules.DeveloperSettingsModule;
 import ru.shmakova.painter.developer_settings.DevMetricsProxy;
 
