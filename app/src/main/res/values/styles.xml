@@ -32,7 +32,7 @@
         <item name="android:gravity">center</item>
         <item name="android:orientation">vertical</item>
         <item name="android:background">@color/white</item>
-        <item name="android:drawablePadding">@dimen/spacing_small_8</item>
+        <item name="android:drawablePadding">8dp</item>
         <item name="android:padding">5dp</item>
     </style>
 
@@ -46,11 +46,11 @@
     <style name="EditTextWrapper">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:minHeight">@dimen/size_large_72</item>
+        <item name="android:minHeight">72dp</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:gravity">bottom</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:layout_marginLeft">@dimen/spacing_medium_32</item>
-        <item name="android:layout_marginRight">@dimen/spacing_normal_16</item>
+        <item name="android:layout_marginLeft">32dp</item>
+        <item name="android:layout_marginRight">16dp</item>
     </style>
 </resources>

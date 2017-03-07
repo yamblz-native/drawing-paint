@@ -130,6 +130,8 @@ configurations.all {
     resolutionStrategy {
         // Force our version of support-annotations, we have a conflict between app and androidTest dependency resolution.
         force libraries.supportAnnotations
+        force libraries.supportDesign
+        force libraries.supportAppCompat
     }
 }
 

@@ -55,22 +55,14 @@ public final class ImageUtils {
         File saveImagesDir = getAlbumStorageDir(ALBUM_DIR);
         String fileName = "img" + String.valueOf(System.currentTimeMillis()) + ".jpg";
         File file = new File(saveImagesDir, fileName);
-        FileOutputStream stream = null;
 
-        try {
-            stream = new FileOutputStream(file);
+        try (FileOutputStream stream = new FileOutputStream(file)) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 75, stream);
             addImageToGallery(context, file.getAbsolutePath());
             Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             Toast.makeText(context, R.string.image_saving_error, Toast.LENGTH_SHORT).show();
             Timber.e(e.getMessage());
-        } finally {
-            if (stream != null) {
-                stream.flush();
-                stream.close();
-            }
-
         }
     }
 

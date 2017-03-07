@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/size_medium_56"
+    android:layout_height="56dp"
     android:background="@color/colorPrimary"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
-
+    android:orientation="horizontal"
+    tools:ignore="Overdraw">
 
     <LinearLayout
         android:id="@+id/color_pick_btn"
@@ -19,14 +20,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/color"
-            android:src="@drawable/ic_square" />
+            android:src="@drawable/ic_square"
+            tools:ignore="InefficientWeight" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/color"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/font_small_14" />
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -40,14 +42,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/brush"
-            android:src="@drawable/ic_brush" />
+            android:src="@drawable/ic_brush"
+            tools:ignore="InefficientWeight" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/brush"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/font_small_14" />
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -61,14 +64,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/stamp"
-            android:src="@drawable/ic_stamp" />
+            android:src="@drawable/ic_stamp"
+            tools:ignore="InefficientWeight" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/stamp"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/font_small_14" />
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -82,14 +86,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/text"
-            android:src="@drawable/ic_cursor_text" />
+            android:src="@drawable/ic_cursor_text"
+            tools:ignore="InefficientWeight" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/font_small_14" />
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -103,13 +108,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/filter"
-            android:src="@drawable/ic_filter" />
+            android:src="@drawable/ic_filter"
+            tools:ignore="InefficientWeight" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/filter"
             android:textColor="@color/colorAccent"
-            android:textSize="@dimen/font_small_14" />
+            android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>
