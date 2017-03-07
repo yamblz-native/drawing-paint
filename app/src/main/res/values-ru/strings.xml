@@ -22,4 +22,5 @@
     <string name="edit_text">Введите текст</string>
     <string name="stamp_pick">Выберите печать</string>
     <string name="set_brush_width">Задайте ширину кисти</string>
+    <string name="donate">Помочь проекту</string>
 </resources>

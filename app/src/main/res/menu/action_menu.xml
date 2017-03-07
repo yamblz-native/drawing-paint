@@ -2,11 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/clear_btn"
-        android:title="@string/clear"/>
+        android:title="@string/clear" />
     <item
         android:id="@+id/save_btn"
-        android:title="@string/save"/>
+        android:title="@string/save" />
     <item
         android:id="@+id/upload_btn"
-        android:title="@string/upload"/>
+        android:title="@string/upload" />
+    <item
+        android:id="@+id/donate_btn"
+        android:title="@string/donate" />
 </menu>

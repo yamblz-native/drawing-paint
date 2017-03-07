@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.thebluealliance.spectrum.SpectrumDialog;
+import com.yandex.metrica.YandexMetrica;
 
 import javax.inject.Inject;
 
@@ -112,6 +114,10 @@ public class DrawFragment extends BaseFragment implements
                 break;
             case R.id.clear_btn:
                 canvasView.clear();
+                break;
+            case R.id.donate_btn:
+                YandexMetrica.reportEvent("DONATE");
+                donate();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -263,5 +269,13 @@ public class DrawFragment extends BaseFragment implements
     @Override
     public void updateMenuColor(@ColorInt int color) {
         DrawableCompat.setTint(colorIcon.getDrawable(), color);
+    }
+
+    public void donate() {
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setToolbarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        builder.setShowTitle(true);
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(getContext(), Uri.parse(getString(R.string.donate_url)));
     }
 }
