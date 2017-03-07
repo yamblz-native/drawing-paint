@@ -60,7 +60,7 @@ public class CanvasView extends View {
     private void init() {
         setFocusable(true);
         setFocusableInTouchMode(true);
-        setBrush();
+        currentTool = BRUSH_TOOL;
         drawPaint = new Paint();
         drawPaint.setColor(DEFAULT_COLOR);
         drawPaint.setAntiAlias(true);

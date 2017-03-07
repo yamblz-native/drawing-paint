@@ -46,6 +46,7 @@ import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 
+@SuppressWarnings("PMD.GodClass") // more than 47 methods
 public class DrawFragment extends BaseFragment implements
         FilterPickerDialogFragment.FilterPickerDialogListener,
         TextDialogFragment.EditTextDialogListener,
@@ -75,10 +76,6 @@ public class DrawFragment extends BaseFragment implements
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        injectDependencies();
-    }
-
-    private void injectDependencies() {
         App.get(getContext()).applicationComponent().inject(this);
     }
 
@@ -148,7 +145,7 @@ public class DrawFragment extends BaseFragment implements
     public void onFilterButtonClick() {
         FragmentManager fm = getFragmentManager();
         FilterPickerDialogFragment filterPickerDialogFragment = new FilterPickerDialogFragment();
-        filterPickerDialogFragment.setTargetFragment(DrawFragment.this, FILTER_PICKER_REQUEST_CODE);
+        filterPickerDialogFragment.setTargetFragment(this, FILTER_PICKER_REQUEST_CODE);
         filterPickerDialogFragment.show(fm, "fragment_filter_picker");
     }
 
@@ -156,7 +153,7 @@ public class DrawFragment extends BaseFragment implements
     public void onTextButtonClick() {
         FragmentManager fm = getFragmentManager();
         TextDialogFragment textDialogFragment = new TextDialogFragment();
-        textDialogFragment.setTargetFragment(DrawFragment.this, TEXT_PICKER_REQUEST_CODE);
+        textDialogFragment.setTargetFragment(this, TEXT_PICKER_REQUEST_CODE);
         textDialogFragment.show(fm, "fragment_text");
     }
 
@@ -165,16 +162,15 @@ public class DrawFragment extends BaseFragment implements
         canvasView.setBrush();
         FragmentManager fm = getFragmentManager();
         BrushPickerDialogFragment brushPickerDialogFragment = new BrushPickerDialogFragment();
-        brushPickerDialogFragment.setTargetFragment(DrawFragment.this, BRUSH_PICKER_REQUEST_CODE);
+        brushPickerDialogFragment.setTargetFragment(this, BRUSH_PICKER_REQUEST_CODE);
         brushPickerDialogFragment.show(fm, "fragment_brush_picker");
-
     }
 
     @OnClick(R.id.stamp_btn)
     public void onStampButtonClick() {
         FragmentManager fm = getFragmentManager();
         StampPickerDialogFragment stampPickerDialogFragment = new StampPickerDialogFragment();
-        stampPickerDialogFragment.setTargetFragment(DrawFragment.this, STAMP_PICKER_REQUEST_CODE);
+        stampPickerDialogFragment.setTargetFragment(this, STAMP_PICKER_REQUEST_CODE);
         stampPickerDialogFragment.show(fm, "fragment_stamp_picker");
     }
 
@@ -220,11 +216,9 @@ public class DrawFragment extends BaseFragment implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GALLERY_PICTURE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK && data != null) {
-                Uri imageUri = data.getData();
-                canvasView.setBitmap(ImageUtils.loadBitmapFromUri(getContext(), imageUri));
-            }
+        if (requestCode == GALLERY_PICTURE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            canvasView.setBitmap(ImageUtils.loadBitmapFromUri(getContext(), imageUri));
         }
     }
 

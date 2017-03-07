@@ -104,33 +104,6 @@ public class DeveloperSettingsSpinnerAdapterTest {
         assertThat(adapter.getItemId(2)).isEqualTo(2);
     }
 
-    @SuppressLint("SetTextI18n")
-    @Test
-    public void getView_shouldBindDataAndReturnViewWithoutConvertView() {
-        List<DeveloperSettingsSpinnerAdapter.SelectionOption> selectionOptions = asList(
-                mock(DeveloperSettingsSpinnerAdapter.SelectionOption.class),
-                mock(DeveloperSettingsSpinnerAdapter.SelectionOption.class),
-                mock(DeveloperSettingsSpinnerAdapter.SelectionOption.class)
-        );
-
-        adapter.setSelectionOptions(selectionOptions);
-        ViewGroup container = mock(ViewGroup.class);
-
-        for (int position = 0; position < selectionOptions.size(); position++) {
-            when(selectionOptions.get(position).title()).thenReturn("Title " + position);
-
-            View view = mock(View.class);
-            when(layoutInflater.inflate(ru.shmakova.painter.R.layout.list_developer_settings_spinner_item, container, false)).thenReturn(view);
-
-            TextView titleTextView = mock(TextView.class);
-            when(view.findViewById(ru.shmakova.painter.R.id.list_developer_settings_spinner_item_title_text_view)).thenReturn(titleTextView);
-
-            // Notice: there is NO convertView, that what we want to check.
-            assertThat(adapter.getView(position, null, container)).isSameAs(view);
-            verify(titleTextView).setText("Title " + position);
-        }
-    }
-
     @Test
     public void getView_shouldBindDataAndReturnViewWithConvertView() {
         List<DeveloperSettingsSpinnerAdapter.SelectionOption> selectionOptions = asList(

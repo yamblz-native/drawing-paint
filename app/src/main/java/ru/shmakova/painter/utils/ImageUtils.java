@@ -53,7 +53,7 @@ public final class ImageUtils {
 
     public static void saveImageToFile(Context context, Bitmap bitmap) throws IOException {
         File saveImagesDir = getAlbumStorageDir(ALBUM_DIR);
-        String fileName = "img" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+        String fileName = "img" + System.currentTimeMillis() + ".jpg";
         File file = new File(saveImagesDir, fileName);
 
         try (FileOutputStream stream = new FileOutputStream(file)) {
@@ -62,7 +62,7 @@ public final class ImageUtils {
             Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             Toast.makeText(context, R.string.image_saving_error, Toast.LENGTH_SHORT).show();
-            Timber.e(e.getMessage());
+            Timber.e(e);
         }
     }
 
@@ -87,7 +87,7 @@ public final class ImageUtils {
             Bitmap rawBitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
             bitmap = Bitmap.createScaledBitmap(rawBitmap, width, width * rawBitmap.getHeight() / rawBitmap.getWidth(), false);
         } catch (IOException e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
 
         return bitmap;
@@ -98,13 +98,13 @@ public final class ImageUtils {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeResource(context.getApplicationContext().getResources(), id, options);
 
-        if (bitmap != null) {
+        if (bitmap == null) {
+            VectorDrawable vectorDrawable = (VectorDrawable) ContextCompat.getDrawable(context, id);
+            return getBitmap(vectorDrawable);
+        } else {
             final float density = context.getResources().getDisplayMetrics().density;
             final int stampSize = (int) (STAMP_SIZE * density);
             return Bitmap.createScaledBitmap(bitmap, stampSize, stampSize, false);
-        } else {
-            VectorDrawable vectorDrawable = (VectorDrawable) ContextCompat.getDrawable(context, id);
-            return getBitmap(vectorDrawable);
         }
     }
 }
