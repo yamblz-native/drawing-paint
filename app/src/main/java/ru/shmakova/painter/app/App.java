@@ -31,21 +31,30 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         applicationComponent = prepareApplicationComponent().build();
-        Fabric.with(this, new Crashlytics());
-        YandexMetrica.activate(getApplicationContext(), APPMETRICA_API_KEY);
-        YandexMetrica.enableActivityAutoTracking(this);
+        initTrackers();
+        initLogger();
+    }
 
+    protected void initLogger() {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
 
-            DeveloperSettingsModel developerSettingModel = applicationComponent.developerSettingModel();
-            developerSettingModel.apply();
+            if (applicationComponent != null) {
+                DeveloperSettingsModel developerSettingModel = applicationComponent.developerSettingModel();
+                developerSettingModel.apply();
 
-            DevMetricsProxy devMetricsProxy = applicationComponent.devMetricsProxy();
-            devMetricsProxy.apply();
+                DevMetricsProxy devMetricsProxy = applicationComponent.devMetricsProxy();
+                devMetricsProxy.apply();
+            }
         } else {
             Timber.plant(new ErrorsReportingTree());
         }
+    }
+
+    protected void initTrackers() {
+        Fabric.with(this, new Crashlytics());
+        YandexMetrica.activate(getApplicationContext(), APPMETRICA_API_KEY);
+        YandexMetrica.enableActivityAutoTracking(this);
     }
 
     @NonNull

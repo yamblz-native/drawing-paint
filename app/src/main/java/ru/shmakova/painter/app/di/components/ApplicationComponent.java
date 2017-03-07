@@ -33,8 +33,10 @@ public interface ApplicationComponent {
     @NonNull
     DeveloperSettingsComponent plusDeveloperSettingsComponent();
 
+    @NonNull
     DeveloperSettingsModel developerSettingModel();
 
+    @NonNull
     DevMetricsProxy devMetricsProxy();
 
     @NonNull

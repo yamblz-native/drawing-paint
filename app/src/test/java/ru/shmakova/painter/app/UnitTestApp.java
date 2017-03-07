@@ -22,4 +22,14 @@ public class UnitTestApp extends App {
                     }
                 });
     }
+
+    @Override
+    protected void initTrackers() {
+        //No Op
+    }
+
+    @Override
+    protected void initLogger() {
+        //No Op
+    }
 }
