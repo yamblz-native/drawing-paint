@@ -23,5 +23,5 @@
     <string name="set_brush_width">Set brush width</string>
 
     <string name="donate">Donate</string>
-    <string name="donate_url" translatable="false">https://money.yandex.ru/to/410011637065489</string>
+    <string name="donate_url" translatable="false">https://money.yandex.ru/to/410011637065489/100</string>
 </resources>

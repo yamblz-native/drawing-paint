@@ -38,40 +38,40 @@
         <ImageView
             android:id="@+id/sticker_1"
             style="@style/Filter"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_android_black_24dp"/>
 
         <ImageView
             android:id="@+id/sticker_2"
             style="@style/Filter"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_favorite_black_24dp"/>
 
         <ImageView
             android:id="@+id/sticker_3"
             style="@style/Filter"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_mood_black_24dp"/>
 
         <ImageView
             android:id="@+id/sticker_4"
             style="@style/Filter"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_cat"/>
 
         <ImageView
             android:id="@+id/sticker_5"
             style="@style/Filter"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_panda"/>
     </LinearLayout>
@@ -89,40 +89,40 @@
         <ImageView
             android:id="@+id/sticker_6"
             style="@style/Filter"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_poop"/>
 
         <ImageView
             android:id="@+id/sticker_7"
             style="@style/Filter"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_cool"/>
 
         <ImageView
             android:id="@+id/sticker_8"
             style="@style/Filter"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_ghost"/>
 
         <ImageView
             android:id="@+id/sticker_9"
             style="@style/Filter"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_owl"/>
 
         <ImageView
             android:id="@+id/sticker_10"
             style="@style/Filter"
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_paw"/>
     </LinearLayout>
