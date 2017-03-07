@@ -12,6 +12,7 @@ import ru.shmakova.painter.app.di.modules.DeveloperSettingsModule;
 import ru.shmakova.painter.developer_settings.DevMetricsProxy;
 import ru.shmakova.painter.developer_settings.DeveloperSettingsModel;
 import ru.shmakova.painter.developer_settings.LeakCanaryProxy;
+import ru.shmakova.painter.draw.DrawFragment;
 import ru.shmakova.painter.draw.MainActivity;
 import ru.shmakova.painter.draw.brush.BrushPickerDialogFragment;
 import ru.shmakova.painter.draw.filter.FilterPickerDialogFragment;
@@ -49,4 +50,6 @@ public interface ApplicationComponent {
     void inject(@NonNull StampPickerDialogFragment stampPickerDialogFragment);
 
     void inject(@NonNull TextDialogFragment textDialogFragment);
+
+    void inject(@NonNull DrawFragment drawFragment);
 }

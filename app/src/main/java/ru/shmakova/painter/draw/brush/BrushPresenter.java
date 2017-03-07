@@ -9,7 +9,7 @@ import ru.shmakova.painter.screen.BasePresenter;
 import rx.Observable;
 
 public class BrushPresenter extends BasePresenter<BrushView> {
-    private final static String STROKE_WIDTH = "STROKE_WIDTH_KEY";
+    public final static String STROKE_WIDTH = "STROKE_WIDTH_KEY";
 
     @NonNull
     private final SharedPreferences sharedPreferences;

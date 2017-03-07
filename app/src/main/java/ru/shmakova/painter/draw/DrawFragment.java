@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -22,34 +23,58 @@ import android.widget.ImageView;
 
 import com.thebluealliance.spectrum.SpectrumDialog;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import ru.shmakova.painter.R;
+import ru.shmakova.painter.app.App;
 import ru.shmakova.painter.draw.brush.BrushPickerDialogFragment;
 import ru.shmakova.painter.draw.filter.FilterPickerDialogFragment;
 import ru.shmakova.painter.draw.stamp.StampPickerDialogFragment;
 import ru.shmakova.painter.draw.text.TextDialogFragment;
 import ru.shmakova.painter.screen.BaseFragment;
 import ru.shmakova.painter.utils.ImageUtils;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class ContentFragment extends BaseFragment implements
+public class DrawFragment extends BaseFragment implements
         FilterPickerDialogFragment.FilterPickerDialogListener,
         TextDialogFragment.EditTextDialogListener,
         StampPickerDialogFragment.StampPickerDialogListener,
-        BrushPickerDialogFragment.BrushPickerDialogListener {
+        BrushPickerDialogFragment.BrushPickerDialogListener,
+        DrawView {
     private static final int GALLERY_PICTURE_REQUEST_CODE = 10;
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 20;
     private static final int FILTER_PICKER_REQUEST_CODE = 30;
     private static final int TEXT_PICKER_REQUEST_CODE = 40;
     private static final int STAMP_PICKER_REQUEST_CODE = 50;
     private static final int BRUSH_PICKER_REQUEST_CODE = 60;
+
+    @NonNull
+    private final PublishSubject<Integer> colorPicks = PublishSubject.create();
+
     @BindView(R.id.canvas)
     CanvasView canvasView;
     @BindView(R.id.color)
     ImageView colorIcon;
-    private ImageUtils imageUtils;
+
+    @Inject
+    DrawPresenter presenter;
+
+    @ColorInt
+    private int currentColor;
+
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        injectDependencies();
+    }
+
+    private void injectDependencies() {
+        App.get(getContext()).applicationComponent().inject(this);
+    }
 
     @NonNull
     @Override
@@ -61,7 +86,13 @@ public class ContentFragment extends BaseFragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
-        imageUtils = new ImageUtils(getContext());
+        presenter.bindView(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.unbindView(this);
+        super.onDestroyView();
     }
 
     @Override
@@ -91,13 +122,12 @@ public class ContentFragment extends BaseFragment implements
         new SpectrumDialog.Builder(getContext())
                 .setColors(R.array.colors)
                 .setTitle(getResources().getString(R.string.color_pick))
-                .setSelectedColorRes(R.color.md_black)
+                .setSelectedColor(currentColor)
                 .setDismissOnColorSelected(false)
                 .setOutlineWidth(2)
                 .setOnColorSelectedListener((positiveResult, color) -> {
                     if (positiveResult) {
-                        canvasView.setColor(color);
-                        changeIconColor(color);
+                        colorPicks.onNext(color);
                     }
                 }).build().show(getFragmentManager(), "color_picker_dialog");
     }
@@ -106,7 +136,7 @@ public class ContentFragment extends BaseFragment implements
     public void onFilterButtonClick() {
         FragmentManager fm = getFragmentManager();
         FilterPickerDialogFragment filterPickerDialogFragment = new FilterPickerDialogFragment();
-        filterPickerDialogFragment.setTargetFragment(ContentFragment.this, FILTER_PICKER_REQUEST_CODE);
+        filterPickerDialogFragment.setTargetFragment(DrawFragment.this, FILTER_PICKER_REQUEST_CODE);
         filterPickerDialogFragment.show(fm, "fragment_filter_picker");
     }
 
@@ -114,7 +144,7 @@ public class ContentFragment extends BaseFragment implements
     public void onTextButtonClick() {
         FragmentManager fm = getFragmentManager();
         TextDialogFragment textDialogFragment = new TextDialogFragment();
-        textDialogFragment.setTargetFragment(ContentFragment.this, TEXT_PICKER_REQUEST_CODE);
+        textDialogFragment.setTargetFragment(DrawFragment.this, TEXT_PICKER_REQUEST_CODE);
         textDialogFragment.show(fm, "fragment_text");
     }
 
@@ -123,7 +153,7 @@ public class ContentFragment extends BaseFragment implements
         canvasView.setBrush();
         FragmentManager fm = getFragmentManager();
         BrushPickerDialogFragment brushPickerDialogFragment = new BrushPickerDialogFragment();
-        brushPickerDialogFragment.setTargetFragment(ContentFragment.this, BRUSH_PICKER_REQUEST_CODE);
+        brushPickerDialogFragment.setTargetFragment(DrawFragment.this, BRUSH_PICKER_REQUEST_CODE);
         brushPickerDialogFragment.show(fm, "fragment_brush_picker");
 
     }
@@ -132,31 +162,19 @@ public class ContentFragment extends BaseFragment implements
     public void onStampButtonClick() {
         FragmentManager fm = getFragmentManager();
         StampPickerDialogFragment stampPickerDialogFragment = new StampPickerDialogFragment();
-        stampPickerDialogFragment.setTargetFragment(ContentFragment.this, STAMP_PICKER_REQUEST_CODE);
+        stampPickerDialogFragment.setTargetFragment(DrawFragment.this, STAMP_PICKER_REQUEST_CODE);
         stampPickerDialogFragment.show(fm, "fragment_stamp_picker");
     }
 
-    /**
-     * Checks permissions and saves bitmap to gallery
-     */
     private void saveToFile() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
-            imageUtils.saveImageToFile(canvasView.getBitmap());
+            ImageUtils.saveImageToFile(getContext(), canvasView.getBitmap());
         } else {
             ActivityCompat.requestPermissions(getActivity(), new String[]{
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
         }
-    }
-
-    /**
-     * Changes color of icon
-     *
-     * @param color
-     */
-    private void changeIconColor(int color) {
-        DrawableCompat.setTint(colorIcon.getDrawable(), color);
     }
 
     @Override
@@ -171,9 +189,6 @@ public class ContentFragment extends BaseFragment implements
         }
     }
 
-    /**
-     * Loads image from gallery
-     */
     public void loadImageFromGallery() {
         Intent takeGalleryIntent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -192,7 +207,7 @@ public class ContentFragment extends BaseFragment implements
         if (requestCode == GALLERY_PICTURE_REQUEST_CODE) {
             if (resultCode == RESULT_OK && data != null) {
                 Uri imageUri = data.getData();
-                canvasView.setBitmap(imageUtils.loadBitmapFromUri(imageUri));
+                canvasView.setBitmap(ImageUtils.loadBitmapFromUri(getContext(), imageUri));
             }
         }
     }
@@ -206,19 +221,19 @@ public class ContentFragment extends BaseFragment implements
     public void onStampPick(int stamp) {
         switch (stamp) {
             case R.id.sticker_1:
-                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_android_black_24dp));
+                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_android_black_24dp));
                 break;
             case R.id.sticker_2:
-                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_favorite_black_24dp));
+                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_favorite_black_24dp));
                 break;
             case R.id.sticker_3:
-                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_mood_black_24dp));
+                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_mood_black_24dp));
                 break;
             case R.id.sticker_4:
-                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_cat));
+                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_cat));
                 break;
             case R.id.sticker_5:
-                canvasView.setStamp(imageUtils.getStampFromDrawable(R.drawable.ic_panda));
+                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_panda));
                 break;
         }
     }
@@ -226,5 +241,27 @@ public class ContentFragment extends BaseFragment implements
     @Override
     public void onBrushPick(float brushWidth) {
         canvasView.setStrokeWidth(brushWidth);
+    }
+
+
+    @Override
+    public Observable<Integer> colorPicks() {
+        return colorPicks;
+    }
+
+    @Override
+    public void setStrokeWidth(float savedStrokeWidth) {
+        canvasView.setStrokeWidth(savedStrokeWidth);
+    }
+
+    @Override
+    public void setColor(@ColorInt int color) {
+        currentColor = color;
+        canvasView.setColor(color);
+    }
+
+    @Override
+    public void updateMenuColor(@ColorInt int color) {
+        DrawableCompat.setTint(colorIcon.getDrawable(), color);
     }
 }
