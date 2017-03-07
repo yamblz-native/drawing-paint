@@ -14,6 +14,7 @@ import ru.shmakova.painter.app.di.components.DaggerApplicationComponent;
 import ru.shmakova.painter.app.di.modules.ApplicationModule;
 import ru.shmakova.painter.developer_settings.DevMetricsProxy;
 import ru.shmakova.painter.developer_settings.DeveloperSettingsModel;
+import ru.shmakova.painter.utils.ErrorsReportingTree;
 import timber.log.Timber;
 
 public class App extends Application {
@@ -42,6 +43,8 @@ public class App extends Application {
 
             DevMetricsProxy devMetricsProxy = applicationComponent.devMetricsProxy();
             devMetricsProxy.apply();
+        } else {
+            Timber.plant(new ErrorsReportingTree());
         }
     }
 

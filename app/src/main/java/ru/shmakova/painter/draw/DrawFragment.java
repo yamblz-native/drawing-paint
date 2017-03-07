@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
@@ -25,6 +26,8 @@ import android.widget.ImageView;
 import com.thebluealliance.spectrum.SpectrumDialog;
 import com.yandex.metrica.YandexMetrica;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -39,6 +42,7 @@ import ru.shmakova.painter.screen.BaseFragment;
 import ru.shmakova.painter.utils.ImageUtils;
 import rx.Observable;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -119,6 +123,8 @@ public class DrawFragment extends BaseFragment implements
                 YandexMetrica.reportEvent("DONATE");
                 donate();
                 break;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -175,7 +181,11 @@ public class DrawFragment extends BaseFragment implements
     private void saveToFile() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
-            ImageUtils.saveImageToFile(getContext(), canvasView.getBitmap());
+            try {
+                ImageUtils.saveImageToFile(getContext(), canvasView.getBitmap());
+            } catch (IOException e) {
+                Timber.e(e);
+            }
         } else {
             ActivityCompat.requestPermissions(getActivity(), new String[]{
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -184,14 +194,14 @@ public class DrawFragment extends BaseFragment implements
     }
 
     @Override
-    public void onFilterPick(int filter) {
-        switch (filter) {
-            case R.id.gray_scale_btn:
-                canvasView.applyGrayScaleFilter();
-                break;
-            case R.id.negative_btn:
-                canvasView.applyNegativeFilter();
-                break;
+    public void onFilterPick(@IdRes int filter) {
+        if (filter == R.id.gray_scale_btn) {
+            canvasView.applyGrayScaleFilter();
+            return;
+        }
+
+        if (filter == R.id.negative_btn) {
+            canvasView.applyNegativeFilter();
         }
     }
 
@@ -224,7 +234,7 @@ public class DrawFragment extends BaseFragment implements
     }
 
     @Override
-    public void onStampPick(int stamp) {
+    public void onStampPick(@IdRes int stamp) {
         switch (stamp) {
             case R.id.sticker_1:
                 canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_android_black_24dp));
@@ -255,6 +265,8 @@ public class DrawFragment extends BaseFragment implements
                 break;
             case R.id.sticker_10:
                 canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_paw));
+                break;
+            default:
                 break;
         }
     }

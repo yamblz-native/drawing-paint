@@ -1,6 +1,7 @@
 package ru.shmakova.painter.draw.filter;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -62,7 +63,7 @@ public class FilterPickerDialogFragment extends BaseDialogFragment implements Fi
     }
 
     @Override
-    public void sendBackResult(int filter) {
+    public void sendBackResult(@IdRes int filter) {
         FilterPickerDialogListener listener = (FilterPickerDialogListener) getTargetFragment();
         listener.onFilterPick(filter);
     }
@@ -74,6 +75,6 @@ public class FilterPickerDialogFragment extends BaseDialogFragment implements Fi
 
 
     public interface FilterPickerDialogListener {
-        void onFilterPick(int filter);
+        void onFilterPick(@IdRes int filter);
     }
 }

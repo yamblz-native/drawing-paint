@@ -1,6 +1,7 @@
 package ru.shmakova.painter.draw.stamp;
 
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -38,7 +39,9 @@ public class StampPickerDialogFragment extends BaseDialogFragment implements Sta
         App.get(getContext()).applicationComponent().inject(this);
     }
 
-    @OnClick({R.id.sticker_1, R.id.sticker_2, R.id.sticker_3, R.id.sticker_4, R.id.sticker_5})
+    @OnClick({
+            R.id.sticker_1, R.id.sticker_2, R.id.sticker_3, R.id.sticker_4, R.id.sticker_5,
+            R.id.sticker_6, R.id.sticker_7, R.id.sticker_8, R.id.sticker_9, R.id.sticker_10})
     public void onStickerOneClick(View v) {
         submitClicks.onNext(v.getId());
     }
@@ -61,7 +64,7 @@ public class StampPickerDialogFragment extends BaseDialogFragment implements Sta
     }
 
     @Override
-    public void sendBackResult(int stamp) {
+    public void sendBackResult(@IdRes int stamp) {
         StampPickerDialogListener listener = (StampPickerDialogListener) getTargetFragment();
         listener.onStampPick(stamp);
     }

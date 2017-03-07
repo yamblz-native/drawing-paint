@@ -132,25 +132,25 @@ public class CanvasView extends View {
             case STAMP_TOOL:
                 drawStamp(pointX, pointY);
                 break;
+            default:
+                break;
         }
     }
 
     private void onActionUp(MotionEvent event, float pointX, float pointY) {
-        switch (currentTool) {
-            case BRUSH_TOOL:
-                resetDirtyRect(pointX, pointY);
+        if (currentTool == BRUSH_TOOL) {
+            resetDirtyRect(pointX, pointY);
 
-                int historySize = event.getHistorySize();
+            int historySize = event.getHistorySize();
 
-                for (int i = 0; i < historySize; i++) {
-                    float historicalX = event.getHistoricalX(i);
-                    float historicalY = event.getHistoricalY(i);
-                    expandDirtyRect(historicalX, historicalY);
-                    path.lineTo(historicalX, historicalY);
-                }
+            for (int i = 0; i < historySize; i++) {
+                float historicalX = event.getHistoricalX(i);
+                float historicalY = event.getHistoricalY(i);
+                expandDirtyRect(historicalX, historicalY);
+                path.lineTo(historicalX, historicalY);
+            }
 
-                path.lineTo(pointX, pointY);
-                break;
+            path.lineTo(pointX, pointY);
         }
     }
 
