@@ -18,7 +18,6 @@
     <string name="clear">Очистить</string>
     <string name="grayscale_filter">Черно-белый</string>
     <string name="negative_filter">Инвертный</string>
-    <string name="cancel">Отмена</string>
     <string name="edit_text">Введите текст</string>
     <string name="stamp_pick">Выберите печать</string>
     <string name="set_brush_width">Задайте ширину кисти</string>

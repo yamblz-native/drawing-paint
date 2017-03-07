@@ -70,6 +70,8 @@ ext.libraries = [
         supportAppCompat   : "com.android.support:appcompat-v7:$versions.supportLibs",
         supportDesign      : "com.android.support:design:$versions.supportLibs",
         supportCustomTabs  : "com.android.support:customtabs:$versions.supportLibs",
+        supportAnimated    : "com.android.support:animated-vector-drawable:$versions.supportLibs",
+        supportPreferences : "com.android.support:preference-v7:$versions.supportLibs",
 
         butterKnife        : "com.jakewharton:butterknife:$versions.butterKnife",
         butterKnifeCompiler: "com.jakewharton:butterknife-compiler:$versions.butterKnife",

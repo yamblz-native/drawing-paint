@@ -1,5 +1,6 @@
 package ru.shmakova.painter.draw;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -87,6 +88,7 @@ public class CanvasView extends View {
         drawPaint.setStrokeWidth(strokeWidth);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         float pointX = event.getX();

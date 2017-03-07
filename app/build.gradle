@@ -52,9 +52,6 @@ android {
     lintOptions {
         warningsAsErrors true
         abortOnError true // Fail early.
-
-        disable 'GoogleAppIndexingWarning' // App does not have deep linking.
-        disable 'InvalidPackage' // Okio references java.nio that does not presented in Android SDK.
     }
 
     packagingOptions {
@@ -83,6 +80,8 @@ dependencies {
     compile libraries.supportAppCompat
     compile libraries.supportDesign
     compile libraries.supportCustomTabs
+    compile libraries.supportAnimated
+    compile libraries.supportPreferences
 
     compile libraries.butterKnife
     annotationProcessor libraries.butterKnifeCompiler
@@ -132,6 +131,9 @@ configurations.all {
         force libraries.supportAnnotations
         force libraries.supportDesign
         force libraries.supportAppCompat
+        force libraries.supportCustomTabs
+        force libraries.supportAnimated
+        force libraries.supportPreferences
     }
 }
 
