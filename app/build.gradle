@@ -92,6 +92,7 @@ dependencies {
     compile libraries.spectrum
     compile libraries.mdColors
     compile libraries.firebase
+    compile libraries.appmetrica
     compile libraries.rxandroid
     compile libraries.rxjava
     compile libraries.rxbinding

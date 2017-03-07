@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
+import com.yandex.metrica.YandexMetrica;
 
 import io.fabric.sdk.android.Fabric;
 import ru.shmakova.painter.BuildConfig;
@@ -16,6 +17,7 @@ import ru.shmakova.painter.developer_settings.DeveloperSettingsModel;
 import timber.log.Timber;
 
 public class App extends Application {
+    private static final String APPMETRICA_API_KEY = "587dddf3-74f5-4bd8-958e-80986e4fedb9";
     private ApplicationComponent applicationComponent;
 
     // Prevent need in a singleton (global) reference to the application object.
@@ -29,6 +31,8 @@ public class App extends Application {
         super.onCreate();
         applicationComponent = prepareApplicationComponent().build();
         Fabric.with(this, new Crashlytics());
+        YandexMetrica.activate(getApplicationContext(), APPMETRICA_API_KEY);
+        YandexMetrica.enableActivityAutoTracking(this);
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
