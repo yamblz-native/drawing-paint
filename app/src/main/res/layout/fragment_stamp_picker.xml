@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="24dp"
+        android:paddingBottom="16dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp">
@@ -74,6 +74,57 @@
             android:layout_height="@dimen/size_small_24"
             android:contentDescription="@string/content"
             android:src="@drawable/ic_panda"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="24dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp">
+
+        <ImageView
+            android:id="@+id/sticker_6"
+            style="@style/Filter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_small_24"
+            android:contentDescription="@string/content"
+            android:src="@drawable/ic_poop"/>
+
+        <ImageView
+            android:id="@+id/sticker_7"
+            style="@style/Filter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_small_24"
+            android:contentDescription="@string/content"
+            android:src="@drawable/ic_cool"/>
+
+        <ImageView
+            android:id="@+id/sticker_8"
+            style="@style/Filter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_small_24"
+            android:contentDescription="@string/content"
+            android:src="@drawable/ic_ghost"/>
+
+        <ImageView
+            android:id="@+id/sticker_9"
+            style="@style/Filter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_small_24"
+            android:contentDescription="@string/content"
+            android:src="@drawable/ic_owl"/>
+
+        <ImageView
+            android:id="@+id/sticker_10"
+            style="@style/Filter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_small_24"
+            android:contentDescription="@string/content"
+            android:src="@drawable/ic_paw"/>
     </LinearLayout>
 
 </LinearLayout>

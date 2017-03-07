@@ -241,6 +241,21 @@ public class DrawFragment extends BaseFragment implements
             case R.id.sticker_5:
                 canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_panda));
                 break;
+            case R.id.sticker_6:
+                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_poop));
+                break;
+            case R.id.sticker_7:
+                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_cool));
+                break;
+            case R.id.sticker_8:
+                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_ghost));
+                break;
+            case R.id.sticker_9:
+                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_owl));
+                break;
+            case R.id.sticker_10:
+                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_paw));
+                break;
         }
     }
 

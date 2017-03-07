@@ -15,6 +15,9 @@
 #}
 # Retrolambda
 -dontwarn java.lang.invoke.*
+# RxJava
+-dontwarn rx.internal.util.unsafe.*
+-keep class rx.internal.util.unsafe.** { *; }
 # Crashlytics
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable
