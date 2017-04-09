@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Рисовалка</string>
+    <string name="content">Hello</string>
+    <string name="color">Цвет</string>
+    <string name="save">Сохранить</string>
+    <string name="upload">Загрузить</string>
+    <string name="brush">Кисть</string>
+    <string name="filter">Фильтр</string>
+    <string name="stamp">Печать</string>
+    <string name="text">Текст</string>
+    <string name="color_pick">Выберите цвет</string>
+    <string name="ok">OK</string>
+    <string name="image_saving_error">Изображение не сохранено</string>
+    <string name="saved">Сохранено</string>
+    <string name="choose_photo">Выберите изображение</string>
+    <string name="filter_pick">Выберите фильтр</string>
+    <string name="clear">Очистить</string>
+    <string name="grayscale_filter">Черно-белый</string>
+    <string name="negative_filter">Инвертный</string>
+    <string name="edit_text">Введите текст</string>
+    <string name="stamp_pick">Выберите печать</string>
+    <string name="set_brush_width">Задайте ширину кисти</string>
+    <string name="donate">Помочь проекту</string>
+</resources>

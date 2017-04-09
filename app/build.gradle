@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'com.neenbedankt.android-apt'
 apply from: '../code_quality_tools/jacoco.gradle'
 apply plugin: 'com.frogermcs.androiddevmetrics'
 apply from: '../code_quality_tools/quality.gradle'
 apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'io.fabric'
 
 android {
     // Declared in dependencies.gradle in the root of the project.
@@ -12,7 +12,7 @@ android {
     buildToolsVersion versions.buildTools
 
     defaultConfig {
-        applicationId 'ru.yandex.yamblz'
+        applicationId 'ru.shmakova.painter'
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode versions.code // Notice that you may want to use BUILD_NUMBER from CI in real project with own CI.
@@ -40,29 +40,18 @@ android {
         debug {
             signingConfig signingConfigs.yamblz
             applicationIdSuffix '.debug'
-
-            // Enables code coverage with Jacoco only for instrumentation tests.
-            // Coverage for JVM tests done by code_quality_tools/jacoco.gradle.
-            testCoverageEnabled true
         }
 
         release {
-            signingConfig signingConfigs.yamblz
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt')
-
-            // Enables code coverage with Jacoco only for instrumentation tests.
-            // Coverage for JVM tests done by code_quality_tools/jacoco.gradle.
-            testCoverageEnabled true
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
     lintOptions {
         warningsAsErrors true
         abortOnError true // Fail early.
-
-        disable 'GoogleAppIndexingWarning' // App does not have deep linking.
-        disable 'InvalidPackage' // Okio references java.nio that does not presented in Android SDK.
     }
 
     packagingOptions {
@@ -85,18 +74,27 @@ android {
 // Libraries declared in dependencies.gradle in the root of the project
 dependencies {
     compile libraries.dagger
-    apt libraries.daggerCompiler
+    annotationProcessor libraries.daggerCompiler
 
     compile libraries.supportAnnotations
     compile libraries.supportAppCompat
     compile libraries.supportDesign
-    compile libraries.supportRecyclerView
-    compile libraries.supportCardView
+    compile libraries.supportCustomTabs
+    compile libraries.supportAnimated
+    compile libraries.supportPreferences
 
     compile libraries.butterKnife
-    apt libraries.butterKnifeCompiler
+    annotationProcessor libraries.butterKnifeCompiler
 
     compile libraries.timber
+    compile libraries.spectrum
+    compile libraries.mdColors
+    compile libraries.firebase
+    compile libraries.appmetrica
+    compile libraries.rxandroid
+    compile libraries.rxjava
+    compile libraries.rxbinding
+    compile libraries.rxbindingSupport
 
     // Developer tools (Developer Settings)
     compile libraries.stetho
@@ -121,12 +119,21 @@ dependencies {
         exclude module: 'recyclerview-v7'
         exclude module: 'support-v4'
     }
+
+    compile(libraries.crashlytics) {
+        transitive = true;
+    }
 }
 
 configurations.all {
     resolutionStrategy {
         // Force our version of support-annotations, we have a conflict between app and androidTest dependency resolution.
         force libraries.supportAnnotations
+        force libraries.supportDesign
+        force libraries.supportAppCompat
+        force libraries.supportCustomTabs
+        force libraries.supportAnimated
+        force libraries.supportPreferences
     }
 }
 
@@ -143,3 +150,5 @@ if (withDexcount) {
         maxTreeDepth = Integer.MAX_VALUE
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
