@@ -10,7 +10,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -21,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
@@ -50,7 +50,8 @@ public class DrawFragment extends BaseFragment implements
         BrushPickerDialogFragment.BrushPickerDialogListener,
         DrawView {
     private static final int GALLERY_PICTURE_REQUEST_CODE = 10;
-    private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 20;
+    private static final int SAVE_WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 20;
+    private static final int SHARE_WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 30;
     private static final int TEXT_PICKER_REQUEST_CODE = 40;
     private static final int BRUSH_PICKER_REQUEST_CODE = 60;
 
@@ -124,6 +125,9 @@ public class DrawFragment extends BaseFragment implements
             case R.id.clear_btn:
                 canvasView.clear();
                 break;
+            case R.id.share_btn:
+                share();
+                break;
             case R.id.donate_btn:
                 YandexMetrica.reportEvent("DONATE");
                 donate();
@@ -175,9 +179,9 @@ public class DrawFragment extends BaseFragment implements
                 Timber.e(e);
             }
         } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-            }, WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
+            requestPermissions(
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    SAVE_WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
         }
     }
 
@@ -235,11 +239,46 @@ public class DrawFragment extends BaseFragment implements
         DrawableCompat.setTint(colorIcon.getDrawable(), color);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == SAVE_WRITE_EXTERNAL_STORAGE_REQUEST_CODE) {
+                saveToFile();
+            } else if (requestCode == SHARE_WRITE_EXTERNAL_STORAGE_REQUEST_CODE) {
+                share();
+            }
+        } else {
+            Toast.makeText(getContext(), R.string.need_permissions, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void donate() {
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         builder.setToolbarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
         builder.setShowTitle(true);
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.launchUrl(getContext(), Uri.parse(getString(R.string.donate_url)));
+    }
+
+    private void share() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED) {
+            String bitmapPath = MediaStore.Images.Media.insertImage(
+                    getContext().getContentResolver(),
+                    canvasView.getBitmap(),
+                    String.valueOf(System.currentTimeMillis()),
+                    null);
+            Uri bitmapUri = Uri.parse(bitmapPath);
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+            shareIntent.setType("image/*");
+            startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share)));
+        } else {
+            requestPermissions(
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    SHARE_WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
+        }
     }
 }

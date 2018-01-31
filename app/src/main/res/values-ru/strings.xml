@@ -16,4 +16,6 @@
     <string name="edit_text">Введите текст</string>
     <string name="set_brush_width">Задайте ширину кисти</string>
     <string name="donate">Помочь проекту</string>
+    <string name="share">Поделиться</string>
+    <string name="need_permissions">Для работы нужно разрешить приложению записывать на диск</string>
 </resources>

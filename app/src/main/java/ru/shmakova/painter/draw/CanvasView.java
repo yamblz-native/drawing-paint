@@ -188,9 +188,11 @@ public class CanvasView extends View {
     }
 
     public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-        canvas = new Canvas(this.bitmap);
-        invalidate();
+        if (bitmap != null) {
+            this.bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+            canvas = new Canvas(this.bitmap);
+            invalidate();
+        }
     }
 
     private void clearCanvas(int width, int height) {
