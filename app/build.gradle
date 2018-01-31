@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 apply from: '../code_quality_tools/jacoco.gradle'
 apply plugin: 'com.frogermcs.androiddevmetrics'
 apply from: '../code_quality_tools/quality.gradle'
@@ -9,7 +8,6 @@ apply plugin: 'io.fabric'
 android {
     // Declared in dependencies.gradle in the root of the project.
     compileSdkVersion versions.compileSdk
-    buildToolsVersion versions.buildTools
 
     defaultConfig {
         applicationId 'ru.shmakova.painter'
@@ -73,54 +71,54 @@ android {
 
 // Libraries declared in dependencies.gradle in the root of the project
 dependencies {
-    compile libraries.dagger
+    implementation libraries.dagger
     annotationProcessor libraries.daggerCompiler
 
-    compile libraries.supportAnnotations
-    compile libraries.supportAppCompat
-    compile libraries.supportDesign
-    compile libraries.supportCustomTabs
-    compile libraries.supportAnimated
-    compile libraries.supportPreferences
+    implementation libraries.supportAnnotations
+    implementation libraries.supportAppCompat
+    implementation libraries.supportDesign
+    implementation libraries.supportCustomTabs
+    implementation libraries.supportAnimated
+    implementation libraries.supportPreferences
 
-    compile libraries.butterKnife
+    implementation libraries.butterKnife
     annotationProcessor libraries.butterKnifeCompiler
 
-    compile libraries.timber
-    compile libraries.spectrum
-    compile libraries.mdColors
-    compile libraries.firebase
-    compile libraries.appmetrica
-    compile libraries.rxandroid
-    compile libraries.rxjava
-    compile libraries.rxbinding
-    compile libraries.rxbindingSupport
+    implementation libraries.timber
+    implementation libraries.spectrum
+    implementation libraries.mdColors
+    implementation libraries.firebase
+    implementation libraries.appmetrica
+    implementation libraries.rxandroid
+    implementation libraries.rxjava
+    implementation libraries.rxbinding
+    implementation libraries.rxbindingSupport
 
     // Developer tools (Developer Settings)
-    compile libraries.stetho
-    compile libraries.leakCanary
-    compile libraries.tinyDancer
-    compile libraries.lynx
-    compile libraries.processPhoenix
+    implementation libraries.stetho
+    implementation libraries.leakCanary
+    implementation libraries.tinyDancer
+    implementation libraries.lynx
+    implementation libraries.processPhoenix
 
-    testCompile libraries.junit
-    testCompile libraries.robolectric
-    testCompile libraries.assertJ
-    testCompile libraries.equalsVerifier
-    testCompile libraries.mockitoCore
-    testCompile libraries.devMetricsNoOp
+    testImplementation libraries.junit
+    testImplementation libraries.robolectric
+    testImplementation libraries.assertJ
+    testImplementation libraries.equalsVerifier
+    testImplementation libraries.mockitoCore
+    testImplementation libraries.devMetricsNoOp
 
-    androidTestCompile libraries.supportTestRunner
-    androidTestCompile libraries.supportTestRules
-    androidTestCompile libraries.espressoCore
-    androidTestCompile(libraries.espressoContrib) {
+    androidTestImplementation libraries.supportTestRunner
+    androidTestImplementation libraries.supportTestRules
+    androidTestImplementation libraries.espressoCore
+    androidTestImplementation(libraries.espressoContrib) {
         // Causes IncompatibleClassChangeError. As always…
         exclude module: 'support-annotations'
         exclude module: 'recyclerview-v7'
         exclude module: 'support-v4'
     }
 
-    compile(libraries.crashlytics) {
+    implementation(libraries.crashlytics) {
         transitive = true;
     }
 }
