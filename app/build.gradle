@@ -93,6 +93,7 @@ dependencies {
     implementation libraries.rxjava
     implementation libraries.rxbinding
     implementation libraries.rxbindingSupport
+    implementation libraries.rxbindingSupport
 
     // Developer tools (Developer Settings)
     implementation libraries.stetho
