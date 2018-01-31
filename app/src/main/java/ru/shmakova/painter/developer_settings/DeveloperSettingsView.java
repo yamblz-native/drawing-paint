@@ -1,8 +1,7 @@
 package ru.shmakova.painter.developer_settings;
 
+import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
-
-import ru.shmakova.painter.performance.AnyThread;
 
 public interface DeveloperSettingsView {
 

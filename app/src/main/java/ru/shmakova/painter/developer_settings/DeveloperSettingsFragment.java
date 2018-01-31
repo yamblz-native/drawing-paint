@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -25,7 +26,6 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.app.App;
-import ru.shmakova.painter.performance.AnyThread;
 import ru.shmakova.painter.screen.BaseFragment;
 
 public class DeveloperSettingsFragment extends BaseFragment implements DeveloperSettingsView {
