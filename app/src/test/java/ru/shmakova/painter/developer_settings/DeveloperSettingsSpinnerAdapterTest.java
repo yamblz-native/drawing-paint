@@ -11,11 +11,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.shmakova.painter.YamblzRobolectricUnitTestRunner;
 import ru.shmakova.painter.developer_settings.DeveloperSettingsSpinnerAdapter.SelectionOption;
 
 import static java.util.Arrays.asList;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-@RunWith(YamblzRobolectricUnitTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class DeveloperSettingsSpinnerAdapterTest {
 
     private LayoutInflater layoutInflater;

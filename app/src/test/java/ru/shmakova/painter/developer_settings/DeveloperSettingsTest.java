@@ -3,14 +3,13 @@ package ru.shmakova.painter.developer_settings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-
-import ru.shmakova.painter.YamblzRobolectricUnitTestRunner;
 
 import static android.content.Context.MODE_PRIVATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(YamblzRobolectricUnitTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class DeveloperSettingsTest {
 
     private DeveloperSettings developerSettings;
