@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Painter</string>
-    <string name="content">Hello</string>
     <string name="color">Color</string>
     <string name="save">Save</string>
     <string name="upload">Load</string>
     <string name="brush">Brush</string>
-    <string name="filter">Filter</string>
-    <string name="stamp">Stamp</string>
     <string name="text">Text</string>
     <string name="color_pick">Select color</string>
     <string name="ok">OK</string>
     <string name="image_saving_error">Image didn\'t save</string>
     <string name="saved">Saved</string>
     <string name="choose_photo">Select an image</string>
-    <string name="filter_pick">Select a filter</string>
     <string name="clear">Clear</string>
-    <string name="grayscale_filter">Grayscale</string>
-    <string name="negative_filter">Negative</string>
     <string name="edit_text">Enter text</string>
-    <string name="stamp_pick">Select a stamp</string>
     <string name="set_brush_width">Set brush width</string>
 
     <string name="donate">Donate</string>

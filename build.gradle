@@ -32,18 +32,15 @@ buildscript {
         // Fabric
         classpath gradlePlugins.fabric
     }
-
-    // Part of workaround for Lint + Retrolambda.
-    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
 allprojects {
     repositories {
         jcenter()
         google()
-        maven { url 'http://github.com/wada811/Android-Material-Design-Colors/raw/master/repository/' }
         maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://jitpack.io" }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+        maven { url 'https://jitpack.io' }
     }
 
     // Workaround to prevent Gradle from stealing focus from other apps during tests run/etc.

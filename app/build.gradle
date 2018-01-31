@@ -84,8 +84,7 @@ dependencies {
     annotationProcessor libraries.butterKnifeCompiler
 
     implementation libraries.timber
-    implementation libraries.spectrum
-    implementation libraries.mdColors
+    implementation libraries.colorpicker
     implementation libraries.firebase
     implementation libraries.appmetrica
     implementation libraries.rxandroid
@@ -93,7 +92,6 @@ dependencies {
     implementation libraries.rxbinding
     implementation libraries.rxbindingSupport
     implementation libraries.rxbindingSupport
-    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
 
     testImplementation libraries.junit
     testImplementation libraries.robolectric

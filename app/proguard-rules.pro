@@ -13,8 +13,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-# Retrolambda
--dontwarn java.lang.invoke.*
 # RxJava
 -dontwarn rx.internal.util.unsafe.*
 -keep class rx.internal.util.unsafe.** { *; }

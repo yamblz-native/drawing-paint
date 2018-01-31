@@ -14,7 +14,7 @@ import rx.Observable;
 import static ru.shmakova.painter.draw.brush.BrushPresenter.STROKE_WIDTH;
 
 public class DrawPresenter extends BasePresenter<DrawView> {
-    public final static String COLOR_KEY = "COLOR_KEY";
+    private static final String COLOR_KEY = "COLOR_KEY";
 
     @NonNull
     private final SharedPreferences sharedPreferences;
@@ -36,7 +36,7 @@ public class DrawPresenter extends BasePresenter<DrawView> {
                         .map(o -> sharedPreferences.getFloat(STROKE_WIDTH, 5f))
                         .subscribe(savedStrokeWidth -> view().setStrokeWidth(savedStrokeWidth)),
                 Observable.just(1)
-                        .map(o -> sharedPreferences.getInt(COLOR_KEY, ContextCompat.getColor(application, R.color.md_black)))
+                        .map(o -> sharedPreferences.getInt(COLOR_KEY, ContextCompat.getColor(application, R.color.black)))
                         .subscribe(color -> {
                             view().updateMenuColor(color);
                             view().setColor(color);
