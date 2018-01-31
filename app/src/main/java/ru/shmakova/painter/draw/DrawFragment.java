@@ -128,8 +128,8 @@ public class DrawFragment extends BaseFragment implements
                 .initialColor(currentColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
                 .density(10)
-                .setPositiveButton("ok", (dialog, selectedColor, allColors) -> colorPicks.onNext(selectedColor))
-                .setNegativeButton("cancel", (dialog, which) -> {
+                .setPositiveButton(R.string.ok, (dialog, selectedColor, allColors) -> colorPicks.onNext(selectedColor))
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
                 })
                 .build()
                 .show();

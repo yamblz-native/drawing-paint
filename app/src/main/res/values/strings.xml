@@ -8,6 +8,7 @@
     <string name="text">Text</string>
     <string name="color_pick">Select color</string>
     <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <string name="image_saving_error">Image didn\'t save</string>
     <string name="saved">Saved</string>
     <string name="choose_photo">Select an image</string>
