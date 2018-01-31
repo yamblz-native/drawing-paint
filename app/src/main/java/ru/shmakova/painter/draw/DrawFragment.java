@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
@@ -23,7 +22,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.thebluealliance.spectrum.SpectrumDialog;
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
@@ -35,8 +35,6 @@ import butterknife.OnClick;
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.app.App;
 import ru.shmakova.painter.draw.brush.BrushPickerDialogFragment;
-import ru.shmakova.painter.draw.filter.FilterPickerDialogFragment;
-import ru.shmakova.painter.draw.stamp.StampPickerDialogFragment;
 import ru.shmakova.painter.draw.text.TextDialogFragment;
 import ru.shmakova.painter.screen.BaseFragment;
 import ru.shmakova.painter.utils.ImageUtils;
@@ -48,16 +46,12 @@ import static android.app.Activity.RESULT_OK;
 
 @SuppressWarnings("PMD.GodClass") // more than 47 methods
 public class DrawFragment extends BaseFragment implements
-        FilterPickerDialogFragment.FilterPickerDialogListener,
         TextDialogFragment.EditTextDialogListener,
-        StampPickerDialogFragment.StampPickerDialogListener,
         BrushPickerDialogFragment.BrushPickerDialogListener,
         DrawView {
     private static final int GALLERY_PICTURE_REQUEST_CODE = 10;
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 20;
-    private static final int FILTER_PICKER_REQUEST_CODE = 30;
     private static final int TEXT_PICKER_REQUEST_CODE = 40;
-    private static final int STAMP_PICKER_REQUEST_CODE = 50;
     private static final int BRUSH_PICKER_REQUEST_CODE = 60;
 
     @NonNull
@@ -128,25 +122,17 @@ public class DrawFragment extends BaseFragment implements
 
     @OnClick(R.id.color_pick_btn)
     public void onColorPickButtonClick() {
-        new SpectrumDialog.Builder(getContext())
-                .setColors(R.array.colors)
-                .setTitle(getResources().getString(R.string.color_pick))
-                .setSelectedColor(currentColor)
-                .setDismissOnColorSelected(false)
-                .setOutlineWidth(2)
-                .setOnColorSelectedListener((positiveResult, color) -> {
-                    if (positiveResult) {
-                        colorPicks.onNext(color);
-                    }
-                }).build().show(getFragmentManager(), "color_picker_dialog");
-    }
-
-    @OnClick(R.id.filter_btn)
-    public void onFilterButtonClick() {
-        FragmentManager fm = getFragmentManager();
-        FilterPickerDialogFragment filterPickerDialogFragment = new FilterPickerDialogFragment();
-        filterPickerDialogFragment.setTargetFragment(this, FILTER_PICKER_REQUEST_CODE);
-        filterPickerDialogFragment.show(fm, "fragment_filter_picker");
+        ColorPickerDialogBuilder
+                .with(getContext())
+                .setTitle(R.string.color_pick)
+                .initialColor(currentColor)
+                .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
+                .density(10)
+                .setPositiveButton("ok", (dialog, selectedColor, allColors) -> colorPicks.onNext(selectedColor))
+                .setNegativeButton("cancel", (dialog, which) -> {
+                })
+                .build()
+                .show();
     }
 
     @OnClick(R.id.text_btn)
@@ -166,14 +152,6 @@ public class DrawFragment extends BaseFragment implements
         brushPickerDialogFragment.show(fm, "fragment_brush_picker");
     }
 
-    @OnClick(R.id.stamp_btn)
-    public void onStampButtonClick() {
-        FragmentManager fm = getFragmentManager();
-        StampPickerDialogFragment stampPickerDialogFragment = new StampPickerDialogFragment();
-        stampPickerDialogFragment.setTargetFragment(this, STAMP_PICKER_REQUEST_CODE);
-        stampPickerDialogFragment.show(fm, "fragment_stamp_picker");
-    }
-
     private void saveToFile() {
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
@@ -186,18 +164,6 @@ public class DrawFragment extends BaseFragment implements
             ActivityCompat.requestPermissions(getActivity(), new String[]{
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, WRITE_EXTERNAL_STORAGE_REQUEST_CODE);
-        }
-    }
-
-    @Override
-    public void onFilterPick(@IdRes int filter) {
-        if (filter == R.id.gray_scale_btn) {
-            canvasView.applyGrayScaleFilter();
-            return;
-        }
-
-        if (filter == R.id.negative_btn) {
-            canvasView.applyNegativeFilter();
         }
     }
 
@@ -227,43 +193,6 @@ public class DrawFragment extends BaseFragment implements
         canvasView.setText(text);
     }
 
-    @Override
-    public void onStampPick(@IdRes int stamp) {
-        switch (stamp) {
-            case R.id.sticker_1:
-                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_android_black_24dp));
-                break;
-            case R.id.sticker_2:
-                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_favorite_black_24dp));
-                break;
-            case R.id.sticker_3:
-                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_mood_black_24dp));
-                break;
-            case R.id.sticker_4:
-                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_cat));
-                break;
-            case R.id.sticker_5:
-                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_panda));
-                break;
-            case R.id.sticker_6:
-                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_poop));
-                break;
-            case R.id.sticker_7:
-                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_cool));
-                break;
-            case R.id.sticker_8:
-                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_ghost));
-                break;
-            case R.id.sticker_9:
-                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_owl));
-                break;
-            case R.id.sticker_10:
-                canvasView.setStamp(ImageUtils.getStampFromDrawable(getContext(), R.drawable.ic_paw));
-                break;
-            default:
-                break;
-        }
-    }
 
     @Override
     public void onBrushPick(float brushWidth) {

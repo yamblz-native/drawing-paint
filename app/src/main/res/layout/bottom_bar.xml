@@ -54,28 +54,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/stamp_btn"
-        style="@style/ButtonWrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/stamp"
-            android:src="@drawable/ic_stamp"
-            tools:ignore="InefficientWeight" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/stamp"
-            android:textColor="@color/colorAccent"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/text_btn"
         style="@style/ButtonWrapper"
         android:layout_width="wrap_content"
@@ -97,25 +75,4 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/filter_btn"
-        style="@style/ButtonWrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:contentDescription="@string/filter"
-            android:src="@drawable/ic_filter"
-            tools:ignore="InefficientWeight" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/filter"
-            android:textColor="@color/colorAccent"
-            android:textSize="14sp" />
-    </LinearLayout>
 </LinearLayout>

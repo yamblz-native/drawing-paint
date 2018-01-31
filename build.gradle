@@ -20,9 +20,6 @@ buildscript {
         // Code coverage.
         classpath gradlePlugins.jacoco
 
-        // Performance metrics library for Android development.
-        classpath gradlePlugins.androidDevMetrics
-
         // Method count plugin for android projects
         classpath gradlePlugins.dexcount
 
@@ -46,6 +43,7 @@ allprojects {
         google()
         maven { url 'http://github.com/wada811/Android-Material-Design-Colors/raw/master/repository/' }
         maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://jitpack.io" }
     }
 
     // Workaround to prevent Gradle from stealing focus from other apps during tests run/etc.

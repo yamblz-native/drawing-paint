@@ -12,8 +12,6 @@ import ru.shmakova.painter.BuildConfig;
 import ru.shmakova.painter.app.di.components.ApplicationComponent;
 import ru.shmakova.painter.app.di.components.DaggerApplicationComponent;
 import ru.shmakova.painter.app.di.modules.ApplicationModule;
-import ru.shmakova.painter.developer_settings.DevMetricsProxy;
-import ru.shmakova.painter.developer_settings.DeveloperSettingsModel;
 import ru.shmakova.painter.utils.ErrorsReportingTree;
 import timber.log.Timber;
 
@@ -21,7 +19,6 @@ public class App extends Application {
     private static final String APPMETRICA_API_KEY = "587dddf3-74f5-4bd8-958e-80986e4fedb9";
     private ApplicationComponent applicationComponent;
 
-    // Prevent need in a singleton (global) reference to the application object.
     @NonNull
     public static App get(@NonNull Context context) {
         return (App) context.getApplicationContext();
@@ -38,14 +35,6 @@ public class App extends Application {
     protected void initLogger() {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
-
-            if (applicationComponent != null) {
-                DeveloperSettingsModel developerSettingModel = applicationComponent.developerSettingModel();
-                developerSettingModel.apply();
-
-                DevMetricsProxy devMetricsProxy = applicationComponent.devMetricsProxy();
-                devMetricsProxy.apply();
-            }
         } else {
             Timber.plant(new ErrorsReportingTree());
         }

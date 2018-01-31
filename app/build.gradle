@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply from: '../code_quality_tools/jacoco.gradle'
-apply plugin: 'com.frogermcs.androiddevmetrics'
 apply from: '../code_quality_tools/quality.gradle'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.fabric'
@@ -94,20 +93,13 @@ dependencies {
     implementation libraries.rxbinding
     implementation libraries.rxbindingSupport
     implementation libraries.rxbindingSupport
-
-    // Developer tools (Developer Settings)
-    implementation libraries.stetho
-    implementation libraries.leakCanary
-    implementation libraries.tinyDancer
-    implementation libraries.lynx
-    implementation libraries.processPhoenix
+    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
 
     testImplementation libraries.junit
     testImplementation libraries.robolectric
     testImplementation libraries.assertJ
     testImplementation libraries.equalsVerifier
     testImplementation libraries.mockitoCore
-    testImplementation libraries.devMetricsNoOp
 
     androidTestImplementation libraries.supportTestRunner
     androidTestImplementation libraries.supportTestRules
