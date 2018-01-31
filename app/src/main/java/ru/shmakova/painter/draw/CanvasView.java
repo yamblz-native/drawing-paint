@@ -6,8 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -17,11 +16,10 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public class CanvasView extends View {
-    private final static int DEFAULT_COLOR = Color.BLACK;
-    private final static int BRUSH_TOOL = 0;
-    private final static int STAMP_TOOL = 1;
-    private final static int TEXT_TOOL = 2;
-    private final static float STROKE_WIDTH = 5f;
+    private static final int DEFAULT_COLOR = Color.BLACK;
+    private static final int BRUSH_TOOL = 0;
+    private static final int TEXT_TOOL = 2;
+    private static final float STROKE_WIDTH = 5f;
     private Paint drawPaint;
     private Paint fontPaint;
     private Paint canvasPaint;
@@ -30,7 +28,6 @@ public class CanvasView extends View {
     private Bitmap bitmap;
     private int currentTool;
     private String text;
-    private Bitmap stamp;
     private float lastTouchX;
     private float lastTouchY;
     private final RectF dirtyRect = new RectF();
@@ -131,9 +128,6 @@ public class CanvasView extends View {
                 lastTouchX = pointX;
                 lastTouchY = pointY;
                 break;
-            case STAMP_TOOL:
-                drawStamp(pointX, pointY);
-                break;
             default:
                 break;
         }
@@ -189,31 +183,6 @@ public class CanvasView extends View {
         clearCanvas(w, h);
     }
 
-    public void applyGrayScaleFilter() {
-        ColorMatrix colorMatrix = new ColorMatrix();
-        colorMatrix.setSaturation(0);
-        applyColorMatrix(colorMatrix);
-    }
-
-    public void applyNegativeFilter() {
-        ColorMatrix colorMatrix = new ColorMatrix();
-        float[] negMat = {-1, 0, 0, 0, 255, 0, -1, 0, 0, 255, 0, 0, -1, 0, 255, 0, 0, 0, 1, 0};
-        colorMatrix.set(negMat);
-        applyColorMatrix(colorMatrix);
-    }
-
-    private void applyColorMatrix(ColorMatrix colorMatrix) {
-        int height = canvas.getHeight();
-        int width = canvas.getWidth();
-        Bitmap filteredBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(filteredBitmap);
-        Paint paint = new Paint();
-        ColorMatrixColorFilter colorMatrixColorFilter = new ColorMatrixColorFilter(colorMatrix);
-        paint.setColorFilter(colorMatrixColorFilter);
-        c.drawBitmap(bitmap, 0, 0, paint);
-        setBitmap(filteredBitmap);
-    }
-
     public Bitmap getBitmap() {
         return bitmap;
     }
@@ -225,14 +194,20 @@ public class CanvasView extends View {
     }
 
     private void clearCanvas(int width, int height) {
-        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        bitmap.eraseColor(Color.WHITE);
-        canvas = new Canvas(bitmap);
+        if (bitmap == null) {
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            bitmap.eraseColor(Color.WHITE);
+            canvas = new Canvas(bitmap);
+        } else {
+            setBitmap(getResizedBitmap(bitmap, width, height));
+        }
     }
 
     public void clear() {
         int width = canvas.getWidth();
         int height = canvas.getHeight();
+        bitmap.recycle();
+        bitmap = null;
         clearCanvas(width, height);
         invalidate();
     }
@@ -241,9 +216,17 @@ public class CanvasView extends View {
         currentTool = BRUSH_TOOL;
     }
 
-    public void setStamp(Bitmap stamp) {
-        this.stamp = stamp;
-        currentTool = STAMP_TOOL;
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
     }
 
     public void setText(String text) {
@@ -254,15 +237,5 @@ public class CanvasView extends View {
     private void drawText(float pointX, float pointY) {
         canvas.drawText(text, pointX, pointY, fontPaint);
         invalidate();
-    }
-
-    private void drawStamp(float pointX, float pointY) {
-        int height = canvas.getHeight();
-        int width = canvas.getWidth();
-        Bitmap overlayBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(overlayBitmap);
-        canvas.drawBitmap(bitmap, 0, 0, null);
-        canvas.drawBitmap(stamp, pointX, pointY, null);
-        setBitmap(overlayBitmap);
     }
 }

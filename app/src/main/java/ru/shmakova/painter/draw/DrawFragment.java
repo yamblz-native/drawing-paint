@@ -54,6 +54,8 @@ public class DrawFragment extends BaseFragment implements
     private static final int TEXT_PICKER_REQUEST_CODE = 40;
     private static final int BRUSH_PICKER_REQUEST_CODE = 60;
 
+    private DataFragment dataFragment;
+
     @NonNull
     private final PublishSubject<Integer> colorPicks = PublishSubject.create();
 
@@ -82,6 +84,17 @@ public class DrawFragment extends BaseFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        FragmentManager fm = getFragmentManager();
+        dataFragment = (DataFragment) fm.findFragmentByTag(DataFragment.TAG);
+
+        if (dataFragment == null) {
+            dataFragment = new DataFragment();
+            fm.beginTransaction()
+                    .add(dataFragment, DataFragment.TAG)
+                    .commit();
+        } else {
+            canvasView.setBitmap(dataFragment.getData());
+        }
         setHasOptionsMenu(true);
         presenter.bindView(this);
     }
@@ -89,6 +102,7 @@ public class DrawFragment extends BaseFragment implements
     @Override
     public void onDestroyView() {
         presenter.unbindView(this);
+        dataFragment.setData(canvasView.getBitmap());
         super.onDestroyView();
     }
 
