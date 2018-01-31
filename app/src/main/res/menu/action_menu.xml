@@ -17,11 +17,6 @@
         android:title="@string/share"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/donate_btn"
-        android:icon="@drawable/ic_attach_money_black_24dp"
-        android:title="@string/donate"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/clear_btn"
         android:icon="@drawable/ic_clear_black_24dp"
         android:title="@string/clear"

@@ -9,7 +9,6 @@ import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -24,7 +23,6 @@ import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-import com.yandex.metrica.YandexMetrica;
 
 import java.io.IOException;
 
@@ -127,10 +125,6 @@ public class DrawFragment extends BaseFragment implements
                 break;
             case R.id.share_btn:
                 share();
-                break;
-            case R.id.donate_btn:
-                YandexMetrica.reportEvent("DONATE");
-                donate();
                 break;
             default:
                 break;
@@ -251,14 +245,6 @@ public class DrawFragment extends BaseFragment implements
         } else {
             Toast.makeText(getContext(), R.string.need_permissions, Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void donate() {
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        builder.setToolbarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        builder.setShowTitle(true);
-        CustomTabsIntent customTabsIntent = builder.build();
-        customTabsIntent.launchUrl(getContext(), Uri.parse(getString(R.string.donate_url)));
     }
 
     private void share() {
