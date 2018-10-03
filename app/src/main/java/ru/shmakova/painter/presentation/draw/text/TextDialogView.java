@@ -1,4 +1,4 @@
-package ru.shmakova.painter.draw.text;
+package ru.shmakova.painter.presentation.draw.text;
 
 import rx.Observable;
 

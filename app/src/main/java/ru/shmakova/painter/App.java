@@ -1,4 +1,4 @@
-package ru.shmakova.painter.app;
+package ru.shmakova.painter;
 
 import android.app.Application;
 import android.content.Context;
@@ -7,10 +7,9 @@ import android.support.annotation.NonNull;
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
-import ru.shmakova.painter.BuildConfig;
-import ru.shmakova.painter.app.di.components.ApplicationComponent;
-import ru.shmakova.painter.app.di.components.DaggerApplicationComponent;
-import ru.shmakova.painter.app.di.modules.ApplicationModule;
+import ru.shmakova.painter.di.components.ApplicationComponent;
+import ru.shmakova.painter.di.components.DaggerApplicationComponent;
+import ru.shmakova.painter.di.modules.ApplicationModule;
 import ru.shmakova.painter.utils.ErrorsReportingTree;
 import timber.log.Timber;
 

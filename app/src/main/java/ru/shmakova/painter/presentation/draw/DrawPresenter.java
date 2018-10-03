@@ -1,4 +1,4 @@
-package ru.shmakova.painter.draw;
+package ru.shmakova.painter.presentation.draw;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -8,10 +8,10 @@ import android.support.v4.content.ContextCompat;
 import javax.inject.Inject;
 
 import ru.shmakova.painter.R;
-import ru.shmakova.painter.screen.BasePresenter;
+import ru.shmakova.painter.presentation.base.BasePresenter;
 import rx.Observable;
 
-import static ru.shmakova.painter.draw.brush.BrushPresenter.STROKE_WIDTH;
+import static ru.shmakova.painter.presentation.draw.brush.BrushPresenter.STROKE_WIDTH;
 
 public class DrawPresenter extends BasePresenter<DrawView> {
     private static final String COLOR_KEY = "COLOR_KEY";

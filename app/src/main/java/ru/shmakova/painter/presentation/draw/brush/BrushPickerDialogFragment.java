@@ -1,4 +1,4 @@
-package ru.shmakova.painter.draw.brush;
+package ru.shmakova.painter.presentation.draw.brush;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,13 +11,15 @@ import android.widget.SeekBar;
 
 import javax.inject.Inject;
 
+import ru.shmakova.painter.App;
 import ru.shmakova.painter.R;
-import ru.shmakova.painter.app.App;
-import ru.shmakova.painter.screen.BaseDialogFragment;
+import ru.shmakova.painter.presentation.base.BaseDialogFragment;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class BrushPickerDialogFragment extends BaseDialogFragment implements BrushView {
+    public static final String TAG = "fragment_brush_picker";
+
     @NonNull
     private final PublishSubject<Integer> submitClicks = PublishSubject.create();
 

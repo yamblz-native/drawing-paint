@@ -1,4 +1,4 @@
-package ru.shmakova.painter.screen;
+package ru.shmakova.painter.presentation.base;
 
 import android.app.Dialog;
 import android.os.Bundle;

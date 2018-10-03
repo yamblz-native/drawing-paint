@@ -1,4 +1,4 @@
-package ru.shmakova.painter.app.di.components;
+package ru.shmakova.painter.di.components;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -7,11 +7,11 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import ru.shmakova.painter.app.di.modules.ApplicationModule;
-import ru.shmakova.painter.draw.DrawFragment;
-import ru.shmakova.painter.draw.MainActivity;
-import ru.shmakova.painter.draw.brush.BrushPickerDialogFragment;
-import ru.shmakova.painter.draw.text.TextDialogFragment;
+import ru.shmakova.painter.di.modules.ApplicationModule;
+import ru.shmakova.painter.presentation.draw.DrawFragment;
+import ru.shmakova.painter.presentation.draw.MainActivity;
+import ru.shmakova.painter.presentation.draw.brush.BrushPickerDialogFragment;
+import ru.shmakova.painter.presentation.draw.text.TextDialogFragment;
 
 @Singleton
 @Component(modules = {

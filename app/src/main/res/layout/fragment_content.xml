@@ -4,7 +4,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <ru.shmakova.painter.draw.CanvasView
+    <ru.shmakova.painter.presentation.draw.CanvasView
         android:id="@+id/canvas"
         android:layout_width="match_parent"
         android:layout_height="0dp"

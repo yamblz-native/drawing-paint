@@ -1,4 +1,4 @@
-package ru.shmakova.painter.draw.brush;
+package ru.shmakova.painter.presentation.draw.brush;
 
 import rx.Observable;
 

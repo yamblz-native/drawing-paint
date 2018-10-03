@@ -1,4 +1,4 @@
-package ru.shmakova.painter.draw;
+package ru.shmakova.painter.presentation.draw;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;

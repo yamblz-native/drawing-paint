@@ -1,11 +1,11 @@
-package ru.shmakova.painter.draw.brush;
+package ru.shmakova.painter.presentation.draw.brush;
 
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import javax.inject.Inject;
 
-import ru.shmakova.painter.screen.BasePresenter;
+import ru.shmakova.painter.presentation.base.BasePresenter;
 import rx.Observable;
 
 public class BrushPresenter extends BasePresenter<BrushView> {

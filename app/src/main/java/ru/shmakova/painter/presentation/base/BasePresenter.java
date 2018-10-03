@@ -1,4 +1,4 @@
-package ru.shmakova.painter.screen;
+package ru.shmakova.painter.presentation.base;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -31,8 +31,12 @@ public class BasePresenter<V> {
         this.view = view;
     }
 
-    @Nullable
+    @NonNull
+    @SuppressWarnings("PMD.AvoidThrowingNullPointerException")
     protected V view() {
+        if (view == null) {
+            throw new NullPointerException("You should bind before accessing view!");
+        }
         return view;
     }
 

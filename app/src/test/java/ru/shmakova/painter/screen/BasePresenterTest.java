@@ -3,6 +3,7 @@ package ru.shmakova.painter.screen;
 import org.junit.Before;
 import org.junit.Test;
 
+import ru.shmakova.painter.presentation.base.BasePresenter;
 import rx.Subscription;
 
 import static org.assertj.core.api.Assertions.assertThat;

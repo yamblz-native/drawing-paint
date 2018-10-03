@@ -1,4 +1,4 @@
-package ru.shmakova.painter.screen;
+package ru.shmakova.painter.presentation.base;
 
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;

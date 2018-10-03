@@ -1,4 +1,4 @@
-package ru.shmakova.painter.app.di.modules;
+package ru.shmakova.painter.di.modules;
 
 import android.app.Application;
 import android.content.SharedPreferences;

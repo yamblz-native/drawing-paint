@@ -1,6 +1,7 @@
-package ru.shmakova.painter.draw;
+package ru.shmakova.painter.presentation.draw;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -29,10 +30,10 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
+import ru.shmakova.painter.App;
 import ru.shmakova.painter.R;
-import ru.shmakova.painter.app.App;
-import ru.shmakova.painter.draw.brush.BrushPickerDialogFragment;
-import ru.shmakova.painter.draw.text.TextDialogFragment;
+import ru.shmakova.painter.presentation.draw.brush.BrushPickerDialogFragment;
+import ru.shmakova.painter.presentation.draw.text.TextDialogFragment;
 import ru.shmakova.painter.utils.ImageUtils;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -65,6 +66,8 @@ public class DrawFragment extends Fragment implements
     @ColorInt
     private int currentColor;
 
+    private FragmentManager fragmentManager;
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.get(getContext()).applicationComponent().inject(this);
@@ -85,16 +88,18 @@ public class DrawFragment extends Fragment implements
         view.findViewById(R.id.text_btn).setOnClickListener(v -> onTextButtonClick());
         view.findViewById(R.id.brush_btn).setOnClickListener(v -> onBrushButtonClick());
 
-        FragmentManager fm = getFragmentManager();
-        dataFragment = (DataFragment) fm.findFragmentByTag(DataFragment.TAG);
+        fragmentManager = getFragmentManager();
+        if (fragmentManager != null) {
+            dataFragment = (DataFragment) fragmentManager.findFragmentByTag(DataFragment.TAG);
 
-        if (dataFragment == null) {
-            dataFragment = new DataFragment();
-            fm.beginTransaction()
-                    .add(dataFragment, DataFragment.TAG)
-                    .commit();
-        } else {
-            canvasView.setBitmap(dataFragment.getData());
+            if (dataFragment == null) {
+                dataFragment = new DataFragment();
+                fragmentManager.beginTransaction()
+                        .add(dataFragment, DataFragment.TAG)
+                        .commit();
+            } else {
+                canvasView.setBitmap(dataFragment.getData());
+            }
         }
         setHasOptionsMenu(true);
         presenter.bindView(this);
@@ -137,8 +142,12 @@ public class DrawFragment extends Fragment implements
     }
 
     private void onColorPickButtonClick() {
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
         ColorPickerDialogBuilder
-                .with(getContext())
+                .with(context)
                 .setTitle(R.string.color_pick)
                 .initialColor(currentColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
@@ -151,22 +160,24 @@ public class DrawFragment extends Fragment implements
     }
 
     private void onTextButtonClick() {
-        FragmentManager fm = getFragmentManager();
         TextDialogFragment textDialogFragment = new TextDialogFragment();
         textDialogFragment.setTargetFragment(this, TEXT_PICKER_REQUEST_CODE);
-        textDialogFragment.show(fm, "fragment_text");
+        textDialogFragment.show(fragmentManager, TextDialogFragment.TAG);
     }
 
     private void onBrushButtonClick() {
         canvasView.setBrush();
-        FragmentManager fm = getFragmentManager();
         BrushPickerDialogFragment brushPickerDialogFragment = new BrushPickerDialogFragment();
         brushPickerDialogFragment.setTargetFragment(this, BRUSH_PICKER_REQUEST_CODE);
-        brushPickerDialogFragment.show(fm, "fragment_brush_picker");
+        brushPickerDialogFragment.show(fragmentManager, BrushPickerDialogFragment.TAG);
     }
 
     private void saveToFile() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
             try {
                 ImageUtils.saveImageToFile(getContext(), canvasView.getBitmap());
@@ -181,9 +192,7 @@ public class DrawFragment extends Fragment implements
     }
 
     public void loadImageFromGallery() {
-        Intent takeGalleryIntent = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        takeGalleryIntent.setType("image/");
+        Intent takeGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(
                 Intent.createChooser(
                         takeGalleryIntent,
@@ -194,10 +203,13 @@ public class DrawFragment extends Fragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Context context = getContext();
+        if (context == null) {
+            return;
+        }
         if (requestCode == GALLERY_PICTURE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
-            canvasView.setBitmap(ImageUtils.loadBitmapFromUri(getContext(), imageUri));
+            canvasView.setBitmap(ImageUtils.loadBitmapFromUri(context, imageUri));
         }
     }
 
@@ -249,7 +261,8 @@ public class DrawFragment extends Fragment implements
     }
 
     private void share() {
-        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+        Context context = getContext();
+        if (context != null && ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
                 PackageManager.PERMISSION_GRANTED) {
             String bitmapPath = MediaStore.Images.Media.insertImage(
                     getContext().getContentResolver(),
