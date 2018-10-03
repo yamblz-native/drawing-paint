@@ -1,49 +1,42 @@
 package ru.shmakova.painter.di.modules;
 
-import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
+import ru.shmakova.painter.App;
+import ru.shmakova.painter.presentation.draw.DrawFragment;
+import ru.shmakova.painter.presentation.draw.brush.BrushPickerDialogFragment;
+import ru.shmakova.painter.presentation.draw.text.TextDialogFragment;
 
 @Module
-public class ApplicationModule {
-
-    public static final String MAIN_THREAD_HANDLER = "main_thread_handler";
-
+public abstract class ApplicationModule {
     @NonNull
-    private final Application application;
-
-    public ApplicationModule(@NonNull Application application) {
-        this.application = application;
+    @Provides
+    @Singleton
+    static Context provideContext(@NonNull App app) {
+        return app.getApplicationContext();
     }
 
     @Provides
     @NonNull
     @Singleton
-    public Application provideYamblzApp() {
-        return application;
-    }
-
-    @Provides
-    @NonNull
-    @Named(MAIN_THREAD_HANDLER)
-    @Singleton
-    public Handler provideMainThreadHandler() {
-        return new Handler(Looper.getMainLooper());
-    }
-
-    @Provides
-    @NonNull
-    @Singleton
-    SharedPreferences provideSharedPreferences() {
+    static SharedPreferences provideSharedPreferences(@NonNull App application) {
         return PreferenceManager.getDefaultSharedPreferences(application);
     }
+
+    @ContributesAndroidInjector
+    abstract BrushPickerDialogFragment contributeBrushPickerDialogFragmentInjector();
+
+    @ContributesAndroidInjector
+    abstract TextDialogFragment contributeTextDialogFragmentInjector();
+
+    @ContributesAndroidInjector
+    abstract DrawFragment contributeDrawFragmentInjector();
 }

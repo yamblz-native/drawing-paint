@@ -11,7 +11,7 @@ import android.widget.EditText;
 
 import javax.inject.Inject;
 
-import ru.shmakova.painter.App;
+import dagger.android.support.AndroidSupportInjection;
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.presentation.base.BaseDialogFragment;
 import rx.Observable;
@@ -26,19 +26,15 @@ public class TextDialogFragment extends BaseDialogFragment implements TextDialog
     @Inject
     TextDialogPresenter presenter;
 
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        AndroidSupportInjection.inject(this);
+        super.onCreate(savedInstanceState);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_text, container, false);
-    }
-
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        injectDependencies();
-    }
-
-    private void injectDependencies() {
-        App.get(getContext()).applicationComponent().inject(this);
     }
 
     @Override
@@ -57,12 +53,13 @@ public class TextDialogFragment extends BaseDialogFragment implements TextDialog
     }
 
     @Override
+    @NonNull
     public Observable<String> submitClicks() {
         return submitClicks;
     }
 
     @Override
-    public void sendBackResult(String text) {
+    public void sendBackResult(@NonNull String text) {
         EditTextDialogListener listener = (EditTextDialogListener) getTargetFragment();
         if (listener != null) {
             listener.onEditText(text);

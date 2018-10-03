@@ -1,6 +1,6 @@
 package ru.shmakova.painter.presentation.draw;
 
-import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.presentation.base.BasePresenter;
-import rx.Observable;
 
 import static ru.shmakova.painter.presentation.draw.brush.BrushPresenter.STROKE_WIDTH;
 
@@ -19,28 +18,23 @@ public class DrawPresenter extends BasePresenter<DrawView> {
     @NonNull
     private final SharedPreferences sharedPreferences;
     @NonNull
-    private final Application application;
+    private final Context context;
 
     @Inject
-    DrawPresenter(@NonNull SharedPreferences sharedPreferences, @NonNull Application application) {
+    DrawPresenter(@NonNull SharedPreferences sharedPreferences, @NonNull Context context) {
         this.sharedPreferences = sharedPreferences;
-        this.application = application;
+        this.context = context;
     }
 
     @Override
     public void bindView(@NonNull DrawView view) {
         super.bindView(view);
+        view().setStrokeWidth(sharedPreferences.getFloat(STROKE_WIDTH, 5f));
+        int savedColor = sharedPreferences.getInt(COLOR_KEY, ContextCompat.getColor(context, R.color.black));
+        view().updateMenuColor(savedColor);
+        view().setColor(savedColor);
 
         unsubscribeOnUnbindView(
-                Observable.just(1)
-                        .map(o -> sharedPreferences.getFloat(STROKE_WIDTH, 5f))
-                        .subscribe(savedStrokeWidth -> view().setStrokeWidth(savedStrokeWidth)),
-                Observable.just(1)
-                        .map(o -> sharedPreferences.getInt(COLOR_KEY, ContextCompat.getColor(application, R.color.black)))
-                        .subscribe(color -> {
-                            view().updateMenuColor(color);
-                            view().setColor(color);
-                        }),
                 view().colorPicks()
                         .doOnNext(color -> sharedPreferences
                                 .edit()

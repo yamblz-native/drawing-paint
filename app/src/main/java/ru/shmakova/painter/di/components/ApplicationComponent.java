@@ -1,33 +1,27 @@
 package ru.shmakova.painter.di.components;
 
-import android.os.Handler;
-import android.support.annotation.NonNull;
-
-import javax.inject.Named;
 import javax.inject.Singleton;
 
+import dagger.BindsInstance;
 import dagger.Component;
+import dagger.android.AndroidInjector;
+import dagger.android.support.AndroidSupportInjectionModule;
+import ru.shmakova.painter.App;
 import ru.shmakova.painter.di.modules.ApplicationModule;
-import ru.shmakova.painter.presentation.draw.DrawFragment;
-import ru.shmakova.painter.presentation.draw.MainActivity;
-import ru.shmakova.painter.presentation.draw.brush.BrushPickerDialogFragment;
-import ru.shmakova.painter.presentation.draw.text.TextDialogFragment;
 
 @Singleton
 @Component(modules = {
+        AndroidSupportInjectionModule.class,
         ApplicationModule.class
 })
-public interface ApplicationComponent {
+public interface ApplicationComponent extends AndroidInjector<App> {
+    @Component.Builder
+    interface Builder {
+        @BindsInstance
+        Builder application(App application);
 
-    @NonNull
-    @Named(ApplicationModule.MAIN_THREAD_HANDLER)
-    Handler mainThreadHandler();
+        ApplicationComponent build();
+    }
 
-    void inject(@NonNull MainActivity mainActivity);
-
-    void inject(@NonNull BrushPickerDialogFragment brushPickerDialogFragment);
-
-    void inject(@NonNull TextDialogFragment textDialogFragment);
-
-    void inject(@NonNull DrawFragment drawFragment);
+    void inject(App app);
 }

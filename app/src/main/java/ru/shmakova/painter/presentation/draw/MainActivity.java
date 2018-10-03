@@ -3,7 +3,6 @@ package ru.shmakova.painter.presentation.draw;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import ru.shmakova.painter.App;
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.presentation.base.BaseActivity;
 
@@ -12,7 +11,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.get(this).applicationComponent().inject(this);
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {

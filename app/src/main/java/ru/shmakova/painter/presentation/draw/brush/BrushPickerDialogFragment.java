@@ -11,7 +11,7 @@ import android.widget.SeekBar;
 
 import javax.inject.Inject;
 
-import ru.shmakova.painter.App;
+import dagger.android.support.AndroidSupportInjection;
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.presentation.base.BaseDialogFragment;
 import rx.Observable;
@@ -30,12 +30,8 @@ public class BrushPickerDialogFragment extends BaseDialogFragment implements Bru
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        AndroidSupportInjection.inject(this);
         super.onCreate(savedInstanceState);
-        injectDependencies();
-    }
-
-    private void injectDependencies() {
-        App.get(getContext()).applicationComponent().inject(this);
     }
 
     @Nullable
@@ -61,6 +57,7 @@ public class BrushPickerDialogFragment extends BaseDialogFragment implements Bru
     }
 
     @Override
+    @NonNull
     public Observable<Integer> submitClicks() {
         return submitClicks;
     }

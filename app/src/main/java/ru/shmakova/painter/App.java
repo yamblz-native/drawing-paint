@@ -1,30 +1,35 @@
 package ru.shmakova.painter;
 
 import android.app.Application;
-import android.content.Context;
-import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 
 import com.crashlytics.android.Crashlytics;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 import io.fabric.sdk.android.Fabric;
 import ru.shmakova.painter.di.components.ApplicationComponent;
 import ru.shmakova.painter.di.components.DaggerApplicationComponent;
-import ru.shmakova.painter.di.modules.ApplicationModule;
 import ru.shmakova.painter.utils.ErrorsReportingTree;
 import timber.log.Timber;
 
-public class App extends Application {
+public class App extends Application implements HasSupportFragmentInjector {
     private ApplicationComponent applicationComponent;
 
-    @NonNull
-    public static App get(@NonNull Context context) {
-        return (App) context.getApplicationContext();
-    }
+    @Inject
+    DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        applicationComponent = prepareApplicationComponent().build();
+        applicationComponent = DaggerApplicationComponent
+                .builder()
+                .application(this)
+                .build();
+        applicationComponent.inject(this);
         initTrackers();
         initLogger();
     }
@@ -41,14 +46,12 @@ public class App extends Application {
         Fabric.with(this, new Crashlytics());
     }
 
-    @NonNull
-    protected DaggerApplicationComponent.Builder prepareApplicationComponent() {
-        return DaggerApplicationComponent.builder()
-                .applicationModule(new ApplicationModule(this));
+    public ApplicationComponent getApplicationComponent() {
+        return applicationComponent;
     }
 
-    @NonNull
-    public ApplicationComponent applicationComponent() {
-        return applicationComponent;
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return dispatchingAndroidInjector;
     }
 }

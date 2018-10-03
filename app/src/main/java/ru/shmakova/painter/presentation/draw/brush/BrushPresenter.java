@@ -6,10 +6,9 @@ import android.support.annotation.NonNull;
 import javax.inject.Inject;
 
 import ru.shmakova.painter.presentation.base.BasePresenter;
-import rx.Observable;
 
 public class BrushPresenter extends BasePresenter<BrushView> {
-    public final static String STROKE_WIDTH = "STROKE_WIDTH_KEY";
+    public static final String STROKE_WIDTH = "STROKE_WIDTH_KEY";
 
     @NonNull
     private final SharedPreferences sharedPreferences;
@@ -22,17 +21,12 @@ public class BrushPresenter extends BasePresenter<BrushView> {
     @Override
     public void bindView(@NonNull BrushView view) {
         super.bindView(view);
+        float savedStrokeWidth = sharedPreferences.getFloat(STROKE_WIDTH, 5f);
+        view().setStrokeWidth(savedStrokeWidth);
 
         unsubscribeOnUnbindView(
-                Observable.just(1)
-                        .map(o -> {
-                            float savedStrokeWidth = sharedPreferences.getFloat(STROKE_WIDTH, 5f);
-                            return savedStrokeWidth;
-                        })
-                    .subscribe(savedStrokeWidth -> view().setStrokeWidth(savedStrokeWidth)),
                 view().submitClicks()
-                        .doOnNext(strokeWidth -> sharedPreferences
-                                .edit()
+                        .doOnNext(strokeWidth -> sharedPreferences.edit()
                                 .putFloat(STROKE_WIDTH, strokeWidth)
                                 .apply())
                         .subscribe(strokeWidth -> {

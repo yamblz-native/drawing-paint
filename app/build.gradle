@@ -71,7 +71,10 @@ android {
 // Libraries declared in dependencies.gradle in the root of the project
 dependencies {
     implementation libraries.dagger
+    implementation libraries.daggerSupport
     annotationProcessor libraries.daggerCompiler
+    implementation libraries.daggerAndroid
+    annotationProcessor libraries.daggerAndroidProcessor
 
     implementation libraries.supportAnnotations
     implementation libraries.supportAppCompat

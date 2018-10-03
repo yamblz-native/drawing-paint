@@ -30,7 +30,7 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-import ru.shmakova.painter.App;
+import dagger.android.support.AndroidSupportInjection;
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.presentation.draw.brush.BrushPickerDialogFragment;
 import ru.shmakova.painter.presentation.draw.text.TextDialogFragment;
@@ -69,8 +69,8 @@ public class DrawFragment extends Fragment implements
     private FragmentManager fragmentManager;
 
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        AndroidSupportInjection.inject(this);
         super.onCreate(savedInstanceState);
-        App.get(getContext()).applicationComponent().inject(this);
     }
 
     @NonNull
