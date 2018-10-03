@@ -80,13 +80,9 @@ dependencies {
     implementation libraries.supportAnimated
     implementation libraries.supportPreferences
 
-    implementation libraries.butterKnife
-    annotationProcessor libraries.butterKnifeCompiler
-
     implementation libraries.timber
     implementation libraries.colorpicker
     implementation libraries.firebase
-    implementation libraries.appmetrica
     implementation libraries.rxandroid
     implementation libraries.rxjava
     implementation libraries.rxbinding

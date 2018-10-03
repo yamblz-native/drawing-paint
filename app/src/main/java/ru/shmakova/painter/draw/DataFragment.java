@@ -3,10 +3,9 @@ package ru.shmakova.painter.draw;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 
-import ru.shmakova.painter.screen.BaseFragment;
-
-public class DataFragment extends BaseFragment {
+public class DataFragment extends Fragment {
     public static final String TAG = "data";
 
     private Bitmap data;

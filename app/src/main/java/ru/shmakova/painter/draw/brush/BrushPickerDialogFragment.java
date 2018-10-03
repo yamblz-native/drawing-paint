@@ -6,12 +6,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SeekBar;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.app.App;
 import ru.shmakova.painter.screen.BaseDialogFragment;
@@ -22,8 +21,7 @@ public class BrushPickerDialogFragment extends BaseDialogFragment implements Bru
     @NonNull
     private final PublishSubject<Integer> submitClicks = PublishSubject.create();
 
-    @BindView(R.id.seek_bar)
-    SeekBar seekBar;
+    private SeekBar seekBar;
 
     @Inject
     BrushPresenter presenter;
@@ -40,24 +38,23 @@ public class BrushPickerDialogFragment extends BaseDialogFragment implements Bru
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_brush_picker, container, false);
     }
 
-    @OnClick(R.id.edit_brush_btn)
-    public void onEditBrushButtonClick(View v) {
-        submitClicks.onNext(seekBar.getProgress());
-    }
-
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        seekBar = view.findViewById(R.id.seek_bar);
+        Button editBrushButton = view.findViewById(R.id.edit_brush_btn);
+        editBrushButton.setOnClickListener(v -> submitClicks.onNext(seekBar.getProgress()));
         presenter.bindView(this);
     }
 
     @Override
     public void onDestroyView() {
         presenter.unbindView(this);
+        seekBar = null;
         super.onDestroyView();
     }
 
@@ -69,7 +66,9 @@ public class BrushPickerDialogFragment extends BaseDialogFragment implements Bru
     @Override
     public void sendBackResult(float strokeWidth) {
         BrushPickerDialogListener listener = (BrushPickerDialogListener) getTargetFragment();
-        listener.onBrushPick(strokeWidth);
+        if (listener != null) {
+            listener.onBrushPick(strokeWidth);
+        }
     }
 
     @Override

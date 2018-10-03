@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -28,13 +29,10 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.app.App;
 import ru.shmakova.painter.draw.brush.BrushPickerDialogFragment;
 import ru.shmakova.painter.draw.text.TextDialogFragment;
-import ru.shmakova.painter.screen.BaseFragment;
 import ru.shmakova.painter.utils.ImageUtils;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -43,7 +41,7 @@ import timber.log.Timber;
 import static android.app.Activity.RESULT_OK;
 
 @SuppressWarnings("PMD.GodClass") // more than 47 methods
-public class DrawFragment extends BaseFragment implements
+public class DrawFragment extends Fragment implements
         TextDialogFragment.EditTextDialogListener,
         BrushPickerDialogFragment.BrushPickerDialogListener,
         DrawView {
@@ -58,10 +56,8 @@ public class DrawFragment extends BaseFragment implements
     @NonNull
     private final PublishSubject<Integer> colorPicks = PublishSubject.create();
 
-    @BindView(R.id.canvas)
-    CanvasView canvasView;
-    @BindView(R.id.color)
-    ImageView colorIcon;
+    private CanvasView canvasView;
+    private ImageView colorIcon;
 
     @Inject
     DrawPresenter presenter;
@@ -81,8 +77,14 @@ public class DrawFragment extends BaseFragment implements
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        canvasView = view.findViewById(R.id.canvas);
+        colorIcon = view.findViewById(R.id.color);
+        view.findViewById(R.id.color_pick_btn).setOnClickListener(v -> onColorPickButtonClick());
+        view.findViewById(R.id.text_btn).setOnClickListener(v -> onTextButtonClick());
+        view.findViewById(R.id.brush_btn).setOnClickListener(v -> onBrushButtonClick());
+
         FragmentManager fm = getFragmentManager();
         dataFragment = (DataFragment) fm.findFragmentByTag(DataFragment.TAG);
 
@@ -102,6 +104,8 @@ public class DrawFragment extends BaseFragment implements
     public void onDestroyView() {
         presenter.unbindView(this);
         dataFragment.setData(canvasView.getBitmap());
+        canvasView = null;
+        colorIcon = null;
         super.onDestroyView();
     }
 
@@ -132,8 +136,7 @@ public class DrawFragment extends BaseFragment implements
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.color_pick_btn)
-    public void onColorPickButtonClick() {
+    private void onColorPickButtonClick() {
         ColorPickerDialogBuilder
                 .with(getContext())
                 .setTitle(R.string.color_pick)
@@ -147,16 +150,14 @@ public class DrawFragment extends BaseFragment implements
                 .show();
     }
 
-    @OnClick(R.id.text_btn)
-    public void onTextButtonClick() {
+    private void onTextButtonClick() {
         FragmentManager fm = getFragmentManager();
         TextDialogFragment textDialogFragment = new TextDialogFragment();
         textDialogFragment.setTargetFragment(this, TEXT_PICKER_REQUEST_CODE);
         textDialogFragment.show(fm, "fragment_text");
     }
 
-    @OnClick(R.id.brush_btn)
-    public void onBrushButtonClick() {
+    private void onBrushButtonClick() {
         canvasView.setBrush();
         FragmentManager fm = getFragmentManager();
         BrushPickerDialogFragment brushPickerDialogFragment = new BrushPickerDialogFragment();

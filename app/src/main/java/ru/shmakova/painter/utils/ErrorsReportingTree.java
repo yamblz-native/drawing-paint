@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.yandex.metrica.YandexMetrica;
 
 import timber.log.Timber;
 
@@ -19,10 +18,8 @@ public class ErrorsReportingTree extends Timber.Tree {
             if (t == null) {
                 Throwable throwable = new RuntimeException(message);
                 Crashlytics.logException(throwable);
-                YandexMetrica.reportError(message, throwable);
             } else {
                 Crashlytics.logException(t);
-                YandexMetrica.reportError(message, t);
             }
         }
     }

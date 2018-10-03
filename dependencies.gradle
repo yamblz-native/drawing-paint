@@ -1,10 +1,10 @@
 ext.versions = [
-        code                : 7,
+        code                : 8,
         name                : '1.0',
 
         minSdk              : 19,
-        targetSdk           : 27,
-        compileSdk          : 27,
+        targetSdk           : 28,
+        compileSdk          : 28,
 
         androidGradlePlugin : '3.0.1',
         jacocoGradlePlugin  : '0.7.6.201602180812',
@@ -12,15 +12,13 @@ ext.versions = [
         versionsGradlePlugin: '0.13.0',
         fabricGradlePlugin  : '1.+',
 
-        dagger              : '2.7',
-        supportLibs         : '27.0.2',
-        butterKnife         : '9.0.0-SNAPSHOT',
+        dagger              : '2.17',
+        supportLibs         : '27.1.1',
         timber              : '4.6.0',
         colorpicker         : '0.0.13',
         googleServices      : '3.0.0',
         firebase            : '10.2.0',
-        crashlytics         : '2.6.6@aar',
-        appmetrica          : '2.62',
+        crashlytics         : '2.9.5@aar',
         rxandroid           : '1.2.1',
         rxjava              : '1.2.5',
         rxbinding           : '0.4.0',
@@ -56,8 +54,6 @@ ext.libraries = [
         supportAnimated    : "com.android.support:animated-vector-drawable:$versions.supportLibs",
         supportPreferences : "com.android.support:preference-v7:$versions.supportLibs",
 
-        butterKnife        : "com.jakewharton:butterknife:$versions.butterKnife",
-        butterKnifeCompiler: "com.jakewharton:butterknife-compiler:$versions.butterKnife",
         timber             : "com.jakewharton.timber:timber:$versions.timber",
         rxandroid          : "io.reactivex:rxandroid:$versions.rxandroid",
         rxjava             : "io.reactivex:rxjava:$versions.rxjava",
@@ -67,7 +63,6 @@ ext.libraries = [
         colorpicker        : "com.github.QuadFlask:colorpicker:$versions.colorpicker",
         crashlytics        : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics",
         firebase           : "com.google.firebase:firebase-core:$versions.firebase",
-        appmetrica         : "com.yandex.android:mobmetricalib:$versions.appmetrica",
 
         // Test dependencies
         junit              : "junit:junit:$versions.junit",

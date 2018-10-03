@@ -6,12 +6,11 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 import ru.shmakova.painter.R;
 import ru.shmakova.painter.app.App;
 import ru.shmakova.painter.screen.BaseDialogFragment;
@@ -22,15 +21,12 @@ public class TextDialogFragment extends BaseDialogFragment implements TextDialog
     @NonNull
     private final PublishSubject<String> submitClicks = PublishSubject.create();
 
-    @BindView(R.id.edit_text)
-    EditText editText;
-
     @Inject
     TextDialogPresenter presenter;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_text, container, false);
     }
 
@@ -43,14 +39,12 @@ public class TextDialogFragment extends BaseDialogFragment implements TextDialog
         App.get(getContext()).applicationComponent().inject(this);
     }
 
-    @OnClick(R.id.edit_text_btn)
-    public void onEditTextButtonClick() {
-        submitClicks.onNext(editText.getText().toString());
-    }
-
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        EditText editText = view.findViewById(R.id.edit_text);
+        Button editTextButton = view.findViewById(R.id.edit_text_btn);
+        editTextButton.setOnClickListener(v -> submitClicks.onNext(editText.getText().toString()));
         presenter.bindView(this);
     }
 
@@ -68,7 +62,9 @@ public class TextDialogFragment extends BaseDialogFragment implements TextDialog
     @Override
     public void sendBackResult(String text) {
         EditTextDialogListener listener = (EditTextDialogListener) getTargetFragment();
-        listener.onEditText(text);
+        if (listener != null) {
+            listener.onEditText(text);
+        }
     }
 
     @Override
